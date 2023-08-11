@@ -35,13 +35,16 @@ class Stats(NamedTuple):
     speed: int
 
 
-class StatusEffect(Enum):
+class StatusEffect(str, Enum):
     POISON = ("poison", 1.5)
     BURN = ("burn", 1.5)
     PARALYSIS = ("paralysis", 1.5)
     SLEEP = ("sleep", 2)
     FREEZE = ("freeze", 2)
     NONE = ("none", 1)
+
+    def toJSON(self):
+        return self.value[0]
 
 
 class Pokemon:

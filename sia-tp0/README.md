@@ -30,3 +30,11 @@ para instalar las dependencias necesarias en el ambiente virtual
 pipenv run python main.py [config_file]
 ```
 
+## Ejecución del Notebook
+```
+pipenv shell
+```
+Entrar al displayer de notebook en particular (sea VSCode, Jupyter, etc)
+Cambiar Kernel al del pipenv.
+Correr.
+
