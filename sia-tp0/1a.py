@@ -11,7 +11,7 @@ if __name__ == "__main__":
     factory = PokemonFactory("pokemon.json")
     with open(f"{sys.argv[1]}", "r") as f:
         config = json.load(f)
-        pokemons = generate_pokemons_with_state(config["pokemon"],100,StatusEffect.NONE,1)
+        pokemon = generate_pokemons_with_state(config["pokemon"],100,StatusEffect.NONE,1)
         pokeballs = config["pokeball"]
         fig_list = []
         pk = pokemons[0]

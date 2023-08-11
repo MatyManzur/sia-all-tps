@@ -14,12 +14,19 @@ def average_catch_rate(
 
 
 def generate_pokemons_with_state(
-        pokes: List[str], lvl: int, status: StatusEffect, hp: int
+        pokes: List[str], lvl: int, status: StatusEffect, hp: float
 ) -> List[Pokemon]:
     pokemon_list = []
     factory_aux = PokemonFactory("pokemon.json")
     for p in pokes:
         pokemon_list.append(factory_aux.create(p, lvl, status, hp))
     return pokemon_list
+
+def generate_pokemon_with_state(
+        poke: str, lvl: int, status: StatusEffect, hp: int
+) -> Pokemon:
+    factory_aux = PokemonFactory("pokemon.json")
+    return factory_aux.create(poke, lvl, status, hp)
+
 
 
