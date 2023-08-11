@@ -1,0 +1,10 @@
+{
+  "pokemon":"jolteon",
+
+  "pokeball": [
+    "pokeball",
+    "ultraball",
+    "fastball",
+    "heavyball"
+  ]
+}

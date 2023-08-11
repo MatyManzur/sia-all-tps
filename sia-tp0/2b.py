@@ -13,7 +13,7 @@ if __name__ == "__main__":
         config = json.load(f)
         pokemons = []
         base_name = config["pokemon"]
-        base_pokeball = config["pokeball"]
+        pokeballs = config["pokeball"]
         for hp in range(10):
             pokemons.append(generate_pokemon_with_state(base_name,100,StatusEffect.NONE,hp*0.1))
         hp_data = []
