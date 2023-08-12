@@ -35,7 +35,7 @@ class Stats(NamedTuple):
     speed: int
 
 
-class StatusEffect(str, Enum):
+class StatusEffect(Enum):
     POISON = ("poison", 1.5)
     BURN = ("burn", 1.5)
     PARALYSIS = ("paralysis", 1.5)
