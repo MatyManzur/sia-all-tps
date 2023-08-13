@@ -12,6 +12,7 @@ notebook = "*"
 pandas = "*"
 ipykernel = "*"
 plotly = "*"
+kaleido = "*"
 
 [dev-packages]
 
