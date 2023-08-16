@@ -35,12 +35,15 @@ class Board:
 class State:
     # Player position: position
     # Box positions: [position1, position2, ...]
-    # Heuristic: function(player_position,Box_positions)
+    # Heuristic: function(player_position, box_positions, board)
     def __init__(self, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position]], int]):
+                 heuristic: Callable[[Position, List[Position], Board], int], board: Board):
         self.player_position = player_position
         self.box_positions = box_positions
-        self.heuristic_value = heuristic(player_position, box_positions)
+        self.heuristic_function = heuristic
+        self.heuristic_value = heuristic(player_position, box_positions, board)
+        self.board = board
+        self.is_blocked = False
 
     def __hash__(self) -> int:
         return hash((self.player_position, tuple(self.box_positions)))
@@ -77,6 +80,8 @@ class State:
 
     def try_move(self, board: Board, direction: str) -> State | None:
         new_state = self.__check_move(board, direction)
+        # recalculamos la heurística porque hicimos una copia del estado
+        new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions, new_state.board)
         if new_state is None:
             return None
 
@@ -92,17 +97,33 @@ class State:
             new_state.box_positions.remove(new_state.player_position)
             new_state.box_positions.append(new_box_position)
 
-        # Check if there is a box on the new position and try to move it
-        # if we can move it, we have to change the state of the boxes in our new state
-        # for box_position in self.box_positions:
-        #     if position == box_position:
-        #
-        #
-        #
-        # if position in self.box_positions:
-        #     (result, new_box_position) = self.try_move(board, new_position, direction)
-        #     if result == INVALID:
-        #         return INVALID, self
+        return new_state
+
+    def is_goal_state(self):
+        for box_pos in self.box_positions:
+            if box_pos not in self.board.goals:
+                return False
+        return True
+
+    # We could make this more efficient by calculating it only in case a box was moved
+    def __is_blocked(self, new_box_position: Position):
+        blocked_vertical = (not (0 < new_box_position.y < len(self.board.map) - 1)) or (self.board.map[new_box_position.y+1][new_box_position.x] + self.board.map[new_box_position.y-1][new_box_position.x]) != 0
+        blocked_horizontal = (not (0 < new_box_position.x < len(self.board.map[0]) - 1)) or (self.board.map[new_box_position.y][new_box_position.x+1] + self.board.map[new_box_position.y][new_box_position.x+1]) != 0
+        if not blocked_vertical:
+            for box_pos in self.box_positions:
+                if box_pos == new_box_position:
+                    pass
+                elif box_pos.y == new_box_position.y-1 or box_pos.y == new_box_position.y+1:
+                    blocked_vertical = True
+                    break
+        if not blocked_horizontal:
+            for box_pos in self.box_positions:
+                if box_pos == new_box_position:
+                    pass
+                elif box_pos.x == new_box_position.x-1 or box_pos.x == new_box_position.x+1:
+                    blocked_horizontal = True
+                    break
+        return blocked_vertical and blocked_horizontal
 
 
 class Node:
@@ -110,54 +131,108 @@ class Node:
     # Cost is the cost of the path plus the current cost
     # Score is the cost plus the heuristic
     # Parent is the parent node in the tree
-    def __init__(self, state: State, cost: int, score: int, parent: Node | None):
+    def __init__(self, state: State, cost: int, parent: Node | None):
         self.state = state
         self.cost = cost
-        self.score = score
+        self.score = cost + state.heuristic_value
         self.parent = parent
 
     def get_children(self, board: Board) -> List[Node]:
-        frontier = []
-        directions = ['up', 'down', 'right', 'left']  # habría que ponerlo afuera
-        p = self.state.player_position
-        for dir in directions:
-            state = self.state.try_move(board, dir)
+        new_nodes = []
+        directions = ['up', 'down', 'right', 'left']
+        current_pos = self.state.player_position
+        for direc in directions:
+            state = self.state.try_move(board, direc)
             if state is not None:
-                newnode = Node(state, 1, 1, self)  # ver lo de cost y score
-                frontier.append(newnode)
-        return frontier
+                new_node = Node(state, self.cost + 1, self)
+                new_nodes.append(new_node)
+        return new_nodes
+
+    def get_path_from_root(self) -> List[Node]:
+        path = []
+        node = self
+        while node is not None:
+            path.insert(0, node)
+            node = node.parent
+        return path
 
 
 class Algorithm(ABC):
-    def __init__(self, initial_state: State, board: Board, heuristic: Callable[[State], int],
-                 cost_func: Callable[[State], int]):
-        self.heuristic = heuristic
-        self.cost_func = cost_func
-        self.frontier = []
-        self.initial_state = initial_state
+    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
+                 heuristic: Callable[[Position, List[Position], Board], int]):
+        self.frontier: List[Node] = []
+        self.visited = {}
+        self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
+        self.no_solution = None
+        self.solution = None
 
     def __iter__(self):
-        self.frontier = [
-            Node(self.initial_state, self.cost_func(self.initial_state), self.heuristic(self.initial_state), None)]
+        self.frontier = [Node(self.initial_state, 0, None)]
 
-    @abstractmethod
     def __next__(self):
-        """To implement"""
+        if self.has_finished():
+            return self.solution
 
-    @abstractmethod
+        node = None
+        while self.frontier:
+            node = self.frontier.pop()  # va a sacar el último
+            saved_score = self.visited.get(node, float('inf'))  # sería como visited.getOrDefault(node,Math.Inf) de Java
+            if not self.__visited_value(node) >= saved_score:
+                break
+
+        if node is None:
+            self.no_solution = True
+            return None
+
+        if node.state.is_goal_state():
+            self.no_solution = False
+            return self.solution
+
+        # si no es un goal, lo agregamos a visited
+        self.visited[node] = self.__visited_value(node)
+        # y lo expandimos
+        children = node.get_children(self.board)
+        for child in children:
+            if not child.state.is_blocked:
+                self.__add_to_frontier(child)
+
     def has_finished(self) -> bool:
-        """To implement"""
+        return self.solution is not None
 
-    @abstractmethod
     def has_solution(self) -> bool:
-        """To implement"""
+        return not self.no_solution
+
+    # con esto determinamos si se comporta como una cola o lista para BFS y DFS
+    # o como una lista ordenada por algún criterio como A*
+    # (el próximo nodo a usar tiene que quedar al final)
+    @abstractmethod
+    def __add_to_frontier(self, new_node: Node):
+        """abstract method"""
+
+    # para el caso de A*, visited_value() sería una función que
+    # devuelva el A* score, para los otros sería una lambda que siempre devuelve 1
+    # no sé si está bien lo de @staticmethod, pero sería un static en java,
+    # pero que a veces lo puedas overridear en algún hijo
+    @staticmethod
+    def __visited_value(node: Node) -> int:
+        return 1
 
 
 class BFSAlgorithm(Algorithm):
-    def __init__(self, initial_state: State, board: Board, heuristic: Callable[[State], int],
-                 cost_func: Callable[[State], int]):
-        super().__init__(initial_state, board, heuristic, cost_func)
+    # no hay que pisar next(), solo add_to_frontier y visited_value (o dejar el default),
+    # y init() si queremos que no use heuristica
 
-    def __next__(self):
-        """ PUSE A IMPLEMENTAR BFS DEBERIA SER BASTANTE FACIL """
+    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
+        super().__init__(board, player_position, box_positions, lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
+
+    def __add_to_frontier(self, new_node: Node):
+        self.frontier.insert(0, new_node)
+
+
+class DFSAlgorithm(Algorithm):
+
+    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
+        super().__init__(board, player_position, box_positions, lambda _,__,___: 0)  # Es desinformado => No usa heuristica
+    def __add_to_frontier(self, new_node: Node):
+        self.frontier.append(new_node)
