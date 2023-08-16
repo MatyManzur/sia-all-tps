@@ -42,7 +42,7 @@ def try_move(grid, x, y, direction):
     elif direction == 'right':
         new_x += 1
     print(f"Moving ({x},{y}) to ({new_x},{new_y})")
-    if not(0 <= new_y < len(grid)) or not(0 <= new_x < len(grid[0])):
+    if not (0 <= new_y < len(grid)) or not (0 <= new_x < len(grid[0])):
         print("Invalid move!")
         return INVALID, grid
     if grid[new_y][new_x] in [WALL, PLAYER]:
@@ -59,6 +59,7 @@ def try_move(grid, x, y, direction):
     grid[y][x] = EMPTY
     return result, grid
 
+
 class SokobanGame(arcade.Window):
 
     def __search_player__(self):
@@ -71,11 +72,10 @@ class SokobanGame(arcade.Window):
     def __init__(self):
         super().__init__(len(MAP[0]) * SPRITE_SIZE, len(MAP) * SPRITE_SIZE, "Sokoban Game")
         self.grid = MAP
-        self.__search_player__()
 
     def setup(self):
         arcade.set_background_color(arcade.color.BLACK)
-
+        self.__search_player__()
 
     def on_draw(self):
         arcade.start_render()
@@ -117,7 +117,6 @@ class SokobanGame(arcade.Window):
         if result == WIN:
             print("WIN!")
             arcade.set_background_color(arcade.color.GREEN)
-
 
 
 def main():
