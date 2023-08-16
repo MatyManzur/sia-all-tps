@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple
+from typing import List
 from abc import ABC, abstractmethod
 from typing import Callable
 import copy
@@ -90,12 +90,13 @@ class State:
             if aux_state is None:  # estoy intentando mover una caja contra una pared
                 return None
 
-            new_box_position = aux_state.player_position
-            if new_box_position in self.box_positions:  # estoy empujando una caja contra otra caja
+            new_box_position = aux_state.player_position    # This is fine
+            if new_box_position in self.box_positions:      # estoy empujando una caja contra otra caja
                 return None
-                
+
             new_state.box_positions.remove(new_state.player_position)
             new_state.box_positions.append(new_box_position)
+            new_state.__is_blocked(new_box_position)
 
         return new_state
 
