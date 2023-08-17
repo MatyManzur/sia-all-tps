@@ -15,47 +15,10 @@ BOX = 2
 TARGET = 3
 PLAYER = 4
 
-INVALID = 0
-OK = 1
-WIN = 2
 
-# from maps.py
-MAP = MAP_EXAMPLE
-
-PLAYER_POSITION = Position(6, 6)
-
-
-def try_move(grid, x, y, direction):
-    new_x = x
-    new_y = y
-    if direction == 'up':
-        new_y += 1
-    elif direction == 'down':
-        new_y -= 1
-    elif direction == 'left':
-        new_x -= 1
-    elif direction == 'right':
-        new_x += 1
-    print(f"Moving ({x},{y}) to ({new_x},{new_y})")
-    if not (0 <= new_y < len(grid)) or not (0 <= new_x < len(grid[0])):
-        print("Invalid move!")
-        return INVALID, grid
-    if grid[new_y][new_x] in [WALL, PLAYER]:
-        print("Invalid move!")
-        return INVALID, grid
-    result = OK
-    if grid[new_y][new_x] == BOX:
-        (result, grid) = try_move(grid, new_x, new_y, direction)
-        if result == INVALID:
-            return INVALID, grid
-    if grid[new_y][new_x] == TARGET:
-        result = WIN
-    grid[new_y][new_x] = grid[y][x]
-    grid[y][x] = EMPTY
-    return result, grid
-
-
-class SokobanGame(arcade.Window):
+class SokobanGame(
+    arcade.Window
+):
 
     def __init__(self, board: Board, algorithm: Algorithm, render: bool = True):
         super().__init__(len(board.map[0]) * SPRITE_SIZE, len(board.map) * SPRITE_SIZE, "Sokoban Game")
@@ -132,33 +95,36 @@ class SokobanGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.SPACE and not self.initialized:
-            self.start_game()
-            while not self.finished:
-                # time.sleep(20/1000)
-                self.next_state()
+            self.run_game()
+
+    def run_game(self):
+        self.start_game()
+        start_time = time.time()
+        while not self.finished:
+            # time.sleep(20/1000)
+            self.next_state()
+            if self.render:
                 self.draw()
+        if self.render:
             arcade.set_background_color(arcade.color.PINK_PEARL)
             self.draw()
-
-
-def board_information():
-    tuple = get_positions(MAP)
-    print(f"Player: ({tuple[1].x},{tuple[1].y})")
-    for goal in tuple[2]:
-        print(f"Goal: ({goal.x},{goal.y})")
-    for box in tuple[3]:
-        print(f"Box: ({box.x},{box.y})")
+        end_time = time.time()
+        print(f"Total time elapsed: {end_time - start_time} seconds")
 
 
 def main():
     data_tuple = get_positions(MAP_1)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
+    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
     algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
     # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
-    game = SokobanGame(board=data_tuple[0], algorithm=algorithm)
+    game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=True)
     game.setup()
-    arcade.run()
+    if game.render:
+        arcade.run()
+    else:
+        game.run_game()
 
 
 if __name__ == "__main__":
