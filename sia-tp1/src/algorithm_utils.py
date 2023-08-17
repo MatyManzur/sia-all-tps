@@ -81,7 +81,8 @@ class State:
     def try_move(self, board: Board, direction: str) -> State | None:
         new_state = self.__check_move(board, direction)
         # recalculamos la heurística porque hicimos una copia del estado
-        new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions, new_state.board)
+        new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions,
+                                                                 new_state.board)
         if new_state is None:
             return None
 
@@ -90,8 +91,8 @@ class State:
             if aux_state is None:  # estoy intentando mover una caja contra una pared
                 return None
 
-            new_box_position = aux_state.player_position    # This is fine
-            if new_box_position in self.box_positions:      # estoy empujando una caja contra otra caja
+            new_box_position = aux_state.player_position  # This is fine
+            if new_box_position in self.box_positions:  # estoy empujando una caja contra otra caja
                 return None
 
             new_state.box_positions.remove(new_state.player_position)
@@ -108,20 +109,24 @@ class State:
 
     # We could make this more efficient by calculating it only in case a box was moved
     def __is_blocked(self, new_box_position: Position):
-        blocked_vertical = (not (0 < new_box_position.y < len(self.board.map) - 1)) or (self.board.map[new_box_position.y+1][new_box_position.x] + self.board.map[new_box_position.y-1][new_box_position.x]) != 0
-        blocked_horizontal = (not (0 < new_box_position.x < len(self.board.map[0]) - 1)) or (self.board.map[new_box_position.y][new_box_position.x+1] + self.board.map[new_box_position.y][new_box_position.x+1]) != 0
+        blocked_vertical = (not (0 < new_box_position.y < len(self.board.map) - 1)) or (
+                    self.board.map[new_box_position.y + 1][new_box_position.x] + self.board.map[new_box_position.y - 1][
+                new_box_position.x]) != 0
+        blocked_horizontal = (not (0 < new_box_position.x < len(self.board.map[0]) - 1)) or (
+                    self.board.map[new_box_position.y][new_box_position.x + 1] + self.board.map[new_box_position.y][
+                new_box_position.x + 1]) != 0
         if not blocked_vertical:
             for box_pos in self.box_positions:
                 if box_pos == new_box_position:
                     pass
-                elif box_pos.y == new_box_position.y-1 or box_pos.y == new_box_position.y+1:
+                elif box_pos.y == new_box_position.y - 1 or box_pos.y == new_box_position.y + 1:
                     blocked_vertical = True
                     break
         if not blocked_horizontal:
             for box_pos in self.box_positions:
                 if box_pos == new_box_position:
                     pass
-                elif box_pos.x == new_box_position.x-1 or box_pos.x == new_box_position.x+1:
+                elif box_pos.x == new_box_position.x - 1 or box_pos.x == new_box_position.x + 1:
                     blocked_horizontal = True
                     break
         return blocked_vertical and blocked_horizontal
@@ -225,7 +230,8 @@ class BFSAlgorithm(Algorithm):
     # y init() si queremos que no use heuristica
 
     def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
-        super().__init__(board, player_position, box_positions, lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
+        super().__init__(board, player_position, box_positions,
+                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
 
     def __add_to_frontier(self, new_node: Node):
         self.frontier.insert(0, new_node)
@@ -234,6 +240,24 @@ class BFSAlgorithm(Algorithm):
 class DFSAlgorithm(Algorithm):
 
     def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
-        super().__init__(board, player_position, box_positions, lambda _,__,___: 0)  # Es desinformado => No usa heuristica
+        super().__init__(board, player_position, box_positions,
+                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
+
     def __add_to_frontier(self, new_node: Node):
         self.frontier.append(new_node)
+
+
+class AStarAlgorithm(Algorithm):
+
+    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
+                 heuristic: Callable[[Position, List[Position], Board], int]):
+        super().__init__(board, player_position, box_positions, heuristic)
+
+    @staticmethod
+    def __visited_value(node: Node) -> int:
+        return node.score
+
+    def __add_to_frontier(self, new_node: Node):
+        self.frontier.append(new_node)
+        self.frontier.sort(key=lambda x: x.score,
+                           reverse=True)  # reverse=True para que quede ordenado de mayor a menor
