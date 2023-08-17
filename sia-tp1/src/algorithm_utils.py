@@ -55,20 +55,20 @@ class Board:
                         self.blocked_positions_map[y][x] += BLOCKED_HOR
 
 
-def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, List[Position]]:
+def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, set[Position]]:
     # 0 camino, 1 pared, 2 caja, 3 goal, 4 player
     player = Position(0, 0)
-    goals = []
-    boxes = []
+    goals = set([])
+    boxes = set([])
     for i in range(len(map_)):
         for j in range(len(map_[i])):
             cell = map_[i][j]
             if cell == PLAYER:
                 player = Position(j, i)
             elif cell == BOX:
-                boxes.append(Position(j, i))
+                boxes.add(Position(j, i))
             elif cell == GOAL:
-                goals.append(Position(j, i))
+                goals.add(Position(j, i))
 
             if cell != 1:
                 map_[i][j] = 0
@@ -79,8 +79,8 @@ class State:
     # Player position: position
     # Box positions: [position1, position2, ...]
     # Heuristic: function(player_position, box_positions, board)
-    def __init__(self, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int], board: Board):
+    def __init__(self, player_position: Position, box_positions: set[Position],
+                 heuristic: Callable[[Position, set[Position], Board], int], board: Board):
         self.player_position = player_position
         self.box_positions = box_positions
         self.heuristic_function = heuristic
@@ -144,7 +144,7 @@ class State:
                 return None
 
             new_state.box_positions.remove(new_state.player_position)
-            new_state.box_positions.append(new_box_position)
+            new_state.box_positions.add(new_box_position)
 
         return new_state
 
@@ -169,17 +169,17 @@ class Node:
         self.score = cost + state.heuristic_value
         self.parent = parent
 
-    def get_children(self, board: Board) -> List[Node]:
-        new_nodes = []
+    def get_children(self, board: Board) -> set[Node]:
+        new_nodes = set([])
         directions = ['up', 'down', 'right', 'left']
         for direc in directions:
             state = self.state.try_move(board, direc)
             if state is not None:
                 new_node = Node(state, self.cost + 1, self)
-                new_nodes.append(new_node)
+                new_nodes.add(new_node)
         return new_nodes
 
-    def get_path_from_root(self) -> List[State]:
+    def get_path_from_root(self) -> set[State]:
         path = []
         node = self
         while node is not None:
@@ -207,9 +207,9 @@ class SolutionInfo:
 
 
 class Algorithm:
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int]):
-        self.frontier: List[Node] = []
+    def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
+                 heuristic: Callable[[Position, set[Position], Board], int]):
+        self.frontier: set[Node] = []
         self.visited = {}
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
