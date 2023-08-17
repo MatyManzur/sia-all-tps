@@ -2,6 +2,8 @@ import arcade
 import time
 from algorithm_utils import *
 from algorithms import *
+from maps import *
+from heuristics import *
 
 # Constants
 SPRITE_SIZE = 30
@@ -17,22 +19,8 @@ INVALID = 0
 OK = 1
 WIN = 2
 
-# Sokoban map (example)
-MAP = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 0, 1, 1, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-    [1, 1, 1, 0, 1, 1, 0, 0, 1, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0, 0, 0, 0, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
-
-MAP = MAP[::-1]
+# from maps.py
+MAP = MAP_EXAMPLE
 
 PLAYER_POSITION = Position(6, 6)
 
@@ -68,13 +56,6 @@ def try_move(grid, x, y, direction):
 
 
 class SokobanGame(arcade.Window):
-
-    # def __search_player__(self):
-    #     for y in range(len(self.grid)):
-    #         for x in range(len(self.grid[0])):
-    #             if self.grid[y][x] == PLAYER:
-    #                 self.player_x = x
-    #                 self.player_y = y
 
     def __init__(self, board: Board, algorithm: Algorithm, render: bool = True):
         super().__init__(len(board.map[0]) * SPRITE_SIZE, len(board.map) * SPRITE_SIZE, "Sokoban Game")
@@ -151,7 +132,7 @@ class SokobanGame(arcade.Window):
 
 def main():
     board = Board(MAP, [Position(2, 2)])
-    algorithm = BFSAlgorithm(board, PLAYER_POSITION, [Position(4, 3)])
+    algorithm = AStarAlgorithm(board, PLAYER_POSITION, [Position(4, 3)], trivial_heuristic)
     game = SokobanGame(board=board, algorithm=algorithm)
     game.setup()
     arcade.run()

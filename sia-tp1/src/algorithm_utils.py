@@ -159,11 +159,11 @@ class Node:
                 new_nodes.append(new_node)
         return new_nodes
 
-    def get_path_from_root(self) -> List[Node]:
+    def get_path_from_root(self) -> List[State]:
         path = []
         node = self
         while node is not None:
-            path.insert(0, node)
+            path.insert(0, node.state)
             node = node.parent
         return path
 
@@ -175,6 +175,14 @@ class Node:
             return self.state == __o.state
         else:
             return False
+
+
+class SolutionInfo:
+    def __init__(self, path_to_solution: List[State], final_cost: int, expanded_nodes_count: int, frontier_nodes_count: int):
+        self.path_to_solution = path_to_solution
+        self.final_cost = final_cost
+        self.expanded_nodes_count = expanded_nodes_count
+        self.frontier_nodes_count = frontier_nodes_count
 
 
 class Algorithm:
@@ -226,6 +234,9 @@ class Algorithm:
 
     def has_solution(self) -> bool:
         return not self.no_solution
+
+    def get_solution_info(self) -> SolutionInfo:
+        return SolutionInfo(1,1,1,1)
 
     # con esto determinamos si se comporta como una cola o lista para BFS y DFS
     # o como una lista ordenada por algún criterio como A*
