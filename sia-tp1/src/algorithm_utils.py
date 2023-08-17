@@ -27,7 +27,7 @@ class Position:
 class Board:
     # map of the board
     # goals denoted as [position1, position2, ...]
-    def __init__(self, sokoban_map, goals):
+    def __init__(self, sokoban_map: List[List[0 | 1]], goals: List[Position]):
         self.map = sokoban_map
         self.goals = goals
 
@@ -81,11 +81,12 @@ class State:
     def try_move(self, board: Board, direction: str) -> State | None:
         new_state = self.__check_move(board, direction)
         # recalculamos la heurística porque hicimos una copia del estado
-        new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions,
-                                                                 new_state.board)
+
         if new_state is None:
             return None
-
+        
+        new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions,
+                                                                 new_state.board)
         if new_state.player_position in self.box_positions:
             aux_state = new_state.__check_move(board, direction)
             if aux_state is None:  # estoy intentando mover una caja contra una pared
@@ -131,6 +132,8 @@ class State:
                     break
         return blocked_vertical and blocked_horizontal
 
+    def __str__(self):
+        return f"Player: {self.player_position}, Boxes: {self.box_positions}, Heuristic: {self.heuristic_value}"
 
 class Node:
     # State is the program state
@@ -163,11 +166,12 @@ class Node:
         return path
 
 
-class Algorithm(ABC):
+class Algorithm:
     def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
                  heuristic: Callable[[Position, List[Position], Board], int]):
         self.frontier: List[Node] = []
         self.visited = {}
+        print(heuristic)
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
         self.no_solution = None
@@ -175,6 +179,7 @@ class Algorithm(ABC):
 
     def __iter__(self):
         self.frontier = [Node(self.initial_state, 0, None)]
+        return self
 
     def __next__(self):
         if self.has_finished():
@@ -202,6 +207,7 @@ class Algorithm(ABC):
         for child in children:
             if not child.state.is_blocked:
                 self.__add_to_frontier(child)
+        return node
 
     def has_finished(self) -> bool:
         return self.solution is not None
@@ -212,7 +218,6 @@ class Algorithm(ABC):
     # con esto determinamos si se comporta como una cola o lista para BFS y DFS
     # o como una lista ordenada por algún criterio como A*
     # (el próximo nodo a usar tiene que quedar al final)
-    @abstractmethod
     def __add_to_frontier(self, new_node: Node):
         """abstract method"""
 
@@ -225,39 +230,3 @@ class Algorithm(ABC):
         return 1
 
 
-class BFSAlgorithm(Algorithm):
-    # no hay que pisar next(), solo add_to_frontier y visited_value (o dejar el default),
-    # y init() si queremos que no use heuristica
-
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
-        super().__init__(board, player_position, box_positions,
-                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
-
-    def __add_to_frontier(self, new_node: Node):
-        self.frontier.insert(0, new_node)
-
-
-class DFSAlgorithm(Algorithm):
-
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
-        super().__init__(board, player_position, box_positions,
-                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
-
-    def __add_to_frontier(self, new_node: Node):
-        self.frontier.append(new_node)
-
-
-class AStarAlgorithm(Algorithm):
-
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int]):
-        super().__init__(board, player_position, box_positions, heuristic)
-
-    @staticmethod
-    def __visited_value(node: Node) -> int:
-        return node.score
-
-    def __add_to_frontier(self, new_node: Node):
-        self.frontier.append(new_node)
-        self.frontier.sort(key=lambda x: x.score,
-                           reverse=True)  # reverse=True para que quede ordenado de mayor a menor
