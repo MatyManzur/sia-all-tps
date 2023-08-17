@@ -6,6 +6,10 @@ import copy
 INVALID = 0
 OK = 1
 
+BOX=2
+GOAL=3
+PLAYER=4
+
 BLOCKED_VERT = 2
 BLOCKED_HOR = 3
 BLOCKED_BOTH = 5
@@ -49,6 +53,25 @@ class Board:
                         self.blocked_positions_map[y][x] += BLOCKED_VERT
                     if blocked_horizontal:
                         self.blocked_positions_map[y][x] += BLOCKED_HOR
+
+def get_positions(map: List[List[int]]) -> Tuple[Board, Position, List[Position], List[Position]]:
+        # 0 camino, 1 pared, 2 caja, 3 goal, 4 player
+        player = Position(0,0)
+        goals = []
+        boxes = []
+        for i in range(len(map)):
+            for j in range(len(map[i])):
+                cell = map[i][j]
+                if cell == PLAYER:
+                    player = Position(j,i)
+                elif cell == BOX:
+                    boxes.append(Position(j, i))
+                elif cell == GOAL:
+                    goals.append(Position(j, i))
+                
+                if cell != 1:
+                    map[i][j] = 0
+        return (Board(map,goals),player,goals,boxes)
 
 
 class State:

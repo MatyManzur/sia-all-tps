@@ -130,10 +130,19 @@ class SokobanGame(arcade.Window):
             self.draw()
 
 
+def board_information():
+    tuple = get_positions(MAP)
+    print(f"Player: ({tuple[1].x},{tuple[1].y})")
+    for goal in tuple[2]:
+        print(f"Goal: ({goal.x},{goal.y})")
+    for box in tuple[3]:
+        print(f"Box: ({box.x},{box.y})")
+
+
 def main():
-    board = Board(MAP, [Position(2, 2)])
-    algorithm = AStarAlgorithm(board, PLAYER_POSITION, [Position(4, 3)], trivial_heuristic)
-    game = SokobanGame(board=board, algorithm=algorithm)
+    data_tuple = get_positions(MAP)
+    algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[3])
+    game = SokobanGame(board=data_tuple[0], algorithm=algorithm)
     game.setup()
     arcade.run()
 
