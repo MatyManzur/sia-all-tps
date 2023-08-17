@@ -117,8 +117,8 @@ def main():
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
-    algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
-    # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    # algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
     game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=True)
     game.setup()
     if game.render:

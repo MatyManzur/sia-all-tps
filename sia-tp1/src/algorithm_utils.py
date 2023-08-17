@@ -34,7 +34,7 @@ class Position:
 class Board:
     # map of the board
     # goals denoted as [position1, position2, ...]
-    def __init__(self, sokoban_map: List[List[0 | 1]], goals: List[Position]):
+    def __init__(self, sokoban_map: List[List[0 | 1]], goals: set[Position]):
         self.map = sokoban_map
         self.goals = goals
         self.blocked_positions_map = copy.deepcopy(sokoban_map)
