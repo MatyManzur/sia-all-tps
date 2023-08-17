@@ -1,14 +1,14 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Tuple
 from typing import Callable
 import copy
 
 INVALID = 0
 OK = 1
 
-BOX=2
-GOAL=3
-PLAYER=4
+BOX = 2
+GOAL = 3
+PLAYER = 4
 
 BLOCKED_VERT = 2
 BLOCKED_HOR = 3
@@ -41,7 +41,7 @@ class Board:
 
         for y in range(len(sokoban_map)):
             for x in range(len(sokoban_map[0])):
-                if sokoban_map[y][x] == 0:
+                if sokoban_map[y][x] == 0 and Position(x, y) not in goals:
                     position = Position(x, y)
                     blocked_vertical = (not (0 < position.y < len(self.map) - 1)) or (
                             self.map[position.y + 1][position.x] +
@@ -54,24 +54,25 @@ class Board:
                     if blocked_horizontal:
                         self.blocked_positions_map[y][x] += BLOCKED_HOR
 
-def get_positions(map: List[List[int]]) -> Tuple[Board, Position, List[Position], List[Position]]:
-        # 0 camino, 1 pared, 2 caja, 3 goal, 4 player
-        player = Position(0,0)
-        goals = []
-        boxes = []
-        for i in range(len(map)):
-            for j in range(len(map[i])):
-                cell = map[i][j]
-                if cell == PLAYER:
-                    player = Position(j,i)
-                elif cell == BOX:
-                    boxes.append(Position(j, i))
-                elif cell == GOAL:
-                    goals.append(Position(j, i))
-                
-                if cell != 1:
-                    map[i][j] = 0
-        return (Board(map,goals),player,goals,boxes)
+
+def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, List[Position]]:
+    # 0 camino, 1 pared, 2 caja, 3 goal, 4 player
+    player = Position(0, 0)
+    goals = []
+    boxes = []
+    for i in range(len(map_)):
+        for j in range(len(map_[i])):
+            cell = map_[i][j]
+            if cell == PLAYER:
+                player = Position(j, i)
+            elif cell == BOX:
+                boxes.append(Position(j, i))
+            elif cell == GOAL:
+                goals.append(Position(j, i))
+
+            if cell != 1:
+                map_[i][j] = 0
+    return Board(map_, goals), player, boxes
 
 
 class State:
@@ -113,11 +114,9 @@ class State:
 
         if (not (0 <= new_state.player_position.y < len(board.map)) or
                 not (0 <= new_state.player_position.x < len(board.map[0]))):
-            print('Intentando mover contra el borde')
             return None
 
         if board.map[new_state.player_position.y][new_state.player_position.x] == 1:  # si es una pared
-            print('Intentando mover contra la pared')
             return None
 
         return new_state
@@ -128,7 +127,7 @@ class State:
 
         if new_state is None:
             return None
-        
+
         new_state.heuristic_value = new_state.heuristic_function(new_state.player_position, new_state.box_positions,
                                                                  new_state.board)
         if new_state.player_position in self.box_positions:
@@ -138,12 +137,10 @@ class State:
 
             new_box_position = aux_state.player_position  # This is fine
             if new_box_position in self.box_positions:  # estoy empujando una caja contra otra caja
-                print('Estoy intentando mover una caja contra otra caja')
                 return None
 
             # Si la caja quedó en un estado bloqueado
             if self.board.blocked_positions_map[new_box_position.y][new_box_position.x] == BLOCKED_BOTH:
-                print('La caja está en un estado bloquedo')
                 return None
 
             new_state.box_positions.remove(new_state.player_position)
@@ -157,9 +154,9 @@ class State:
                 return False
         return True
 
-
     def __str__(self):
         return f"Player: {self.player_position}, Boxes: {self.box_positions}, Heuristic: {self.heuristic_value}"
+
 
 class Node:
     # State is the program state
@@ -201,7 +198,8 @@ class Node:
 
 
 class SolutionInfo:
-    def __init__(self, path_to_solution: List[State], final_cost: int, expanded_nodes_count: int, frontier_nodes_count: int):
+    def __init__(self, path_to_solution: List[State], final_cost: int, expanded_nodes_count: int,
+                 frontier_nodes_count: int):
         self.path_to_solution = path_to_solution
         self.final_cost = final_cost
         self.expanded_nodes_count = expanded_nodes_count
@@ -216,7 +214,7 @@ class Algorithm:
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
         self.no_solution = None
-        self.solution = None
+        self.solution: Node | None = None
 
     def __iter__(self):
         self.frontier = [Node(self.initial_state, 0, None)]
@@ -238,7 +236,7 @@ class Algorithm:
             return None
 
         if node.state.is_goal_state():
-            print("GANASTEEEE WIIIIIII!")
+            print("GANASTEEEE 🎉🎉🎇✨🎊🎊 !")
             self.no_solution = False
             self.solution = node
             return self.solution
@@ -259,7 +257,10 @@ class Algorithm:
         return not self.no_solution
 
     def get_solution_info(self) -> SolutionInfo:
-        return SolutionInfo(1,1,1,1)
+        if not self.has_solution():
+            raise 'A solution must be found to return info!'
+        return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
+                            len(self.frontier))
 
     # con esto determinamos si se comporta como una cola o lista para BFS y DFS
     # o como una lista ordenada por algún criterio como A*
@@ -274,5 +275,3 @@ class Algorithm:
     @staticmethod
     def _visited_value(node: Node) -> int:
         return 1
-
-

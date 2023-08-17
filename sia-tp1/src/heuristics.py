@@ -10,6 +10,17 @@ def trivial_heuristic(player_position: Position, box_positions: List[Position], 
             return 1
     return 0
 
+def manhattan_heuristic(player_position: Position, box_positions: List[Position], board: Board) -> int:
+    min_distance = float('inf')
+    for goals in board.goals:
+        for box_pos in box_positions:
+            if box_pos not in board.goals:
+                distance = abs(goals.x - box_pos.x) + abs(goals.y - box_pos.y) + abs(
+                    box_pos.x - player_position.x) + abs(box_pos.y - player_position.y)
+                if distance < min_distance:
+                    min_distance = distance
+    return min_distance
+
 
 def manhattan_heuristic(player_position: Position, box_positions: List[Position], board: Board) -> int:
     min_distance = {}

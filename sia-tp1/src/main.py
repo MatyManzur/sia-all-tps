@@ -80,8 +80,19 @@ class SokobanGame(arcade.Window):
             self.finished = True
             return
         self.state = next_node.state
-        print(f"Player: ({self.state.player_position.x},{self.state.player_position.y})")
         if self.algorithm.has_finished():
+            info = self.algorithm.get_solution_info()
+            print("----PATH TO SOLUTION----")
+            for i, state in enumerate(info.path_to_solution):
+                print(f"Stage {i}")
+                print(f"Player: ({state.player_position.x}, {state.player_position.y})")
+                for j, box in enumerate(state.box_positions):
+                    print(f"Box {j}: ({box.x}, {box.y})")
+                print("------------------------")
+            print(f"Cost: {info.final_cost}, "
+                  f"Frontier Nodes: {info.frontier_nodes_count}, "
+                  f"Expanded Nodes: {info.expanded_nodes_count}")
+            print("------------------------")
             self.finished = True
 
     def start_game(self):
@@ -123,7 +134,7 @@ class SokobanGame(arcade.Window):
         if key == arcade.key.SPACE and not self.initialized:
             self.start_game()
             while not self.finished:
-                time.sleep(20/1000)
+                # time.sleep(20/1000)
                 self.next_state()
                 self.draw()
             arcade.set_background_color(arcade.color.PINK_PEARL)
@@ -140,8 +151,11 @@ def board_information():
 
 
 def main():
-    data_tuple = get_positions(MAP)
-    algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[3])
+    data_tuple = get_positions(MAP_1)
+    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
+    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
+    algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
     game = SokobanGame(board=data_tuple[0], algorithm=algorithm)
     game.setup()
     arcade.run()
