@@ -1,11 +1,14 @@
 from __future__ import annotations
 from typing import List
-from abc import ABC, abstractmethod
 from typing import Callable
 import copy
 
 INVALID = 0
 OK = 1
+
+BLOCKED_VERT = 2
+BLOCKED_HOR = 3
+BLOCKED_BOTH = 5
 
 
 class Position:
@@ -30,6 +33,22 @@ class Board:
     def __init__(self, sokoban_map: List[List[0 | 1]], goals: List[Position]):
         self.map = sokoban_map
         self.goals = goals
+        self.blocked_positions_map = copy.deepcopy(sokoban_map)
+
+        for y in range(len(sokoban_map)):
+            for x in range(len(sokoban_map[0])):
+                if sokoban_map[y][x] == 0:
+                    position = Position(x, y)
+                    blocked_vertical = (not (0 < position.y < len(self.map) - 1)) or (
+                            self.map[position.y + 1][position.x] +
+                            self.map[position.y - 1][position.x] != 0)
+                    blocked_horizontal = (not (0 < position.x < len(self.map[0]) - 1)) or (
+                            self.map[position.y][position.x - 1] +
+                            self.map[position.y][position.x + 1] != 0)
+                    if blocked_vertical:
+                        self.blocked_positions_map[y][x] += BLOCKED_VERT
+                    if blocked_horizontal:
+                        self.blocked_positions_map[y][x] += BLOCKED_HOR
 
 
 class State:
@@ -59,7 +78,7 @@ class State:
             return False
 
     def __check_move(self, board: Board, direction: str) -> State | None:
-        new_state = copy.copy(self)
+        new_state = copy.deepcopy(self)
         if direction == 'up':
             new_state.player_position.y += 1
         elif direction == 'down':
@@ -71,9 +90,11 @@ class State:
 
         if (not (0 <= new_state.player_position.y < len(board.map)) or
                 not (0 <= new_state.player_position.x < len(board.map[0]))):
+            print('Intentando mover contra el borde')
             return None
 
         if board.map[new_state.player_position.y][new_state.player_position.x] == 1:  # si es una pared
+            print('Intentando mover contra la pared')
             return None
 
         return new_state
@@ -94,11 +115,16 @@ class State:
 
             new_box_position = aux_state.player_position  # This is fine
             if new_box_position in self.box_positions:  # estoy empujando una caja contra otra caja
+                print('Estoy intentando mover una caja contra otra caja')
+                return None
+
+            # Si la caja quedó en un estado bloqueado
+            if self.board.blocked_positions_map[new_box_position.y][new_box_position.x] == BLOCKED_BOTH:
+                print('La caja está en un estado bloquedo')
                 return None
 
             new_state.box_positions.remove(new_state.player_position)
             new_state.box_positions.append(new_box_position)
-            new_state.__is_blocked(new_box_position)
 
         return new_state
 
@@ -108,29 +134,6 @@ class State:
                 return False
         return True
 
-    # We could make this more efficient by calculating it only in case a box was moved
-    def __is_blocked(self, new_box_position: Position):
-        blocked_vertical = (not (0 < new_box_position.y < len(self.board.map) - 1)) or (
-                    self.board.map[new_box_position.y + 1][new_box_position.x] + self.board.map[new_box_position.y - 1][
-                new_box_position.x]) != 0
-        blocked_horizontal = (not (0 < new_box_position.x < len(self.board.map[0]) - 1)) or (
-                    self.board.map[new_box_position.y][new_box_position.x + 1] + self.board.map[new_box_position.y][
-                new_box_position.x + 1]) != 0
-        if not blocked_vertical:
-            for box_pos in self.box_positions:
-                if box_pos == new_box_position:
-                    pass
-                elif box_pos.y == new_box_position.y - 1 or box_pos.y == new_box_position.y + 1:
-                    blocked_vertical = True
-                    break
-        if not blocked_horizontal:
-            for box_pos in self.box_positions:
-                if box_pos == new_box_position:
-                    pass
-                elif box_pos.x == new_box_position.x - 1 or box_pos.x == new_box_position.x + 1:
-                    blocked_horizontal = True
-                    break
-        return blocked_vertical and blocked_horizontal
 
     def __str__(self):
         return f"Player: {self.player_position}, Boxes: {self.box_positions}, Heuristic: {self.heuristic_value}"
@@ -149,7 +152,6 @@ class Node:
     def get_children(self, board: Board) -> List[Node]:
         new_nodes = []
         directions = ['up', 'down', 'right', 'left']
-        current_pos = self.state.player_position
         for direc in directions:
             state = self.state.try_move(board, direc)
             if state is not None:
@@ -165,13 +167,21 @@ class Node:
             node = node.parent
         return path
 
+    def __hash__(self) -> int:
+        return hash(self.state)
+
+    def __eq__(self, __o: object) -> bool:
+        if isinstance(__o, Node):
+            return self.state == __o.state
+        else:
+            return False
+
 
 class Algorithm:
     def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
                  heuristic: Callable[[Position, List[Position], Board], int]):
         self.frontier: List[Node] = []
         self.visited = {}
-        print(heuristic)
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
         self.no_solution = None
@@ -189,7 +199,7 @@ class Algorithm:
         while self.frontier:
             node = self.frontier.pop()  # va a sacar el último
             saved_score = self.visited.get(node, float('inf'))  # sería como visited.getOrDefault(node,Math.Inf) de Java
-            if not self.__visited_value(node) >= saved_score:
+            if not self._visited_value(node) >= saved_score:
                 break
 
         if node is None:
@@ -197,16 +207,18 @@ class Algorithm:
             return None
 
         if node.state.is_goal_state():
+            print("GANASTEEEE WIIIIIII!")
             self.no_solution = False
+            self.solution = node
             return self.solution
 
         # si no es un goal, lo agregamos a visited
-        self.visited[node] = self.__visited_value(node)
+        self.visited[node] = self._visited_value(node)
         # y lo expandimos
         children = node.get_children(self.board)
         for child in children:
             if not child.state.is_blocked:
-                self.__add_to_frontier(child)
+                self._add_to_frontier(child)
         return node
 
     def has_finished(self) -> bool:
@@ -218,7 +230,7 @@ class Algorithm:
     # con esto determinamos si se comporta como una cola o lista para BFS y DFS
     # o como una lista ordenada por algún criterio como A*
     # (el próximo nodo a usar tiene que quedar al final)
-    def __add_to_frontier(self, new_node: Node):
+    def _add_to_frontier(self, new_node: Node):
         """abstract method"""
 
     # para el caso de A*, visited_value() sería una función que
@@ -226,7 +238,7 @@ class Algorithm:
     # no sé si está bien lo de @staticmethod, pero sería un static en java,
     # pero que a veces lo puedas overridear en algún hijo
     @staticmethod
-    def __visited_value(node: Node) -> int:
+    def _visited_value(node: Node) -> int:
         return 1
 
 

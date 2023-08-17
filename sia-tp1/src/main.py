@@ -1,4 +1,5 @@
 import arcade
+import time
 from algorithm_utils import *
 from algorithms import *
 
@@ -25,13 +26,16 @@ MAP = [
     [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
     [1, 1, 1, 0, 1, 1, 0, 0, 1, 1],
     [1, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-    [1, 0, 1, 1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 1, 0, 1, 1, 0, 1, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
     [1, 1, 0, 0, 0, 0, 0, 0, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
 
-PLAYER_POSITION = Position(7, 4)
+MAP = MAP[::-1]
+
+PLAYER_POSITION = Position(6, 6)
+
 
 def try_move(grid, x, y, direction):
     new_x = x
@@ -79,27 +83,12 @@ class SokobanGame(arcade.Window):
         self.initialized = False
         self.algorithm = algorithm
         self.finished = False
-        
 
     def setup(self):
         if not self.render:
             return
         arcade.set_background_color(arcade.color.BLACK)
         arcade.start_render()
-        # draw the grid
-        for y, row in enumerate(self.board.map):
-            for x, cell in enumerate(row):
-                if cell == WALL:
-                    arcade.draw_rectangle_filled(x * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                                 (len(self.board.map) - y - 1) * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                                 SPRITE_SIZE, SPRITE_SIZE,
-                                                 arcade.color.BROWN)
-
-        for goal in self.board.goals:
-            arcade.draw_rectangle_filled(goal.x * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                      (len(self.board.map) - goal.y - 1) * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                      SPRITE_SIZE, SPRITE_SIZE,
-                                      arcade.color.GREEN)
 
     def next_state(self):
         if self.algorithm_instance is None:
@@ -110,53 +99,59 @@ class SokobanGame(arcade.Window):
             self.finished = True
             return
         self.state = next_node.state
+        print(f"Player: ({self.state.player_position.x},{self.state.player_position.y})")
+        if self.algorithm.has_finished():
+            self.finished = True
 
     def start_game(self):
         self.initialized = True
         self.algorithm_instance = iter(self.algorithm)
         self.next_state()
 
-
-    def on_draw(self):
-        if not self.render or not self.initialized or self.finished:
+    def draw(self):
+        # draw the grid
+        arcade.start_render()
+        for y, row in enumerate(self.board.map):
+            for x, cell in enumerate(row):
+                if cell == WALL:
+                    arcade.draw_rectangle_filled(x * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                                 y * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                                 SPRITE_SIZE, SPRITE_SIZE,
+                                                 arcade.color.BROWN)
+        for goal in self.board.goals:
+            arcade.draw_rectangle_filled(goal.x * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                         goal.y * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                         SPRITE_SIZE, SPRITE_SIZE,
+                                         arcade.color.GREEN)
+        if not self.render or not self.initialized:
             return
         arcade.draw_circle_filled(self.state.player_position.x * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                              self.state.player_position.y * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                              SPRITE_SIZE / 2,
-                                              arcade.color.YELLOW)
-        
+                                  self.state.player_position.y * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                  SPRITE_SIZE / 2,
+                                  arcade.color.YELLOW)
+
         for box in self.state.box_positions:
             arcade.draw_rectangle_filled(box.x * SPRITE_SIZE + SPRITE_SIZE / 2,
-                                                 (len(self.board.map) - box.y - 1)* SPRITE_SIZE + SPRITE_SIZE / 2,
-                                                 SPRITE_SIZE, SPRITE_SIZE,
-                                                 color = arcade.color.BLUE)
+                                         box.y * SPRITE_SIZE + SPRITE_SIZE / 2,
+                                         SPRITE_SIZE, SPRITE_SIZE,
+                                         color=arcade.color.BLUE)
 
-        
+        arcade.finish_render()
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.ENTER:
-            self.next_state()
-        elif key == arcade.key.SPACE and not self.initialized:
+        if key == arcade.key.SPACE and not self.initialized:
             self.start_game()
-        # if key == arcade.key.UP:
-        #     direction = 'up'
-        # elif key == arcade.key.DOWN:
-        #     direction = 'down'
-        # elif key == arcade.key.LEFT:
-        #     direction = 'left'
-        # else:
-        #     direction = 'right'
-        # (result, self.grid) = try_move(self.grid, self.player_x, self.player_y, direction)
-        # if result != INVALID:
-        #     self.__search_player__()
-        # if result == WIN:
-        #     print("WIN!")
-        #     arcade.set_background_color(arcade.color.GREEN)
+            while not self.finished:
+                time.sleep(20/1000)
+                self.next_state()
+                self.draw()
+            arcade.set_background_color(arcade.color.PINK_PEARL)
+            self.draw()
 
 
 def main():
-    board = Board(MAP, [Position(2, 1)])
-    algorithm = BFSAlgorithm(board, PLAYER_POSITION, [Position(2, 2)])
+    board = Board(MAP, [Position(2, 2)])
+    algorithm = BFSAlgorithm(board, PLAYER_POSITION, [Position(4, 3)])
     game = SokobanGame(board=board, algorithm=algorithm)
     game.setup()
     arcade.run()
@@ -164,4 +159,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
