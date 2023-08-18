@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-from typing import List
+from typing import List,Set
 from typing import Callable
 from algorithm_utils import Position, Board
 
@@ -17,7 +17,7 @@ def manhattan_distance(pos_1: Position, pos_2: Position):
     return abs(pos_1.x - pos_2.x) + abs(pos_1.y - pos_2.y)
 
 
-def manhattan_heuristic(player_position: Position, box_positions: List[Position], board: Board) -> int:
+def manhattan_heuristic(player_position: Position, box_positions: Set[Position], board: Board) -> int:
     min_distance = {}
     for goal in board.goals:
         for box_pos in box_positions:

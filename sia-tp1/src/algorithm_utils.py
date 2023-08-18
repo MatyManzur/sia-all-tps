@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple
+from typing import List, Tuple, Set
 from typing import Callable
 import copy
 import numpy as np
@@ -198,9 +198,12 @@ class Node:
         else:
             return False
 
+    def __lt__(self, other: Node) -> bool:
+        return self.score < other.score
+
 
 class SolutionInfo:
-    def __init__(self, path_to_solution: List[State], final_cost: int, expanded_nodes_count: int,
+    def __init__(self, path_to_solution: Set[State], final_cost: int, expanded_nodes_count: int,
                  frontier_nodes_count: int):
         self.path_to_solution = path_to_solution
         self.final_cost = final_cost
@@ -219,7 +222,7 @@ class Algorithm:
         self.solution: Node | None = None
 
     def __iter__(self):
-        self.frontier = [Node(self.initial_state, 0, None)]
+        self.frontier.append(Node(self.initial_state, 0, None))
         return self
 
     def __next__(self):
@@ -228,7 +231,7 @@ class Algorithm:
 
         node = None
         while self.frontier:
-            node = self.frontier.pop()  # va a sacar el último
+            node = self._get_item_from_frontier()  # va a sacar el último
             saved_score = self.visited.get(node, float('inf'))  # sería como visited.getOrDefault(node,Math.Inf) de Java
             if not self._visited_value(node) >= saved_score:
                 break
@@ -277,3 +280,6 @@ class Algorithm:
     @staticmethod
     def _visited_value(node: Node) -> int:
         return 1
+
+    def _get_item_from_frontier(self) -> Node:
+        return self.frontier.pop()

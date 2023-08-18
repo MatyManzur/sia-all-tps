@@ -117,10 +117,10 @@ def main():
     data_tuple = get_positions(MAP_1)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
-    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
+    algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
     # algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
-    algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
-    game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=True)
+    # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=False)
     game.setup()
     if game.render:
         arcade.run()
