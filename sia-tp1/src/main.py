@@ -22,6 +22,7 @@ class SokobanGame(
 
     def __init__(self, board: Board, algorithm: Algorithm, render: bool = True):
         super().__init__(len(board.map[0]) * SPRITE_SIZE, len(board.map) * SPRITE_SIZE, "Sokoban Game")
+        self.state = None
         self.board = board
         self.render = render
         self.initialized = False

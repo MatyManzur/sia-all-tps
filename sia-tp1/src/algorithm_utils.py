@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List, Tuple
 from typing import Callable
 import copy
+import numpy as np
 
 INVALID = 0
 OK = 1
@@ -35,9 +36,9 @@ class Board:
     # map of the board
     # goals denoted as [position1, position2, ...]
     def __init__(self, sokoban_map: List[List[0 | 1]], goals: set[Position]):
-        self.map = sokoban_map
+        self.map = np.array(sokoban_map)
         self.goals = goals
-        self.blocked_positions_map = copy.deepcopy(sokoban_map)
+        self.blocked_positions_map = np.zeros((len(sokoban_map), len(sokoban_map[0])), dtype=int)
 
         for y in range(len(sokoban_map)):
             for x in range(len(sokoban_map[0])):
@@ -102,24 +103,25 @@ class State:
             return False
 
     def __check_move(self, board: Board, direction: str) -> State | None:
-        new_state = copy.deepcopy(self)
+        new_x = self.player_position.x
+        new_y = self.player_position.y
         if direction == 'up':
-            new_state.player_position.y += 1
+            new_y += 1
         elif direction == 'down':
-            new_state.player_position.y -= 1
+            new_y -= 1
         elif direction == 'left':
-            new_state.player_position.x -= 1
+            new_x -= 1
         elif direction == 'right':
-            new_state.player_position.x += 1
+            new_x += 1
 
-        if (not (0 <= new_state.player_position.y < len(board.map)) or
-                not (0 <= new_state.player_position.x < len(board.map[0]))):
+        if (not (0 <= new_y < len(board.map)) or
+                not (0 <= new_x < len(board.map[0]))):
             return None
 
-        if board.map[new_state.player_position.y][new_state.player_position.x] == 1:  # si es una pared
+        if board.map[new_y][new_x] == 1:  # si es una pared
             return None
 
-        return new_state
+        return State(Position(new_x, new_y), copy.deepcopy(self.box_positions), self.heuristic_function, board)
 
     def try_move(self, board: Board, direction: str) -> State | None:
         new_state = self.__check_move(board, direction)
