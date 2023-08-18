@@ -120,8 +120,10 @@ class State:
 
         if board.map[new_y][new_x] == 1:  # si es una pared
             return None
-
-        return State(Position(new_x, new_y), copy.deepcopy(self.box_positions), self.heuristic_function, board)
+        new_box_positions = set()
+        for box_pos in self.box_positions:
+            new_box_positions.add(Position(box_pos.x, box_pos.y))
+        return State(Position(new_x, new_y), new_box_positions, self.heuristic_function, board)
 
     def try_move(self, board: Board, direction: str) -> State | None:
         new_state = self.__check_move(board, direction)
