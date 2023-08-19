@@ -185,7 +185,7 @@ class Node:
                 new_nodes.add(new_node)
         return new_nodes
 
-    def get_path_from_root(self) -> set[State]:
+    def get_path_from_root(self) -> List[State]:
         path = []
         node = self
         while node is not None:
@@ -210,7 +210,7 @@ class Node:
 
 
 class SolutionInfo:
-    def __init__(self, path_to_solution: Set[State], final_cost: int, expanded_nodes_count: int,
+    def __init__(self, path_to_solution: List[State], final_cost: int, expanded_nodes_count: int,
                  frontier_nodes_count: int):
         self.path_to_solution = path_to_solution
         self.final_cost = final_cost
@@ -228,7 +228,7 @@ class Algorithm:
     def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
                  heuristic: Callable[[Position, set[Position], Board], int], sort_children: bool = False,
                  sort_children_key: Callable[[Node], int] = None):
-        self.frontier: set[Node] = []
+        self.frontier = []
         self.visited = {}
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
