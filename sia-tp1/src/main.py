@@ -114,14 +114,19 @@ class SokobanGame(
 
 
 def main():
-    data_tuple = get_positions(SOKO_03)
+    data_tuple = get_positions(MAP_1)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
     # algorithm = GlobalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
-    algorithm = LocalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
+    # algorithm = LocalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
     # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    # """
+    pre_calc = PreCalcHeuristic()
+    algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2],
+                               lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
+    # """
     game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=False)
     game.setup()
     if game.render:

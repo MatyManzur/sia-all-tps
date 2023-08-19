@@ -6,7 +6,7 @@ from collections import deque
 class BFSAlgorithm(Algorithm):
     # no hay que pisar next(), solo add_to_frontier y visited_value (o dejar el default),
     # y init() si queremos que no use heuristica
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
+    def __init__(self, board: Board, player_position: Position, box_positions: Set[Position]):
         super().__init__(board, player_position, box_positions,
                          lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
         self.frontier = deque()
@@ -17,7 +17,7 @@ class BFSAlgorithm(Algorithm):
 
 class DFSAlgorithm(Algorithm):
 
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position]):
+    def __init__(self, board: Board, player_position: Position, box_positions: Set[Position]):
         super().__init__(board, player_position, box_positions,
                          lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
         self.frontier = deque()
@@ -28,8 +28,8 @@ class DFSAlgorithm(Algorithm):
 
 class AStarAlgorithm(Algorithm):
 
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int]):
+    def __init__(self, board: Board, player_position: Position, box_positions: Set[Position],
+                 heuristic: Callable[[Position, Set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic)
         self.frontier = queue.PriorityQueue()
 
