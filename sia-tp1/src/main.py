@@ -47,6 +47,7 @@ class SokobanGame(
         if self.algorithm.has_finished():
             info = self.algorithm.get_solution_info()
             print("----PATH TO SOLUTION----")
+            print(info.path_to_solution)
             for i, state in enumerate(info.path_to_solution):
                 print(f"Stage {i}")
                 print(f"Player: ({state.player_position.x}, {state.player_position.y})")
@@ -114,20 +115,21 @@ class SokobanGame(
 
 
 def main():
-    data_tuple = get_positions(MAP_1)
+    (board, player, boxes) = get_positions(MAP_EXAMPLE)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
     # algorithm = GlobalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = LocalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
     # algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
-    # algorithm = DFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    # algorithm = DFSAlgorithm(board, player, boxes)
+    algorithm = IDDFSAlgorithm(board, player, boxes, 1)
     # """
-    pre_calc = PreCalcHeuristic()
-    algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2],
-                               lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
+    # pre_calc = PreCalcHeuristic()
+    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2],
+                            #    lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
     # """
-    game = SokobanGame(board=data_tuple[0], algorithm=algorithm, render=False)
+    game = SokobanGame(board=board, algorithm=algorithm, render=True)
     game.setup()
     if game.render:
         arcade.run()

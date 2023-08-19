@@ -2,6 +2,8 @@ import queue
 from algorithm_utils import *
 from collections import deque
 
+from algorithm_utils import Node
+
 
 class BFSAlgorithm(Algorithm):
     # no hay que pisar next(), solo add_to_frontier y visited_value (o dejar el default),
@@ -24,6 +26,29 @@ class DFSAlgorithm(Algorithm):
 
     def _add_to_frontier(self, new_node: Node):
         self.frontier.append(new_node)
+
+
+class IDDFSAlgorithm(Algorithm):
+    def __init__(self, board: Board, player_position: Position, box_positions: List[Position], depth_increment: int = 1):
+        super().__init__(board, player_position, box_positions,
+                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
+        self.frontier = deque()
+        self.depth_increment = depth_increment
+    
+    def __iter__(self):
+        super().__iter__()
+        self.max_depth = 1
+        self.start_node = self.frontier[0]
+        return self
+
+
+    def _add_to_frontier(self, new_node: Node):
+        if (new_node.depth <= self.max_depth):
+            self.frontier.append(new_node)
+        else:
+            if len(self.frontier) == 0:
+                self.frontier.append(self.start_node)
+                self.max_depth += self.depth_increment
 
 
 class AStarAlgorithm(Algorithm):

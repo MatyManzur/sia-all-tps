@@ -167,11 +167,13 @@ class Node:
     # Cost is the cost of the path plus the current cost
     # Score is the cost plus the heuristic
     # Parent is the parent node in the tree
-    def __init__(self, state: State, cost: int, parent: Node | None):
+    # Depth is the depth of the node in the tree
+    def __init__(self, state: State, cost: int, parent: Node | None, depth: int = 1):
         self.state = state
         self.cost = cost
         self.score = cost + state.heuristic_value
         self.parent = parent
+        self.depth = depth
 
     def get_children(self, board: Board) -> set[Node]:
         new_nodes = set([])
@@ -179,7 +181,7 @@ class Node:
         for direc in directions:
             state = self.state.try_move(board, direc)
             if state is not None:
-                new_node = Node(state, self.cost + 1, self)
+                new_node = Node(state, self.cost + 1, self, self.depth + 1)
                 new_nodes.add(new_node)
         return new_nodes
 
@@ -202,6 +204,9 @@ class Node:
 
     def __lt__(self, other: Node) -> bool:
         return self.score < other.score
+    
+    def __str__(self):
+        return f"State: {self.state}, Cost: {self.cost}, Score: {self.score}, Depth: {self.depth}"
 
 
 class SolutionInfo:
@@ -211,6 +216,12 @@ class SolutionInfo:
         self.final_cost = final_cost
         self.expanded_nodes_count = expanded_nodes_count
         self.frontier_nodes_count = frontier_nodes_count
+
+class DeepeningSolutionInfo(SolutionInfo):
+    def __init__(self, path_to_solution: Set[State], final_cost: int, expanded_nodes_count: int,
+                 frontier_nodes_count: int, max_depth: int):
+        super().__init__(path_to_solution, final_cost, expanded_nodes_count, frontier_nodes_count)
+        self.max_depth = max_depth
 
 
 class Algorithm:
