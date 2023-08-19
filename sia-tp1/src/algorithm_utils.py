@@ -215,13 +215,16 @@ class SolutionInfo:
 
 class Algorithm:
     def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
-                 heuristic: Callable[[Position, set[Position], Board], int]):
+                 heuristic: Callable[[Position, set[Position], Board], int], sort_children: bool = False,
+                 sort_children_key: Callable[[Node], int] = None):
         self.frontier: set[Node] = []
         self.visited = {}
         self.initial_state = State(player_position, box_positions, heuristic, board)
         self.board = board
         self.no_solution = None
         self.solution: Node | None = None
+        self.sort_frontier = sort_children
+        self.sort_children_key = sort_children_key
 
     def __iter__(self):
         self.frontier.append(Node(self.initial_state, 0, None))
@@ -252,6 +255,8 @@ class Algorithm:
         self.visited[node] = self._visited_value(node)
         # y lo expandimos
         children = node.get_children(self.board)
+        if self.sort_frontier:
+            children = sorted(children, key=self.sort_children_key, reverse=True)
         for child in children:
             if not child.state.is_blocked:
                 self._add_to_frontier(child)
