@@ -246,11 +246,15 @@ class Algorithm:
             return self.solution
 
         node = None
-        while self.frontier:
+        once = True
+
+        while self.frontier or once:
             node = self._get_item_from_frontier()  # va a sacar el último
             saved_score = self.visited.get(node, float('inf'))  # sería como visited.getOrDefault(node,Math.Inf) de Java
+            once = False
             if not self._visited_value(node) >= saved_score:
                 break
+            
 
         if node is None:
             self.no_solution = True

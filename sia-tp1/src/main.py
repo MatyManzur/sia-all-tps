@@ -116,17 +116,17 @@ class SokobanGame(
 
 def main():
     (board, player, boxes) = get_positions(MAP_EXAMPLE)
-    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], trivial_heuristic)
-    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
-    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], better_manhattan_heuristic)
-    # algorithm = GlobalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
-    # algorithm = LocalGreedyAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2], manhattan_heuristic)
-    # algorithm = BFSAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2])
+    # algorithm = AStarAlgorithm(board, player, boxes, trivial_heuristic)
+    # algorithm = AStarAlgorithm(board, player, boxes, manhattan_heuristic)
+    # algorithm = AStarAlgorithm(board, player, boxes, better_manhattan_heuristic)
+    # algorithm = GlobalGreedyAlgorithm(board, player, boxes, manhattan_heuristic)
+    # algorithm = LocalGreedyAlgorithm(board, player, boxes, manhattan_heuristic)
+    # algorithm = BFSAlgorithm(board, player, boxes)
     # algorithm = DFSAlgorithm(board, player, boxes)
-    algorithm = IDDFSAlgorithm(board, player, boxes, 1)
+    algorithm = IDDFSAlgorithm(board, player, boxes, 10)
     # """
     # pre_calc = PreCalcHeuristic()
-    # algorithm = AStarAlgorithm(data_tuple[0], data_tuple[1], data_tuple[2],
+    # algorithm = AStarAlgorithm(board, player, boxes,
                             #    lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
     # """
     game = SokobanGame(board=board, algorithm=algorithm, render=True)

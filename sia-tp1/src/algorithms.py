@@ -32,23 +32,34 @@ class IDDFSAlgorithm(Algorithm):
     def __init__(self, board: Board, player_position: Position, box_positions: List[Position], depth_increment: int = 1):
         super().__init__(board, player_position, box_positions,
                          lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
-        self.frontier = deque()
         self.depth_increment = depth_increment
+        self.frontier = deque()
     
     def __iter__(self):
+        self.max_depth = 2
+        self.last_frontier = deque()
+        self.save_last_frontier = False
         super().__iter__()
-        self.max_depth = 1
-        self.start_node = self.frontier[0]
         return self
 
 
     def _add_to_frontier(self, new_node: Node):
-        if (new_node.depth <= self.max_depth):
+        if (new_node.depth <= self.max_depth) and not self.save_last_frontier:
             self.frontier.append(new_node)
         else:
-            if len(self.frontier) == 0:
-                self.frontier.append(self.start_node)
-                self.max_depth += self.depth_increment
+            self.save_last_frontier = True
+            self.last_frontier.append(new_node)
+
+    def _get_item_from_frontier(self) -> Node:
+        if len(self.frontier) == 0:
+            self.max_depth += self.depth_increment
+            self.save_last_frontier = False
+            # switch
+            temp = self.frontier
+            self.frontier = self.last_frontier
+            self.last_frontier = temp
+        return self.frontier.pop()
+    
 
 
 class AStarAlgorithm(Algorithm):
