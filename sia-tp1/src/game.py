@@ -1,6 +1,5 @@
 import arcade
 import time
-from algorithm_utils import *
 from algorithms import *
 from maps import *
 from heuristics import *

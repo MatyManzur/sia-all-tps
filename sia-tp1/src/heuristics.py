@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-from typing import List, Set, Dict
+from typing import List, Set, Dict, Callable
 from algorithm_utils import Position, Board
 
 
@@ -28,6 +28,7 @@ def manhattan_heuristic(player_position: Position, box_positions: Set[Position],
     for value in min_distance.values():
         distance_sum += value
     return distance_sum
+
 
 def better_manhattan_heuristic(player_position: Position, box_positions: Set[Position], board: Board) -> int:
     current_position = player_position
@@ -56,6 +57,7 @@ def better_manhattan_heuristic(player_position: Position, box_positions: Set[Pos
         total_distance += minimum_distance
         goals.remove(min_goal)
     return total_distance
+
 
 class PreCalcHeuristic:
     def __init__(self):
@@ -121,3 +123,15 @@ class PreCalcHeuristic:
             total_distance += min_distance
 
         return total_distance
+
+
+HEURISTICS = {
+    'trivial': trivial_heuristic,
+    'manhattan': manhattan_heuristic,
+    'better_manhattan': better_manhattan_heuristic,
+    'pre_calc': PreCalcHeuristic().pre_calc_heuristic
+}
+
+
+def get_heuristic(name: str) -> Callable[[Position, Set[Position], Board], int]:
+    return HEURISTICS[name]

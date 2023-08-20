@@ -1,9 +1,6 @@
 import queue
-from algorithm_utils import *
 from collections import deque
-
-from algorithm_utils import Node
-
+from algorithm_utils import *
 
 class BFSAlgorithm(Algorithm):
     # no hay que pisar next(), solo add_to_frontier y visited_value (o dejar el default),
@@ -29,12 +26,13 @@ class DFSAlgorithm(Algorithm):
 
 
 class IDDFSAlgorithm(Algorithm):
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position], depth_increment: int = 1):
+    def __init__(self, board: Board, player_position: Position, box_positions: set[Position], depth_increment: int = 1):
         super().__init__(board, player_position, box_positions,
                          lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
         self.depth_increment = depth_increment
+
         self.frontier = deque()
-    
+
     def __iter__(self):
         self.max_depth = 2
         self.last_frontier = deque()
@@ -42,9 +40,8 @@ class IDDFSAlgorithm(Algorithm):
         super().__iter__()
         return self
 
-
     def _add_to_frontier(self, new_node: Node):
-        if (new_node.depth <= self.max_depth) and not self.save_last_frontier:
+        if new_node.depth <= self.max_depth and not self.save_last_frontier:
             self.frontier.append(new_node)
         else:
             self.save_last_frontier = True
@@ -59,12 +56,12 @@ class IDDFSAlgorithm(Algorithm):
             self.frontier = self.last_frontier
             self.last_frontier = temp
         return self.frontier.pop()
-    
+
 
 
 class AStarAlgorithm(Algorithm):
 
-    def __init__(self, board: Board, player_position: Position, box_positions: Set[Position],
+    def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
                  heuristic: Callable[[Position, Set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic)
         self.frontier = queue.PriorityQueue()
@@ -93,8 +90,8 @@ class AStarAlgorithm(Algorithm):
 
 class GlobalGreedyAlgorithm(Algorithm):
 
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int]):
+    def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
+                 heuristic: Callable[[Position, set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic)
         self.frontier = queue.PriorityQueue()
 
@@ -121,8 +118,8 @@ class GlobalGreedyAlgorithm(Algorithm):
 
 
 class LocalGreedyAlgorithm(Algorithm):
-    def __init__(self, board: Board, player_position: Position, box_positions: List[Position],
-                 heuristic: Callable[[Position, List[Position], Board], int]):
+    def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
+                 heuristic: Callable[[Position, set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic, sort_children=True,
                          sort_children_key=lambda node: node.state.heuristic_value)
         self.frontier = queue.PriorityQueue()
@@ -147,4 +144,3 @@ class LocalGreedyAlgorithm(Algorithm):
             raise 'A solution must be found to return info!'
         return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
                             self.frontier.qsize())
-
