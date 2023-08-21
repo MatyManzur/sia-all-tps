@@ -15,7 +15,7 @@ class BFSAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "BFS"
+            "algorithm": "BFS"
         }
 
 
@@ -31,7 +31,7 @@ class DFSAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "DFS"
+            "algorithm": "DFS"
         }
 
 
@@ -66,7 +66,7 @@ class IDDFSAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "IDDFS",
+            "algorithm": "IDDFS",
             "depth_increment": self.depth_increment
         }
 
@@ -103,7 +103,7 @@ class AStarAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "A*",
+            "algorithm": "A*",
             "heuristic": self.heuristic_name
         }
 
@@ -139,7 +139,7 @@ class GlobalGreedyAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "Global Greedy",
+            "algorithm": "GlobalGreedy",
             "heuristic": self.heuristic_name
         }
 
@@ -175,6 +175,6 @@ class LocalGreedyAlgorithm(Algorithm):
 
     def get_algorithm(self):
         return {
-            "algoritm": "Local Greedy",
+            "algorithm": "LocalGreedy",
             "heuristic": self.heuristic_name
         }
