@@ -46,21 +46,18 @@ class IDDFSAlgorithm(Algorithm):
     def __iter__(self):
         self.max_depth = 2
         self.last_frontier = deque()
-        self.save_last_frontier = False
         super().__iter__()
         return self
 
     def _add_to_frontier(self, new_node: Node):
-        if new_node.depth <= self.max_depth and not self.save_last_frontier:
+        if new_node.depth <= self.max_depth:
             self.frontier.append(new_node)
         else:
-            self.save_last_frontier = True
             self.last_frontier.append(new_node)
 
     def _get_item_from_frontier(self) -> Node:
         if len(self.frontier) == 0:
             self.max_depth += self.depth_increment
-            self.save_last_frontier = False
             # switch
             temp = self.frontier
             self.frontier = self.last_frontier
