@@ -32,7 +32,7 @@
     {
       "map": "TEST_6",
       "algorithm": "AStar",
-      "heuristic": "better_manhattan"
+      "heuristic": "metro"
     },
     {
       "map": "TEST_6",
@@ -47,7 +47,7 @@
     {
       "map": "TEST_6",
       "algorithm": "LocalGreedy",
-      "heuristic": "better_manhattan"
+      "heuristic": "metro"
     },
     {
       "map": "TEST_6",
@@ -62,7 +62,7 @@
     {
       "map": "TEST_6",
       "algorithm": "GlobalGreedy",
-      "heuristic": "better_manhattan"
+      "heuristic": "metro"
     }
   ]
 }

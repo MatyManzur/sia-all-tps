@@ -30,7 +30,7 @@ def manhattan_heuristic(player_position: Position, box_positions: Set[Position],
     return distance_sum
 
 
-def better_manhattan_heuristic(player_position: Position, box_positions: Set[Position], board: Board) -> int:
+def metro_heuristic(player_position: Position, box_positions: Set[Position], board: Board) -> int:
     current_position = player_position
     total_distance = 0
     boxes = copy.copy(box_positions)
@@ -127,7 +127,7 @@ class PreCalcHeuristic:
 HEURISTICS = {
     'trivial': trivial_heuristic,
     'manhattan': manhattan_heuristic,
-    'better_manhattan': better_manhattan_heuristic,
+    'metro': metro_heuristic,
     'pre_calc': PreCalcHeuristic().pre_calc_heuristic
 }
 

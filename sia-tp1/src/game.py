@@ -159,15 +159,15 @@ class SokobanGameNoArcade:
 
 
 def main():
-    (board, player, boxes) = get_positions(MAP_EXAMPLE)
+    (board, player, boxes) = get_positions(NO_ADM)
     # algorithm = AStarAlgorithm(board, player, boxes, trivial_heuristic)
     # algorithm = AStarAlgorithm(board, player, boxes, manhattan_heuristic)
-    # algorithm = AStarAlgorithm(board, player, boxes, better_manhattan_heuristic)
+    algorithm = AStarAlgorithm(board, player, boxes, metro_heuristic)
     # algorithm = GlobalGreedyAlgorithm(board, player, boxes, manhattan_heuristic)
     # algorithm = LocalGreedyAlgorithm(board, player, boxes, manhattan_heuristic)
     # algorithm = BFSAlgorithm(board, player, boxes)
     # algorithm = DFSAlgorithm(board, player, boxes)
-    algorithm = IDDFSAlgorithm(board, player, boxes, 10)
+    # algorithm = IDDFSAlgorithm(board, player, boxes, 10)
     # """
     # pre_calc = PreCalcHeuristic()
     # algorithm = AStarAlgorithm(board, player, boxes,
