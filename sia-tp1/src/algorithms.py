@@ -157,7 +157,7 @@ class LocalGreedyAlgorithm(Algorithm):
                  heuristic: Callable[[Position, set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic, sort_children=True,
                          sort_children_key=lambda node: node.state.heuristic_value)
-        self.frontier = queue.PriorityQueue()
+        self.frontier = deque()
         self.heuristic_name = heuristic.__name__
 
     @staticmethod
@@ -165,24 +165,24 @@ class LocalGreedyAlgorithm(Algorithm):
         return node.state.heuristic_value
 
     def _add_to_frontier(self, new_node: Node):
-        self.frontier.put((new_node.state.heuristic_value, new_node))
+        self.frontier.append(new_node)
 
     def _get_item_from_frontier(self) -> Node | None:
         try:
-            return self.frontier.get(block=False)[1]
+            return self.frontier.pop()
         except queue.Empty:
             return None
 
     def __iter__(self):
         aux = Node(self.initial_state, 0, None)
-        self.frontier.put((aux.state.heuristic_value, aux))
+        self.frontier.append(aux)
         return self
 
     def get_solution_info(self) -> SolutionInfo:
         if not self.has_solution():
             raise 'A solution must be found to return info!'
         return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
-                            self.frontier.qsize())
+                            len(self.frontier))
 
     def get_algorithm(self):
         return {
