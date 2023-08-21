@@ -31,17 +31,17 @@ def main():
         col=1
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='cost',title='Time by algorithm',labels={'index':'Algorithm','execution_time':'Time'}).data[0],
+        px.bar(df,x=df.index,y='cost',title='Cost by algorithm',labels={'index':'Algorithm','cost':'Cost'}).data[0],
         row=1,
         col=2
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='expanded_nodes',title='Time by algorithm',labels={'index':'Algorithm','execution_time':'Time'}).data[0],
+        px.bar(df,x=df.index,y='expanded_nodes',title='Expanded Nodes by algorithm',labels={'index':'Algorithm','expanded_nodes':'Expanded Nodes'}).data[0],
         row=2,
         col=1
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='frontier_nodes',title='Time by algorithm',labels={'index':'Algorithm','execution_time':'Time'}).data[0],
+        px.bar(df,x=df.index,y='frontier_nodes',title='Frontier Nodes by algorithm',labels={'index':'Algorithm','frontier_nodes':'Frontier Nodes'}).data[0],
         row=2,
         col=2
     )
@@ -51,7 +51,7 @@ def main():
     fig.update_xaxes(title_text="Algorithms", row=2, col=2)
     fig.update_xaxes(title_text="Algorithms", row=2, col=1)
 
-    fig.update_yaxes(title_text="Execution time", row=1, col=1)
+    fig.update_yaxes(title_text="Execution time [s]", row=1, col=1)
     fig.update_yaxes(title_text="Cost", row=1, col=2)
     fig.update_yaxes(title_text="Frontier nodes", row=2, col=2)
     fig.update_yaxes(title_text="Expanded nodes", row=2, col=1)
