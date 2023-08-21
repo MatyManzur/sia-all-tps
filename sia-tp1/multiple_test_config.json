@@ -1,0 +1,68 @@
+{
+  "output_file": "../multiple_test_results.json",
+  "tests": [
+    {
+      "map": "TEST_6",
+      "algorithm": "BFS"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "DFS"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "IDDFS",
+      "depth_increment": 10
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "IDDFS",
+      "depth_increment": 100
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "AStar",
+      "heuristic": "manhattan"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "AStar",
+      "heuristic": "pre_calc"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "AStar",
+      "heuristic": "better_manhattan"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "LocalGreedy",
+      "heuristic": "manhattan"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "LocalGreedy",
+      "heuristic": "pre_calc"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "LocalGreedy",
+      "heuristic": "better_manhattan"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "GlobalGreedy",
+      "heuristic": "manhattan"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "GlobalGreedy",
+      "heuristic": "pre_calc"
+    },
+    {
+      "map": "TEST_6",
+      "algorithm": "GlobalGreedy",
+      "heuristic": "better_manhattan"
+    }
+  ]
+}

@@ -1,7 +1,0 @@
-{
-  "map": "TEST_11",
-  "render_game": true,
-  "algorithm": "LocalGreedy",
-  "heuristic": "pre_calc",
-  "depth_increment": 100
-}

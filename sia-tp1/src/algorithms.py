@@ -13,6 +13,11 @@ class BFSAlgorithm(Algorithm):
     def _add_to_frontier(self, new_node: Node):
         self.frontier.appendleft(new_node)
 
+    def get_algorithm(self):
+        return {
+            "algoritm": "BFS"
+        }
+
 
 class DFSAlgorithm(Algorithm):
 
@@ -23,6 +28,11 @@ class DFSAlgorithm(Algorithm):
 
     def _add_to_frontier(self, new_node: Node):
         self.frontier.append(new_node)
+
+    def get_algorithm(self):
+        return {
+            "algoritm": "DFS"
+        }
 
 
 class IDDFSAlgorithm(Algorithm):
@@ -57,6 +67,12 @@ class IDDFSAlgorithm(Algorithm):
             self.last_frontier = temp
         return self.frontier.pop()
 
+    def get_algorithm(self):
+        return {
+            "algoritm": "IDDFS",
+            "depth_increment": self.depth_increment
+        }
+
 
 
 class AStarAlgorithm(Algorithm):
@@ -65,6 +81,7 @@ class AStarAlgorithm(Algorithm):
                  heuristic: Callable[[Position, Set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic)
         self.frontier = queue.PriorityQueue()
+        self.heuristic_name = heuristic.__name__
 
     @staticmethod
     def _visited_value(node: Node) -> int:
@@ -87,6 +104,12 @@ class AStarAlgorithm(Algorithm):
         return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
                             self.frontier.qsize())
 
+    def get_algorithm(self):
+        return {
+            "algoritm": "A*",
+            "heuristic": self.heuristic_name
+        }
+
 
 class GlobalGreedyAlgorithm(Algorithm):
 
@@ -94,6 +117,7 @@ class GlobalGreedyAlgorithm(Algorithm):
                  heuristic: Callable[[Position, set[Position], Board], int]):
         super().__init__(board, player_position, box_positions, heuristic)
         self.frontier = queue.PriorityQueue()
+        self.heuristic_name = heuristic.__name__
 
     @staticmethod
     def _visited_value(node: Node) -> int:
@@ -115,6 +139,12 @@ class GlobalGreedyAlgorithm(Algorithm):
             raise 'A solution must be found to return info!'
         return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
                             self.frontier.qsize())
+
+    def get_algorithm(self):
+        return {
+            "algoritm": "Global Greedy",
+            "heuristic": self.heuristic_name
+        }
 
 
 class LocalGreedyAlgorithm(Algorithm):
@@ -123,6 +153,7 @@ class LocalGreedyAlgorithm(Algorithm):
         super().__init__(board, player_position, box_positions, heuristic, sort_children=True,
                          sort_children_key=lambda node: node.state.heuristic_value)
         self.frontier = queue.PriorityQueue()
+        self.heuristic_name = heuristic.__name__
 
     @staticmethod
     def _visited_value(node: Node) -> int:
@@ -144,3 +175,9 @@ class LocalGreedyAlgorithm(Algorithm):
             raise 'A solution must be found to return info!'
         return SolutionInfo(self.solution.get_path_from_root(), self.solution.cost, len(self.visited.keys()),
                             self.frontier.qsize())
+
+    def get_algorithm(self):
+        return {
+            "algoritm": "Local Greedy",
+            "heuristic": self.heuristic_name
+        }

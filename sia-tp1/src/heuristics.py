@@ -83,8 +83,6 @@ class PreCalcHeuristic:
     def __estimate_cost_for_goal(self, wall_map: List[List[0 | 1]], cost_map: Dict[Position, int], position: Position,
                                  potential_position_cost: int):
         possible_prev_pos = self.__get_possible_previous_positions(wall_map, position)
-        if len(possible_prev_pos) == 0:
-            return
         cost_map[position] = potential_position_cost
         for prev_pos in possible_prev_pos:
             if cost_map.get(prev_pos, float('inf')) > potential_position_cost + 1:
@@ -94,13 +92,14 @@ class PreCalcHeuristic:
         for goal in board.goals:
             self.goal_cost_maps[goal] = {}
             self.__estimate_cost_for_goal(board.map, self.goal_cost_maps[goal], goal, 0)
+            """# PRINT COST MAP FOR EACH GOAL
             for y in range(len(board.map) - 1, -1, -1):
                 print("[ ", end="")
                 for x in range(len(board.map[0])):
                     print(f"{self.goal_cost_maps[goal].get(Position(x, y), 'X')}, ", end="")
                 print("]")
             print("-------------")
-
+            """
         self.initialized = True
 
     def pre_calc_heuristic(self, player_position: Position, box_positions: Set[Position], board: Board) -> int:

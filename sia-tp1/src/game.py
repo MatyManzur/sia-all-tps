@@ -19,7 +19,7 @@ class SokobanGame(
     arcade.Window
 ):
 
-    def __init__(self, board: Board, algorithm: Algorithm, render: bool = True):
+    def __init__(self, board: Board, algorithm: Algorithm, render: bool = True, render_delay: int = 0):
         super().__init__(len(board.map[0]) * SPRITE_SIZE, len(board.map) * SPRITE_SIZE, "Sokoban Game")
         self.state = None
         self.board = board
@@ -27,6 +27,7 @@ class SokobanGame(
         self.initialized = False
         self.algorithm = algorithm
         self.finished = False
+        self.render_delay = render_delay
 
     def setup(self):
         if not self.render:
@@ -79,8 +80,7 @@ class SokobanGame(
                                          goal.y * SPRITE_SIZE + SPRITE_SIZE / 2,
                                          SPRITE_SIZE, SPRITE_SIZE,
                                          arcade.color.GREEN)
-        if not self.render or not self.initialized:
-            return
+
         arcade.draw_circle_filled(self.state.player_position.x * SPRITE_SIZE + SPRITE_SIZE / 2,
                                   self.state.player_position.y * SPRITE_SIZE + SPRITE_SIZE / 2,
                                   SPRITE_SIZE / 2,
@@ -102,15 +102,60 @@ class SokobanGame(
         self.start_game()
         start_time = time.time()
         while not self.finished:
-            # time.sleep(20/1000)
             self.next_state()
             if self.render:
+                if self.render_delay > 0:
+                    time.sleep(self.render_delay / 1000)
                 self.draw()
         if self.render:
             arcade.set_background_color(arcade.color.PINK_PEARL)
             self.draw()
         end_time = time.time()
         print(f"Total time elapsed: {end_time - start_time} seconds")
+
+
+class SokobanGameNoArcade:
+    def __init__(self, board: Board, algorithm: Algorithm):
+        self.state = None
+        self.board = board
+        self.initialized = False
+        self.algorithm = algorithm
+        self.finished = False
+        self.executionInfo = {}
+
+    def next_state(self):
+        if self.algorithm_instance is None:
+            raise 'Algorithm not initialized'
+        next_node = next(self.algorithm_instance)
+        if next_node is None:
+            print('No more states!')
+            self.finished = True
+            return
+        self.state = next_node.state
+        if self.algorithm.has_finished():
+            info = self.algorithm.get_solution_info()
+            self.executionInfo['algorithm'] = self.algorithm.get_algorithm()
+            self.executionInfo['cost'] = info.final_cost
+            self.executionInfo['frontier_nodes'] = info.frontier_nodes_count
+            self.executionInfo['expanded_nodes'] = info.expanded_nodes_count
+            self.finished = True
+
+    def start_game(self):
+        self.initialized = True
+        self.algorithm_instance = iter(self.algorithm)
+        self.next_state()
+
+    def run_game(self):
+        self.start_game()
+        start_time = time.time()
+        i = 1
+        while not self.finished:
+            self.next_state()
+            if i % 10000 == 0:
+                print(i)
+            i += 1
+        end_time = time.time()
+        self.executionInfo['execution_time'] = end_time - start_time
 
 
 def main():
@@ -126,7 +171,7 @@ def main():
     # """
     # pre_calc = PreCalcHeuristic()
     # algorithm = AStarAlgorithm(board, player, boxes,
-                            #    lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
+    #    lambda pp, bp, b: pre_calc.pre_calc_heuristic(pp, bp, b))
     # """
     game = SokobanGame(board=board, algorithm=algorithm, render=True)
     game.setup()

@@ -6,7 +6,7 @@ import algorithms, maps, heuristics, game
 # //TEST3 con iddfs se rompe
 # Test10 pre_calc se rompe
 def main():
-    with (open('../config.json', 'r') as f):
+    with (open('../test_config.json', 'r') as f):
         config = json.load(f)
         test_map = maps.get_map(config['map'])
         (board, player, boxes) = algorithms.get_positions(test_map)
@@ -27,7 +27,7 @@ def main():
         else:
             raise Exception('Invalid algorithm')
         render_game = config['render_game']
-        sokoban = game.SokobanGame(board=board, algorithm=algorithm, render=render_game)
+        sokoban = game.SokobanGame(board=board, algorithm=algorithm, render=render_game, render_delay=config['render_delay_in_ms'])
         sokoban.setup()
         if sokoban.render:
             sokoban.run()

@@ -58,12 +58,13 @@ class Board:
 
 def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, set[Position]]:
     # 0 camino, 1 pared, 2 caja, 3 goal, 4 player
+    wall_map = copy.deepcopy(map_)
     player = Position(0, 0)
     goals = set([])
     boxes = set([])
-    for i in range(len(map_)):
-        for j in range(len(map_[i])):
-            cell = map_[i][j]
+    for i in range(len(wall_map)):
+        for j in range(len(wall_map[i])):
+            cell = wall_map[i][j]
             if cell == PLAYER:
                 player = Position(j, i)
             elif cell == BOX:
@@ -72,8 +73,8 @@ def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, set[Position]
                 goals.add(Position(j, i))
 
             if cell != 1:
-                map_[i][j] = 0
-    return Board(map_, goals), player, boxes
+                wall_map[i][j] = 0
+    return Board(wall_map, goals), player, boxes
 
 
 class State:
@@ -261,7 +262,6 @@ class Algorithm:
             return None
 
         if node.state.is_goal_state():
-            print("GANASTEEEE 🎉🎉🎇✨🎊🎊 !")
             self.no_solution = False
             self.solution = node
             return self.solution
@@ -305,3 +305,6 @@ class Algorithm:
 
     def _get_item_from_frontier(self) -> Node:
         return self.frontier.pop()
+
+    def get_algorithm(self):
+        """abstact method"""
