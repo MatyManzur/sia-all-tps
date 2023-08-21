@@ -228,7 +228,7 @@ class DeepeningSolutionInfo(SolutionInfo):
 class Algorithm:
     def __init__(self, board: Board, player_position: Position, box_positions: set[Position],
                  heuristic: Callable[[Position, set[Position], Board], int], sort_children: bool = False,
-                 sort_children_key: Callable[[Node], int] = None):
+                 sort_children_key: Callable[[Node], int] = None, run_get_once: bool = False):
         self.frontier = []
         self.visited = {}
         self.initial_state = State(player_position, box_positions, heuristic, board)
@@ -237,6 +237,7 @@ class Algorithm:
         self.solution: Node | None = None
         self.sort_frontier = sort_children
         self.sort_children_key = sort_children_key
+        self.run_get_once = run_get_once
 
     def __iter__(self):
         self.frontier.append(Node(self.initial_state, 0, None))
@@ -247,7 +248,7 @@ class Algorithm:
             return self.solution
 
         node = None
-        once = True
+        once = self.run_get_once
 
         while self.frontier or once:
             node = self._get_item_from_frontier()  # va a sacar el último

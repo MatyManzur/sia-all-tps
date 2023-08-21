@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 arcade = "*"
 numpy = "*"
+plotly = "*"
+pandas = "*"
 
 [dev-packages]
 

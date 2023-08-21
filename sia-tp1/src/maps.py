@@ -186,6 +186,13 @@ NO_ADM = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+NO_SOLUTION = [
+    [1,1,1,1],
+    [1,4,1,1],
+    [1,1,2,1],
+    [1,1,1,3]
+]
+
 
 
 
@@ -204,7 +211,8 @@ MAPS = {
     'TEST_10': TEST_10,
     'TEST_11': TEST_11,
     'RS_STD_01': RS_STD_01,
-    'NO_ADM': NO_ADM
+    'NO_ADM': NO_ADM,
+    'NO_SOL': NO_SOLUTION,
 }
 def get_map(name: str) -> List[List[int]]:
     return MAPS[name]

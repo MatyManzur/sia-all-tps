@@ -1,0 +1,130 @@
+[
+    {
+        "algorithm": {
+            "algorithm": "BFS"
+        },
+        "cost": 14,
+        "frontier_nodes": 153,
+        "expanded_nodes": 355,
+        "execution_time": 0.007014751434326172
+    },
+    {
+        "algorithm": {
+            "algorithm": "DFS"
+        },
+        "cost": 16,
+        "frontier_nodes": 17,
+        "expanded_nodes": 307,
+        "execution_time": 0.0053675174713134766
+    },
+    {
+        "algorithm": {
+            "algorithm": "IDDFS",
+            "depth_increment": 10
+        },
+        "cost": 22,
+        "frontier_nodes": 21,
+        "expanded_nodes": 443,
+        "execution_time": 0.00817108154296875
+    },
+    {
+        "algorithm": {
+            "algorithm": "IDDFS",
+            "depth_increment": 100
+        },
+        "cost": 16,
+        "frontier_nodes": 16,
+        "expanded_nodes": 307,
+        "execution_time": 0.0059032440185546875
+    },
+    {
+        "algorithm": {
+            "algorithm": "A*",
+            "heuristic": "manhattan_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 164,
+        "expanded_nodes": 207,
+        "execution_time": 0.007823705673217773
+    },
+    {
+        "algorithm": {
+            "algorithm": "A*",
+            "heuristic": "pre_calc_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 57,
+        "expanded_nodes": 51,
+        "execution_time": 0.001678466796875
+    },
+    {
+        "algorithm": {
+            "algorithm": "A*",
+            "heuristic": "metro_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 106,
+        "expanded_nodes": 119,
+        "execution_time": 0.005589723587036133
+    },
+    {
+        "algorithm": {
+            "algorithm": "LocalGreedy",
+            "heuristic": "manhattan_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 54,
+        "expanded_nodes": 89,
+        "execution_time": 0.003066539764404297
+    },
+    {
+        "algorithm": {
+            "algorithm": "LocalGreedy",
+            "heuristic": "pre_calc_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 39,
+        "expanded_nodes": 21,
+        "execution_time": 0.0013844966888427734
+    },
+    {
+        "algorithm": {
+            "algorithm": "LocalGreedy",
+            "heuristic": "metro_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 57,
+        "expanded_nodes": 42,
+        "execution_time": 0.0019223690032958984
+    },
+    {
+        "algorithm": {
+            "algorithm": "GlobalGreedy",
+            "heuristic": "manhattan_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 54,
+        "expanded_nodes": 89,
+        "execution_time": 0.002893209457397461
+    },
+    {
+        "algorithm": {
+            "algorithm": "GlobalGreedy",
+            "heuristic": "pre_calc_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 39,
+        "expanded_nodes": 21,
+        "execution_time": 0.0006296634674072266
+    },
+    {
+        "algorithm": {
+            "algorithm": "GlobalGreedy",
+            "heuristic": "metro_heuristic"
+        },
+        "cost": 14,
+        "frontier_nodes": 59,
+        "expanded_nodes": 41,
+        "execution_time": 0.0014352798461914062
+    }
+]

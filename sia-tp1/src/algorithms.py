@@ -38,7 +38,7 @@ class DFSAlgorithm(Algorithm):
 class IDDFSAlgorithm(Algorithm):
     def __init__(self, board: Board, player_position: Position, box_positions: set[Position], depth_increment: int = 1):
         super().__init__(board, player_position, box_positions,
-                         lambda _, __, ___: 0)  # Es desinformado => No usa heuristica
+                         lambda _, __, ___: 0, run_get_once=True)  # Es desinformado => No usa heuristica
         self.depth_increment = depth_increment
 
         self.frontier = deque()
@@ -57,6 +57,8 @@ class IDDFSAlgorithm(Algorithm):
 
     def _get_item_from_frontier(self) -> Node:
         if len(self.frontier) == 0:
+            if len(self.last_frontier) == 0:
+                return None
             self.max_depth += self.depth_increment
             # switch
             temp = self.frontier

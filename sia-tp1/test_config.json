@@ -1,10 +1,10 @@
 {
-  "map": "NO_ADM",
-  "render_game": true,
-  "render_delay_in_ms": 50,
-  "algorithm": "IDDFS",
+  "map": "NO_SOL",
+  "render_game": false,
+  "render_delay_in_ms": 1,
+  "algorithm": "AStar",
   "heuristic": "metro",
-  "depth_increment": 2,
+  "depth_increment": 100,
 
   "/*available_maps*/": "MAP_EXAMPLE, MAP_1, SOKO_03, TEST_1, TEST_2, TEST_3, TEST_4, TEST_7, TEST_9, TEST_10, TEST_11, RS_STD_01",
   "/*available_algorithms*/": "BFS, DFS, IDDFS, AStar, GlobalGreedy, LocalGreedy",
