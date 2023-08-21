@@ -89,8 +89,11 @@ class AStarAlgorithm(Algorithm):
     def _add_to_frontier(self, new_node: Node):
         self.frontier.put((new_node.score, new_node))
 
-    def _get_item_from_frontier(self) -> Node:
-        return self.frontier.get()[1]
+    def _get_item_from_frontier(self) -> Node | None:
+        try:
+            return self.frontier.get(block=False)[1]
+        except queue.Empty:
+            return None
 
     def __iter__(self):
         aux = Node(self.initial_state, 0, None)
@@ -125,8 +128,11 @@ class GlobalGreedyAlgorithm(Algorithm):
     def _add_to_frontier(self, new_node: Node):
         self.frontier.put((new_node.state.heuristic_value, new_node))
 
-    def _get_item_from_frontier(self) -> Node:
-        return self.frontier.get()[1]
+    def _get_item_from_frontier(self) -> Node | None:
+        try:
+            return self.frontier.get(block=False)[1]
+        except queue.Empty:
+            return None
 
     def __iter__(self):
         aux = Node(self.initial_state, 0, None)
@@ -161,8 +167,11 @@ class LocalGreedyAlgorithm(Algorithm):
     def _add_to_frontier(self, new_node: Node):
         self.frontier.put((new_node.state.heuristic_value, new_node))
 
-    def _get_item_from_frontier(self) -> Node:
-        return self.frontier.get()[1]
+    def _get_item_from_frontier(self) -> Node | None:
+        try:
+            return self.frontier.get(block=False)[1]
+        except queue.Empty:
+            return None
 
     def __iter__(self):
         aux = Node(self.initial_state, 0, None)

@@ -252,6 +252,8 @@ class Algorithm:
 
         while self.frontier or once:
             node = self._get_item_from_frontier()  # va a sacar el último
+            if node is None:
+                break
             saved_score = self.visited.get(node, float('inf'))  # sería como visited.getOrDefault(node,Math.Inf) de Java
             once = False
             if not self._visited_value(node) >= saved_score:
@@ -304,7 +306,7 @@ class Algorithm:
     def _visited_value(node: Node) -> int:
         return 1
 
-    def _get_item_from_frontier(self) -> Node:
+    def _get_item_from_frontier(self) -> Node | None:
         return self.frontier.pop()
 
     def get_algorithm(self):
