@@ -10,6 +10,8 @@ OK = 1
 BOX = 2
 GOAL = 3
 PLAYER = 4
+GOAL_AND_BOX = 5
+GOAL_AND_PLAYER = 6
 
 BLOCKED_VERT = 2
 BLOCKED_HOR = 3
@@ -70,6 +72,12 @@ def get_positions(map_: List[List[int]]) -> Tuple[Board, Position, set[Position]
             elif cell == BOX:
                 boxes.add(Position(j, i))
             elif cell == GOAL:
+                goals.add(Position(j, i))
+            elif cell == GOAL_AND_BOX:
+                boxes.add(Position(j, i))
+                goals.add(Position(j, i))
+            elif cell == GOAL_AND_PLAYER:
+                player = Position(j, i)
                 goals.add(Position(j, i))
 
             if cell != 1:
