@@ -4,6 +4,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
+
 def main():
     with(open('../multiple_test_results.json', 'r') as f):
         results = json.load(f)
@@ -26,26 +27,30 @@ def main():
     df = pd.DataFrame.from_dict(data, orient='index')
 
     fig.add_trace(
-        px.bar(df,x=df.index,y='execution_time',title='Time by algorithm',labels={'index':'Algorithm','execution_time':'Time'}).data[0],
+        px.bar(df, x=df.index, y='execution_time', title='Time by algorithm',
+               labels={'index': 'Algorithm', 'execution_time': 'Time'}).data[0],
         row=1,
         col=1
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='cost',title='Cost by algorithm',labels={'index':'Algorithm','cost':'Cost'}).data[0],
+        px.bar(df, x=df.index, y='cost', text_auto=True, title='Cost by algorithm',
+               labels={'index': 'Algorithm', 'cost': 'Cost'}).data[0],
         row=1,
         col=2
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='expanded_nodes',title='Expanded Nodes by algorithm',labels={'index':'Algorithm','expanded_nodes':'Expanded Nodes'}).data[0],
+        px.bar(df, x=df.index, y='expanded_nodes', title='Expanded Nodes by algorithm',
+               labels={'index': 'Algorithm', 'expanded_nodes': 'Expanded Nodes'}).data[0],
         row=2,
         col=1
     )
     fig.add_trace(
-        px.bar(df,x=df.index,y='frontier_nodes',title='Frontier Nodes by algorithm',labels={'index':'Algorithm','frontier_nodes':'Frontier Nodes'}).data[0],
+        px.bar(df, x=df.index, y='frontier_nodes', title='Frontier Nodes by algorithm',
+               labels={'index': 'Algorithm', 'frontier_nodes': 'Frontier Nodes'}).data[0],
         row=2,
         col=2
     )
-
+    fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.update_xaxes(title_text="Algorithms", row=1, col=1)
     fig.update_xaxes(title_text="Algorithms", row=1, col=2)
     fig.update_xaxes(title_text="Algorithms", row=2, col=2)
@@ -57,8 +62,6 @@ def main():
     fig.update_yaxes(title_text="Expanded nodes", row=2, col=1)
 
     fig.show()
-    
-
 
 
 if __name__ == '__main__':
