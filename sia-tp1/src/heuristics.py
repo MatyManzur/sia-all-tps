@@ -33,8 +33,8 @@ def manhattan_heuristic(player_position: Position, box_positions: Set[Position],
 def metro_heuristic(player_position: Position, box_positions: Set[Position], board: Board) -> int:
     current_position = player_position
     total_distance = 0
-    boxes = copy.copy(box_positions)
     goals = copy.copy(board.goals)
+    boxes = set([box for box in box_positions if box not in goals])
     while len(boxes) > 0 and len(goals) > 0:
         minimum_distance = float('inf')
         min_box = None
