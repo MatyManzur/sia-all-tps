@@ -47,7 +47,6 @@ class SokobanGame(
         if self.algorithm.has_finished():
             info = self.algorithm.get_solution_info()
             print("----PATH TO SOLUTION----")
-            print(info.path_to_solution)
             for i, state in enumerate(info.path_to_solution):
                 print(f"Stage {i}")
                 print(f"Player: ({state.player_position.x}, {state.player_position.y})")
@@ -112,6 +111,18 @@ class SokobanGame(
             self.draw()
         end_time = time.time()
         print(f"Total time elapsed: {end_time - start_time} seconds")
+        if self.render:
+            time.sleep(3)
+            self.run_solution()
+
+
+    def run_solution(self):
+        information = self.algorithm.get_solution_info()
+        for state in information.path_to_solution:
+            self.state = state 
+            self.draw()
+            time.sleep(1/10)
+
 
 
 class SokobanGameNoArcade:

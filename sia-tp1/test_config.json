@@ -1,9 +1,9 @@
 {
-  "map": "NO_ADM",
+  "map": "MAP_1",
   "render_game": true,
-  "render_delay_in_ms": 10,
-  "algorithm": "AStar",
-  "heuristic": "metro",
+  "render_delay_in_ms": 1,
+  "algorithm": "BFS",
+  "heuristic": "manhattan",
   "depth_increment": 100,
 
   "/*available_maps*/": "MAP_EXAMPLE, MAP_1, SOKO_03, TEST_1, TEST_2, TEST_3, TEST_4, TEST_5, TEST_6, TEST_7, TEST_9, TEST_10, TEST_11, RS_STD_01, NO_ADM",

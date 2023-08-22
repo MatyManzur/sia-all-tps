@@ -35,6 +35,7 @@ Y correr los modulos con el comando python.
 Este contiene multiples módulos ejecutables para analizar los diferentes algoritmos.
 ### game.py
 game.py contiene comentado todos los algoritmos para correr, y fue la forma que se fue probando cada algoritmo. SokobanGame recibe el board a correr (definido en maps.py), el algoritmo a correr (algorithms.py) y si renderizar o no.
+De elegir la opción de renderizar, se deberá presionar la barra espaciadora (una vez que aparezca la ventana negra), para iniciar la búsqueda.
 
 ### test.py
 Para no tocar código python, hay una solución más configurable. test.py levanta de test_config.json el mapa, si renderizar el juego, el tiempo entre renders, el algoritmo, la heurística (si aplicable) y la depth del algoritmo (para IDDFS).
@@ -51,6 +52,7 @@ Con esto, un ejemplo del test_config.json esta presente en el repositiorio, pero
 ```
 Cabe aclarar que render_game estando en true permite poder ver como se resuelve el juego, pero esto hace que el algoritmo se ejecute más lento. Por lo que si se quiere ver el resultado de un algoritmo, se recomienda ponerlo en false.
 De la misma manera render_delay_in_ms es el tiempo entre renders, por lo que si se quiere ver con mayor lentitud como se resuelve el juego, se puede aumentar este valor.
+De elegir la opción de renderizar, se deberá presionar la barra espaciadora (una vez que aparezca la ventana negra), para iniciar la búsqueda.
 ### multiple_test.py
 Para realizar benchmarks entre algoritmos, multiple_test.py permite levantar la configuración de multiple_test_config.json. 
 Este es el formato:
