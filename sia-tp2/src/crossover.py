@@ -1,6 +1,6 @@
 import math
 import random
-from typing import Callable, Tuple
+from typing import Callable, Tuple, List
 
 from classes import Chromosome, BaseClass
 from global_config import config
@@ -9,6 +9,42 @@ from global_config import config
 PARAMETER_UNIFORM_PROBABILITY = config['crossover']['uniform_probability']
 
 CrossFunction = Callable[[Chromosome, Chromosome], Tuple[Chromosome, Chromosome]]
+
+crossover_options = config['crossover']
+
+
+def select_cross_function(name: str) -> CrossFunction:
+    if name == 'one_point':
+        return one_point_cross
+    if name == 'two_point':
+        return two_point_cross
+    if name == 'anular_cross':
+        return anular_cross
+    if name == 'uniform_cross':
+        return uniform_cross
+    raise Exception('Invalid Crossover Function Name!')
+
+
+cross_fun_1 = select_cross_function(crossover_options['replacement_1'])
+cross_fun_2 = select_cross_function(crossover_options['replacement_2'])
+cross_1_part = crossover_options['B']
+
+
+def crossover_population(population: List[BaseClass]) -> List[BaseClass]:
+    n = len(population)
+    crossed_population = []
+    character_class = population[0].__class__
+    for i in range(0, n, 2):
+        if i == n - 1:
+            crossed_population.append(population[i])
+            break
+        if (i / n) < cross_1_part:
+            new_chromies = cross_fun_1(population[i].get_cromies(), population[i + 1].get_cromies())
+        else:
+            new_chromies = cross_fun_2(population[i].get_cromies(), population[i + 1].get_cromies())
+        population.append(character_class(chromosome=new_chromies[0]))
+        population.append(character_class(chromosome=new_chromies[1]))
+    return crossed_population
 
 
 def one_point_cross(tuple1: Chromosome, tuple2: Chromosome) -> (Chromosome, Chromosome):

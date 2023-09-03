@@ -60,8 +60,15 @@ def generate_population(n: int, seed: int, character_class: str) -> List[BaseCla
     else:
         raise Exception('Invalid character class')
 
-def generate_population(n: int) -> List[BaseClass]:
-    return []
+    stats = [0, 0, 0, 0, 0, 0]
+
+    for _ in range(n):
+        for j in range(AMOUNT_STATS):
+            stats[j] = random.uniform(0, 150)
+        stats[5] = random.uniform(1.3, 2.0)
+        # ...
+        population.append(create_function(*stats)) # POINTERS IN PYTHON BABY, LET'S GOOOOOOOO
+    return population
 
 
 if __name__ == '__main__':

@@ -16,8 +16,15 @@ MAX_HEIGHT = 2.0
 
 class BaseClass(ABC):
 
-    def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
-                 height: float):
+    def __init__(self, strength: float = None, agility: float = None, dexterity: float = None,
+                 resistance: float = None, health: float = None, height: float = None,
+                 chromosome: Chromosome = None):
+        if chromosome is None and any(p is None for p in [strength, agility, dexterity, resistance, health, height]):
+            raise Exception('parameters cannot be None when there\'s no Chromosome')
+
+        if chromosome is not None:
+            strength, agility, dexterity, resistance, health, height = chromosome
+
         if not (MIN_HEIGHT <= height <= MAX_HEIGHT):
             height = MIN_HEIGHT + ((height - MIN_HEIGHT) % (MAX_HEIGHT - MIN_HEIGHT))
 
