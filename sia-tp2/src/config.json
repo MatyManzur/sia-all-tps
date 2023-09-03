@@ -49,5 +49,15 @@
         "upper_bound": 0.5
       }
     }
+  },
+  "finish_criteria": {
+    "finish_method": "time",
+    "finish_time_ms": 10000,
+    "finish_generation_count": 30,
+    "finish_optimum": {
+      "acceptance": 20
+    },
+    "relevant_population": 0.2,
+    "relevant_generations": 5
   }
 }
