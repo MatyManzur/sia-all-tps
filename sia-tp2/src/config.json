@@ -1,0 +1,53 @@
+{
+  "initial": {
+    "population_size": 100,
+    "class": "Warrior",
+    "population_seed": 1024
+  },
+  "selection": {
+    "A": 0.5,
+    "selection_1": "elite",
+    "selection_2": "roulette",
+    "t_c": 40,
+    "t_0": 200,
+    "t_k": 0.01,
+    "tournament_m": 2,
+    "tournament_threshold": 0.6
+  },
+  "crossover": {
+    "B": 0.5,
+    "replacement_1": "one_point",
+    "replacement_2": "two_point",
+    "uniform_probability": 0.5
+  },
+  "mutation": {
+    "function": "gen_mutation",
+    "mutation_probability": 0.2,
+    "gene_bounds": {
+      "strength": {
+        "lower_bound": -10,
+        "upper_bound": 10
+      },
+      "agility": {
+        "lower_bound": -10,
+        "upper_bound": 10
+      },
+      "dexterity": {
+        "lower_bound": -10,
+        "upper_bound": 10
+      },
+      "resistance": {
+        "lower_bound": -10,
+        "upper_bound": 10
+      },
+      "health": {
+        "lower_bound": -10,
+        "upper_bound": 10
+      },
+      "height": {
+        "lower_bound": -0.5,
+        "upper_bound": 0.5
+      }
+    }
+  }
+}

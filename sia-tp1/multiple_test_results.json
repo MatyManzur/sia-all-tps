@@ -6,7 +6,7 @@
         "cost": 14,
         "frontier_nodes": 153,
         "expanded_nodes": 355,
-        "execution_time": 0.005020618438720703
+        "execution_time": 0.00877237319946289
     },
     {
         "algorithm": {
@@ -15,7 +15,7 @@
         "cost": 16,
         "frontier_nodes": 17,
         "expanded_nodes": 307,
-        "execution_time": 0.003548860549926758
+        "execution_time": 0.009568214416503906
     },
     {
         "algorithm": {
@@ -25,7 +25,7 @@
         "cost": 22,
         "frontier_nodes": 21,
         "expanded_nodes": 443,
-        "execution_time": 0.005261659622192383
+        "execution_time": 0.019716739654541016
     },
     {
         "algorithm": {
@@ -35,7 +35,7 @@
         "cost": 16,
         "frontier_nodes": 16,
         "expanded_nodes": 307,
-        "execution_time": 0.0035626888275146484
+        "execution_time": 0.007543087005615234
     },
     {
         "algorithm": {
@@ -45,7 +45,7 @@
         "cost": 14,
         "frontier_nodes": 164,
         "expanded_nodes": 207,
-        "execution_time": 0.005140781402587891
+        "execution_time": 0.009248495101928711
     },
     {
         "algorithm": {
@@ -55,7 +55,7 @@
         "cost": 14,
         "frontier_nodes": 57,
         "expanded_nodes": 51,
-        "execution_time": 0.0012652873992919922
+        "execution_time": 0.002425670623779297
     },
     {
         "algorithm": {
@@ -65,37 +65,37 @@
         "cost": 14,
         "frontier_nodes": 106,
         "expanded_nodes": 119,
-        "execution_time": 0.003841400146484375
+        "execution_time": 0.00611567497253418
     },
     {
         "algorithm": {
             "algorithm": "LocalGreedy",
             "heuristic": "manhattan_heuristic"
         },
-        "cost": 24,
-        "frontier_nodes": 31,
-        "expanded_nodes": 286,
-        "execution_time": 0.004765510559082031
+        "cost": 14,
+        "frontier_nodes": 54,
+        "expanded_nodes": 89,
+        "execution_time": 0.004136800765991211
     },
     {
         "algorithm": {
             "algorithm": "LocalGreedy",
             "heuristic": "pre_calc_heuristic"
         },
-        "cost": 24,
-        "frontier_nodes": 37,
-        "expanded_nodes": 117,
-        "execution_time": 0.002213001251220703
+        "cost": 14,
+        "frontier_nodes": 39,
+        "expanded_nodes": 21,
+        "execution_time": 0.0008087158203125
     },
     {
         "algorithm": {
             "algorithm": "LocalGreedy",
             "heuristic": "metro_heuristic"
         },
-        "cost": 24,
-        "frontier_nodes": 37,
-        "expanded_nodes": 329,
-        "execution_time": 0.007602214813232422
+        "cost": 14,
+        "frontier_nodes": 57,
+        "expanded_nodes": 42,
+        "execution_time": 0.0022516250610351562
     },
     {
         "algorithm": {
@@ -105,7 +105,7 @@
         "cost": 14,
         "frontier_nodes": 54,
         "expanded_nodes": 89,
-        "execution_time": 0.002317190170288086
+        "execution_time": 0.0039048194885253906
     },
     {
         "algorithm": {
@@ -115,7 +115,7 @@
         "cost": 14,
         "frontier_nodes": 39,
         "expanded_nodes": 21,
-        "execution_time": 0.0005261898040771484
+        "execution_time": 0.0008087158203125
     },
     {
         "algorithm": {
@@ -125,6 +125,6 @@
         "cost": 14,
         "frontier_nodes": 59,
         "expanded_nodes": 41,
-        "execution_time": 0.0012292861938476562
+        "execution_time": 0.001990795135498047
     }
 ]

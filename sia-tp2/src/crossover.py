@@ -2,9 +2,9 @@ import math
 import random
 from typing import Callable, Tuple
 
-from src.classes import Chromosome
+from classes import Chromosome
 
-#traerlo del config
+# traerlo del config
 PARAMETER_UNIFORM_PROBABILITY = 0.5
 
 CrossFunction = Callable[[Chromosome, Chromosome], Tuple[Chromosome, Chromosome]]
@@ -34,6 +34,7 @@ def anular_cross(tuple1: Chromosome, tuple2: Chromosome) -> (Chromosome, Chromos
     else:
         return _generic_cross(tuple2, tuple1, switch2, switch)
 
+
 def uniform_cross(tuple1: Chromosome, tuple2: Chromosome) -> (Chromosome, Chromosome):
     c1 = list(tuple1)
     c2 = list(tuple2)
@@ -50,4 +51,3 @@ def uniform_cross(tuple1: Chromosome, tuple2: Chromosome) -> (Chromosome, Chromo
 def _generic_cross(tuple1: Chromosome, tuple2: Chromosome, switch1: int, switch2: int):
     return (tuple(i for i in tuple1[:switch1] + tuple2[switch1:switch2] + tuple1[switch2:]),
             tuple(i for i in tuple2[:switch1] + tuple1[switch1:switch2] + tuple2[switch2:]))
-

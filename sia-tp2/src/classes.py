@@ -13,6 +13,7 @@ PROPERTIES_SUM = 150
 MIN_HEIGHT = 1.3
 MAX_HEIGHT = 2.0
 
+
 class BaseClass(ABC):
 
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
@@ -34,8 +35,6 @@ class BaseClass(ABC):
 
         self.atm = 0.5 - (3 * height - 5) ** 4 + (3 * height - 5) ** 2 + height / 2
         self.dem = 2 + (3 * height - 5) ** 4 - (3 * height - 5) ** 2 + height / 2
-
-
 
     # Abstract Method
     def get_fitness(self):
@@ -59,7 +58,7 @@ class BaseClass(ABC):
         self.genes['resistance'] *= norm_factor
         self.genes['health'] *= norm_factor
         if (self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] +
-                self.genes['resistance'] + self.genes['health']) != PROPERTIES_SUM:
+            self.genes['resistance'] + self.genes['health']) != PROPERTIES_SUM:
             raise Exception(f"Properties do not sum {PROPERTIES_SUM}")
 
     def get_cromies(self) -> Chromosome:
@@ -88,7 +87,7 @@ class BaseClass(ABC):
         return self.get_fitness() < other.get_fitness()
 
 
-class Guerrero(BaseClass):
+class Warrior(BaseClass):
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
                  height: float):
         super().__init__(strength, agility, dexterity, resistance, health, height)
@@ -97,7 +96,7 @@ class Guerrero(BaseClass):
         return 0.6 * self._attack() + 0.4 * self._defense()
 
 
-class Arquero(BaseClass):
+class Archer(BaseClass):
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
                  height: float):
         super().__init__(strength, agility, dexterity, resistance, health, height)
@@ -106,7 +105,7 @@ class Arquero(BaseClass):
         return 0.9 * self._attack() + 0.1 * self._defense()
 
 
-class Defensor(BaseClass):
+class Warden(BaseClass):
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
                  height: float):
         super().__init__(strength, agility, dexterity, resistance, health, height)
@@ -115,7 +114,7 @@ class Defensor(BaseClass):
         return 0.1 * self._attack() + 0.9 * self._defense()
 
 
-class Infiltrado(BaseClass):
+class Rogue(BaseClass):
 
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
                  height: float):
