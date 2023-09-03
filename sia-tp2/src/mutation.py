@@ -28,6 +28,12 @@ def get_mutation_function(string: str) -> MutationFunction:
 mutation_function = get_mutation_function(mutation_config['function'])
 
 
+def mutate_population(population: [BaseClass]) -> [BaseClass]:
+    new_population = []
+    for pop in population:
+        new_population.append(mutation_function(pop))
+    return new_population
+
 
 def mutate(gene: float, lower_bound: float, upper_bound: float) -> float:
     variation = random.uniform(lower_bound, upper_bound)

@@ -2,7 +2,9 @@
   "initial": {
     "population_size": 100,
     "class": "Warrior",
-    "population_seed": 1024
+    "population_seed": 1024,
+    "children_count": 50,
+    "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
     "A": 0.5,
@@ -16,16 +18,18 @@
     "t_0": 200,
     "t_k": 0.01,
     "tournament_m": 2,
-    "tournament_threshold": 0.6
+    "tournament_threshold": 0.6,
+    "/***guia_replacement": "traditional, young",
+    "/***guia": " elite, roulette, universal, boltzmann, ranking, deterministic_tournament, probabilistic_tournament  *////"
   },
   "crossover": {
-    "B": 0.5,
-    "replacement_1": "one_point",
-    "replacement_2": "two_point",
-    "uniform_probability": 0.5
+    "cross": "one_point",
+    "uniform_probability": 0.5,
+    "/***guia": " one_point, two_point, anular_cross, uniform_cross*////"
   },
   "mutation": {
-    "function": "gen_mutation",
+    "/***guia": " limited_multigen, uniform_multigen, complete, gen *////",
+    "function": "gen",
     "mutation_probability": 0.2,
     "gene_bounds": {
       "strength": {
