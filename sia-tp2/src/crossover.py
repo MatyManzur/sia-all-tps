@@ -2,10 +2,11 @@ import math
 import random
 from typing import Callable, Tuple
 
-from classes import Chromosome
+from classes import Chromosome, BaseClass
+from global_config import config
 
 # traerlo del config
-PARAMETER_UNIFORM_PROBABILITY = 0.5
+PARAMETER_UNIFORM_PROBABILITY = config['crossover']['uniform_probability']
 
 CrossFunction = Callable[[Chromosome, Chromosome], Tuple[Chromosome, Chromosome]]
 

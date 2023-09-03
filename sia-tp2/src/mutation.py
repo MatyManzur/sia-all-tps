@@ -1,39 +1,32 @@
-import copy
 import random
-
 from classes import BaseClass, Chromosome, PROPERTIES_SUM, PROPERTIES
-from typing import Callable
+from typing import Callable, List
+from global_config import config
 
 MutationFunction = Callable[[BaseClass], BaseClass]
 
-MUTATION_PROBABILITY = 0.2  # traer de config
+mutation_config = config['mutation']
 
-GENE_VARIATION_BOUNDS = { # traer de config
-    "strength": {
-        "lower_bound": -10,
-        "upper_bound": 10,
-    },
-    "agility": {
-        "lower_bound": -10,
-        "upper_bound": 10,
-    },
-    "dexterity": {
-        "lower_bound": -10,
-        "upper_bound": 10,
-    },
-    "resistance": {
-        "lower_bound": -10,
-        "upper_bound": 10,
-    },
-    "health": {
-        "lower_bound": -10,
-        "upper_bound": 10,
-    },
-    "height": {
-        "lower_bound": -0.5,
-        "upper_bound": 0.5,
-    },
-}
+MUTATION_PROBABILITY = mutation_config['mutation_probability']  # traer de config
+
+GENE_VARIATION_BOUNDS = mutation_config['gene_bounds']
+
+
+def get_mutation_function(string: str) -> MutationFunction:
+    if string == 'gen':
+        return gen_mutation
+    elif string == 'uniform':
+        return uniform_multigen_mutation
+    elif string == 'limited':
+        return limited_multigen_mutation
+    elif string == 'complete':
+        return complete_mutation
+    else:
+        raise Exception('Invalid Selection Function Name!')
+
+
+mutation_function = get_mutation_function(mutation_config['function'])
+
 
 
 def mutate(gene: float, lower_bound: float, upper_bound: float) -> float:

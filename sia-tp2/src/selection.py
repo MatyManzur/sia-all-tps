@@ -8,11 +8,13 @@ from classes import BaseClass
 from global_config import config
 
 # TODO: Lift from config
-T_C = 40
-T_0 = 200
-T_K = 0.01
-TOURNAMENT_M = 2
-TOURNAMENT_THRESHOLD = 0.6
+selection_options = config['selection']
+
+T_C = selection_options['t_c']
+T_0 = selection_options['t_0']
+T_K = selection_options['t_k']
+TOURNAMENT_M = selection_options['tournament_m']
+TOURNAMENT_THRESHOLD = selection_options['tournament_threshold']
 
 SelectionFunction = Callable[[List[BaseClass], int, int], List[BaseClass]]
 

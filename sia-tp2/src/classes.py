@@ -87,6 +87,8 @@ class BaseClass(ABC):
         return self.get_fitness() < other.get_fitness()
 
 
+
+
 class Warrior(BaseClass):
     def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
                  height: float):
@@ -94,6 +96,7 @@ class Warrior(BaseClass):
 
     def get_fitness(self):
         return 0.6 * self._attack() + 0.4 * self._defense()
+
 
 
 class Archer(BaseClass):
