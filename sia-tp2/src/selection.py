@@ -5,6 +5,7 @@ import numpy
 import numpy as np
 from typing import Set, List, Callable
 from classes import BaseClass
+from global_config import config
 
 # TODO: Lift from config
 T_C = 40
@@ -13,15 +14,15 @@ T_K = 0.01
 TOURNAMENT_M = 2
 TOURNAMENT_THRESHOLD = 0.6
 
-SelectionFunction = Callable[[List[BaseClass], int], List[BaseClass]]
+SelectionFunction = Callable[[List[BaseClass], int, int], List[BaseClass]]
 
 
-def elite(characters: List[BaseClass], n) -> List[BaseClass]:
+def elite(characters: List[BaseClass], n, t) -> List[BaseClass]:
     best_indexes = np.argsort(characters)[-n:]
     return [characters[i] for i in best_indexes]
 
 
-def roulette(chars: List[BaseClass], n) -> List[BaseClass]:
+def roulette(chars: List[BaseClass], n, t) -> List[BaseClass]:
     total_fitness = 0
     for c in chars:
         total_fitness += c.get_fitness()
@@ -42,7 +43,7 @@ def roulette(chars: List[BaseClass], n) -> List[BaseClass]:
     return selected_n
 
 
-def universal(chars: List[BaseClass], n) -> List[BaseClass]:
+def universal(chars: List[BaseClass], n, t) -> List[BaseClass]:
     total_fitness = 0
     for c in chars:
         total_fitness += c.get_fitness()
@@ -67,7 +68,7 @@ def universal(chars: List[BaseClass], n) -> List[BaseClass]:
     return ret_list
 
 
-def temperature(k, t):
+def __temperature(k, t):
     return T_C + (T_0 - T_C) * (math.e ** (-T_K * t))
 
 
@@ -76,7 +77,7 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
     exp_vals = numpy.zeros(n, dtype=np.float)
 
     for i, char in enumerate(chars):
-        exp_vals[i] = math.e ** (char.get_fitness / temperature(n, t))
+        exp_vals[i] = math.e ** (char.get_fitness / __temperature(n, t))
 
     exp_vals /= numpy.average(exp_vals)
 
@@ -99,7 +100,7 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
     return selected_n
 
 
-def ranking(chars: List[BaseClass], n) -> List[BaseClass]:
+def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
     # Ruleta pero primero armo un ranking
     chars.sort(reverse=True)
     fitness_sim = []
@@ -128,7 +129,7 @@ def ranking(chars: List[BaseClass], n) -> List[BaseClass]:
     return new_population
 
 
-def deterministic_tournament(chars: List[BaseClass], n) -> List[BaseClass]:
+def deterministic_tournament(chars: List[BaseClass], n, t) -> List[BaseClass]:
     selected_n = []
     for i in range(n):
         match_winner = None
@@ -143,7 +144,7 @@ def deterministic_tournament(chars: List[BaseClass], n) -> List[BaseClass]:
     return selected_n
 
 
-def probabilistic_tournament(chars: List[BaseClass], n) -> List[BaseClass]:
+def probabilistic_tournament(chars: List[BaseClass], n, t) -> List[BaseClass]:
     selected_n = []
     for i in range(n):
         bicho_one = chars[random.randint(0, len(chars) - 1)]
@@ -154,3 +155,38 @@ def probabilistic_tournament(chars: List[BaseClass], n) -> List[BaseClass]:
         else:
             selected_n.append(min((bicho_one, bicho_two)))
     return selected_n
+
+
+def get_select_func(string: str) -> SelectionFunction:
+    if string == 'elite':
+        return elite
+    elif string == 'roulette':
+        return roulette
+    elif string == 'universal':
+        return universal
+    elif string == 'boltzman':
+        return boltzmann
+    elif string == 'ranking':
+        return ranking
+    elif string == 'deterministic_tournament':
+        return deterministic_tournament
+    elif string == 'probabilistic_tournament':
+        return probabilistic_tournament
+    else:
+        raise Exception('Invalid Selection Function Name!')
+
+
+#SELECTION_FUN_1 = get_select_func(selection_options['selection_1'])
+#SELECTION_FUN_2 = get_select_func(selection_options['selection_2'])
+#SEL_1_PROB = selection_options['A']
+
+
+def select(population: List[BaseClass], n, generation, select_fun_1: SelectionFunction, select_fun_2, sel_fun_1_part:float):
+    part_a = population[:int(len(population) * sel_fun_1_part)]
+    part_b = population[int(len(population) * sel_fun_1_part):]
+
+    selected_1 = select_fun_1(part_a, int(n * sel_fun_1_part), generation)
+    selected_2 = select_fun_2(part_b, n - len(selected_1), generation)
+
+    return selected_1 + selected_2
+
