@@ -76,14 +76,16 @@ def main():
         # Finish condition
         finished = finished_function(new_population, generation, time.time() - start_time)
 
+    # with open("result.json", "w") as outfile:
+    #     json.dump(result, outfile)
 
 def generate_population(n: int, character_class: str) -> List[BaseClass]:
     population = []
 
     if character_class == 'warrior':
-        create_function = Warrior.__init__
+        create_function = Warrior
     elif character_class == 'rogue':
-        create_function = Rogue.__init__
+        create_function = Rogue
     elif character_class == 'warden':
         create_function = Warden.__init__
     elif character_class == 'archer':

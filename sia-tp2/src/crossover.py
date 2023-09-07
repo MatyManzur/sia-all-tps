@@ -34,8 +34,8 @@ def crossover_population(population: List[BaseClass],cross_function: CrossFuncti
             new_chromies = cross_function(population[i].get_cromies(), population[0].get_cromies())
         else:
             new_chromies = cross_function(population[i].get_cromies(), population[i+1].get_cromies())
-        population.append(character_class(chromosome=new_chromies[0]))
-        population.append(character_class(chromosome=new_chromies[1]))
+        crossed_population.append(character_class(chromosome=new_chromies[0]))
+        crossed_population.append(character_class(chromosome=new_chromies[1]))
     return crossed_population
 
 

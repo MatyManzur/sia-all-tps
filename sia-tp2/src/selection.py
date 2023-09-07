@@ -78,7 +78,7 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
     exp_vals = numpy.zeros(n, dtype=np.float_)
 
     for i, char in enumerate(chars):
-        exp_vals[i] = math.e ** (char.get_fitness / __temperature(n, t))
+        exp_vals[i] = math.e ** (char.get_fitness() / __temperature(n, t))
 
     exp_vals /= numpy.average(exp_vals)
 

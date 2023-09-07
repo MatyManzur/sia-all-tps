@@ -9,7 +9,7 @@ import math
 # Fuerza, Agilidad, Pericia, Resistencia, Vida, Height
 Chromosome = Tuple[float, float, float, float, float, float]
 PROPERTIES = ("strength", "agility", "dexterity", "resistance", "health", "height")
-PROPERTIES_SUM = 150
+PROPERTIES_SUM = 150.0
 MIN_HEIGHT = 1.3
 MAX_HEIGHT = 2.0
 
