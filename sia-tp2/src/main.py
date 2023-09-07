@@ -122,3 +122,25 @@ def generate_population(n: int, character_class: str) -> List[BaseClass]:
 
 if __name__ == '__main__':
     main()
+
+"""
+    Ideas para gráficos
+        Progreso de performance x generacion
+            Por clase
+            Por metodo de seleccion
+            Por metodo de crossover
+            Por metodo de mutacion
+            Por population size
+            Por promiscuidad
+        Mejores de cada clase
+            Por cantidad de generaciones
+            Tiempo
+            Estructura
+            Cierto Fitness
+        Énfasis en la idea de Exploración vs Explotación
+        Resultados por metodos de corte
+        Resultados por mutacion
+            Tiempo de ejecucion
+            Fitness
+            Variabilidad genetica        
+"""

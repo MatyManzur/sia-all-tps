@@ -116,9 +116,10 @@ class Warrior(BaseClass):
 
 
 class Archer(BaseClass):
-    def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
-                 height: float):
-        super().__init__(strength, agility, dexterity, resistance, health, height)
+    def __init__(self, strength: float = None, agility: float = None, dexterity: float = None,
+                 resistance: float = None, health: float = None, height: float = None,
+                 chromosome: Chromosome = None):
+        super().__init__(strength, agility, dexterity, resistance, health, height, chromosome)
 
     def get_fitness(self):
         return 0.9 * self._attack() + 0.1 * self._defense()  # 292
