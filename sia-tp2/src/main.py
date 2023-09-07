@@ -37,7 +37,7 @@ def main():
 
     crossover = select_cross_function(config['crossover']['cross'])
 
-    new_population = []
+    new_population: List[BaseClass] = []
 
     finished_function = get_finish_condition(config['finish_criteria']['finish_method'])
     start_time = time.time() * 1000
@@ -46,9 +46,9 @@ def main():
 
     while not finished:
 
-        # population.sort(key=lambda x: x.get_fitness(), reverse=True)
+        population.sort(key=lambda x: x.get_fitness(), reverse=True)
         result["all_generations"][f"gen_{generation}"] = {
-            "population": population
+            "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
         }
 
         # Selection
@@ -85,7 +85,7 @@ def main():
 
     population.sort(key=lambda x: x.get_fitness(), reverse=True)
     result["all_generations"][f"gen_{generation}"] = {
-        "population": population
+        "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
     }
     result["generation_count"] = generation
     result["elapsed_time"] = end_time - start_time
@@ -95,8 +95,8 @@ def main():
     for i in range(10):
         print(f"{i}: {population[i].get_fitness()} - {population[i]}")
 
-    # with open("result.json", "w") as outfile:
-    #     json.dump(result, outfile)
+    with open("result.json", "w") as outfile:
+        json.dump(result, outfile)
 
 
 def generate_population(n: int, character_class: str) -> List[BaseClass]:

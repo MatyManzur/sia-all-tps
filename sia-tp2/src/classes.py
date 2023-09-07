@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import random
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -119,6 +120,9 @@ class BaseClass(ABC):
 
     def __str__(self):
         return self.genes.__str__()
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
 
 
 class Warrior(BaseClass):
