@@ -14,6 +14,14 @@ MIN_HEIGHT = 1.3
 MAX_HEIGHT = 2.0
 
 
+def chromosome_equals(chromosome1: Chromosome, chromosome2: Chromosome, delta: float):
+    equals = True
+    for i in range(0, len(chromosome1)):
+        equals = equals and (chromosome1[i] - chromosome2[i])/(chromosome1[i] + chromosome2[i]) < delta
+        if not equals:
+            return False
+    return equals
+
 class BaseClass(ABC):
 
     def __init__(self, strength: float = None, agility: float = None, dexterity: float = None,
@@ -92,6 +100,7 @@ class BaseClass(ABC):
 
     def __lt__(self, other: BaseClass) -> bool:
         return self.get_fitness() < other.get_fitness()
+    
 
 
 

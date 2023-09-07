@@ -66,6 +66,7 @@
       "acceptance": 80
     },
     "relevant_population": 0.2,
-    "relevant_generations": 5
+    "relevant_generations": 5,
+    "similarity": 0.05
   }
 }

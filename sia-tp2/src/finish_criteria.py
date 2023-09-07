@@ -1,7 +1,7 @@
 from typing import List, Callable
 
 from global_config import config
-from classes import BaseClass
+from classes import BaseClass, Chromosome, chromosome_equals
 
 finish_config = config["finish_criteria"]
 
@@ -10,18 +10,18 @@ def time_based(population: List[BaseClass], generation: int, execution_time: flo
     return execution_time > finish_config["finish_time_ms"]
 
 
+# similarity is defined as delta of genomes
 def structure_based_init() -> Callable[[List[BaseClass], int, float], bool]:
-    prev_generation = set()
+    prev_generation: list[Chromosome] = []
     generation_count = 0
 
     def structure_based(population: List[BaseClass], generation: int, execution_time: float):
         nonlocal prev_generation
         nonlocal generation_count
-        matches = get_matches(population, prev_generation)
-        prev_generation = set(map(BaseClass.get_fitness, population))
+        matches = get_matches(list(map(BaseClass.get_cromies, population)), prev_generation)
 
-        if len(prev_generation) == 0 or matches < finish_config["relevant_population"] * len(population):
-            prev_generation = set(map(BaseClass.get_fitness, population))
+        if matches < finish_config["relevant_population"] * len(population):
+            prev_generation = list(map(BaseClass.get_cromies, population))
             return False
         generation_count += 1
         return generation_count >= finish_config["relevant_generations"]
@@ -56,5 +56,13 @@ def optimum_based(population: List[BaseClass], generation: int, execution_time: 
     return best.get_fitness() >= finish_config["finish_optimum"]["acceptance"]
 
 
-def get_matches(population: List[BaseClass], to_match: set[float]) -> int:
-    return len(to_match.intersection(set(map(BaseClass.get_fitness, population))))
+def get_matches(population: list[Chromosome], to_match: list[Chromosome]) -> int:
+    copy_pop = list(population)
+    matches = 0
+    for _, chromosome1 in enumerate(to_match):
+        for _, chromosome2 in enumerate(copy_pop):
+            if chromosome_equals(chromosome1, chromosome2, finish_config["similarity"]):
+                matches += 1
+                copy_pop.remove(chromosome2)
+    return matches
+        
