@@ -21,7 +21,7 @@ def main():
     initial_config = config['initial']
     population = generate_population(initial_config['population_size'], initial_config['population_seed'],
                                      initial_config['class'])
-    children_count = initial_config['children_count']
+    children_count: int = initial_config['children_count']
 
 
     finished = False

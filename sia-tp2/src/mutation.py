@@ -28,8 +28,8 @@ def get_mutation_function(string: str) -> MutationFunction:
 mutation_function = get_mutation_function(mutation_config['function'])
 
 
-def mutate_population(population: [BaseClass]) -> [BaseClass]:
-    new_population = []
+def mutate_population(population: [BaseClass]) -> List[BaseClass]:
+    new_population: List[BaseClass] = []
     for pop in population:
         new_population.append(mutation_function(pop))
     return new_population
