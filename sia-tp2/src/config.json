@@ -1,18 +1,18 @@
 {
   "initial": {
-    "population_size": 100,
-    "class": "Warrior",
+    "population_size": 1000,
+    "class": "rogue",
     "population_seed": 1024,
     "children_count": 1000,
     "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
-    "A": 0.5,
-    "selection_1": "elite",
-    "selection_2": "roulette",
-    "B": 0.5,
-    "selection_3": "universal",
-    "selection_4": "boltzmann",
+    "A": 0.95,
+    "selection_1": "probabilistic_tournament",
+    "selection_2": "elite",
+    "B": 0.95,
+    "selection_3": "probabilistic_tournament",
+    "selection_4": "elite",
     "replacement_method": "traditional",
     "t_c": 40,
     "t_0": 200,
@@ -28,9 +28,9 @@
     "/***guia": " one_point, two_point, anular_cross, uniform_cross*////"
   },
   "mutation": {
-    "/***guia": " limited_multigen, uniform_multigen, complete, gen *////",
-    "function": "gen",
-    "mutation_probability": 0.2,
+    "/***guia": " limited, uniform, complete, gen *////",
+    "function": "uniform",
+    "mutation_probability": 0.5,
     "gene_bounds": {
       "strength": {
         "lower_bound": -3,
@@ -45,12 +45,12 @@
         "upper_bound": 3
       },
       "resistance": {
-        "lower_bound": -10,
-        "upper_bound": 10
+        "lower_bound": -3,
+        "upper_bound": 3
       },
       "health": {
-        "lower_bound": -10,
-        "upper_bound": 10
+        "lower_bound": -3,
+        "upper_bound": 3
       },
       "height": {
         "lower_bound": -0.8,
@@ -63,7 +63,7 @@
     "finish_time_ms": 100,
     "finish_generation_count": 1000,
     "finish_optimum": {
-      "acceptance": 80
+      "acceptance": 70
     },
     "relevant_population": 0.2,
     "relevant_generations": 10,

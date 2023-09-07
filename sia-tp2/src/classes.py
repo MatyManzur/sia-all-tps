@@ -12,15 +12,17 @@ PROPERTIES = ("strength", "agility", "dexterity", "resistance", "health", "heigh
 PROPERTIES_SUM = 150.0
 MIN_HEIGHT = 1.3
 MAX_HEIGHT = 2.0
+EPSILON = 10 ** -4
 
 
 def chromosome_equals(chromosome1: Chromosome, chromosome2: Chromosome, delta: float):
     equals = True
     for i in range(0, len(chromosome1)):
-        equals = equals and (chromosome1[i] - chromosome2[i])/(chromosome1[i] + chromosome2[i]) < delta
+        equals = equals and (chromosome1[i] - chromosome2[i]) / (chromosome1[i] + chromosome2[i]) < delta
         if not equals:
             return False
     return equals
+
 
 class BaseClass(ABC):
 
@@ -33,8 +35,10 @@ class BaseClass(ABC):
         if chromosome is not None:
             strength, agility, dexterity, resistance, health, height = chromosome
 
-        if not (MIN_HEIGHT <= height <= MAX_HEIGHT):
-            height = MIN_HEIGHT + ((height - MIN_HEIGHT) % (MAX_HEIGHT - MIN_HEIGHT))
+        if height < MIN_HEIGHT:
+            height = MIN_HEIGHT
+        elif height > MAX_HEIGHT:
+            height = MAX_HEIGHT
 
         self.genes = {
             "strength": strength,
@@ -72,9 +76,21 @@ class BaseClass(ABC):
         self.genes['dexterity'] *= norm_factor
         self.genes['resistance'] *= norm_factor
         self.genes['health'] *= norm_factor
-        if (self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] +
-            self.genes['resistance'] + self.genes['health']) != PROPERTIES_SUM:
-            raise Exception(f"Properties do not sum {PROPERTIES_SUM}")
+        new_property_sum = self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] + self.genes[
+            'resistance'] + self.genes['health']
+        if not math.isclose(new_property_sum, PROPERTIES_SUM):
+            raise Exception(f"Properties do not sum {PROPERTIES_SUM}: {new_property_sum}")
+
+    def apply_bounds(self):
+        if self.genes['height'] < MIN_HEIGHT:
+            self.genes['height'] = MIN_HEIGHT
+        elif self.genes['height'] > MAX_HEIGHT:
+            self.genes['height'] = MAX_HEIGHT
+
+        if self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] + self.genes[
+            'resistance'] + self.genes['health'] != PROPERTIES_SUM:
+            self.__normalize()
+
 
     def get_cromies(self) -> Chromosome:
         return (self.genes['strength'], self.genes['agility'], self.genes['dexterity'],
@@ -100,19 +116,18 @@ class BaseClass(ABC):
 
     def __lt__(self, other: BaseClass) -> bool:
         return self.get_fitness() < other.get_fitness()
-    
 
-
+    def __str__(self):
+        return self.genes.__str__()
 
 
 class Warrior(BaseClass):
-    def __init__(self, strength: float, agility: float, dexterity: float, resistance: float, health: float,
-                 height: float):
-        super().__init__(strength, agility, dexterity, resistance, health, height)
+    def __init__(self, strength: float = None, agility: float = None, dexterity: float = None, resistance: float = None,
+                 health: float = None, height: float = None, chromosome: Chromosome = None):
+        super().__init__(strength, agility, dexterity, resistance, health, height, chromosome)
 
     def get_fitness(self):
         return 0.6 * self._attack() + 0.4 * self._defense()  # 346
-
 
 
 class Archer(BaseClass):

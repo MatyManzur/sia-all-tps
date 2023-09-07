@@ -1,3 +1,3 @@
 import json
-config = json.load(open('config.json', mode='r'))
+config = json.load(open('src/config.json', mode='r'))
 

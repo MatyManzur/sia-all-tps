@@ -75,8 +75,7 @@ def __temperature(k, t):
 
 # t is the generation number
 def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
-    exp_vals = numpy.zeros(n, dtype=np.float_)
-
+    exp_vals = numpy.zeros(len(chars), dtype=np.float_)
     for i, char in enumerate(chars):
         exp_vals[i] = math.e ** (char.get_fitness() / __temperature(n, t))
 

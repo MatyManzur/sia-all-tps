@@ -17,7 +17,7 @@ FinishFunction = Callable[[List[BaseClass], int, float], bool]
 
 def main():
     initial_config = config['initial']
-    random.seed(initial_config['seed'])
+    random.seed(initial_config['population_seed'])
 
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
@@ -54,6 +54,8 @@ def main():
         # Selection
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
         generation += 1
+        print(generation)
+        print(max(selected_pop, key=lambda x: x.get_fitness()).get_fitness())
 
         # Crossover
         random.shuffle(selected_pop)
@@ -73,6 +75,8 @@ def main():
             else:
                 new_population = child_pop + select(population, pop_size - len(child_pop), generation,
                                                     replacement_1, replacement_2, replace_ratio)
+
+        population = new_population
 
         # Finish condition
         finished = finished_function(population, generation, time.time() * 1000 - start_time)
@@ -97,15 +101,14 @@ def main():
 
 def generate_population(n: int, character_class: str) -> List[BaseClass]:
     population = []
-
     if character_class == 'warrior':
         create_function = Warrior
     elif character_class == 'rogue':
         create_function = Rogue
     elif character_class == 'warden':
-        create_function = Warden.__init__
+        create_function = Warden
     elif character_class == 'archer':
-        create_function = Archer.__init__
+        create_function = Archer
     else:
         raise Exception('Invalid character class')
 
