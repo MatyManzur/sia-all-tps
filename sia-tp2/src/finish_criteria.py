@@ -5,6 +5,9 @@ from classes import BaseClass, Chromosome, chromosome_equals
 
 finish_config = config["finish_criteria"]
 
+FinishFunction = Callable[[List[BaseClass], int, float], bool]
+
+
 # in miliseconds
 def time_based(population: List[BaseClass], generation: int, execution_time: float) -> bool:
     return execution_time > finish_config["finish_time_ms"]
