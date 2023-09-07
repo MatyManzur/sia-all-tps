@@ -59,7 +59,7 @@
     }
   },
   "finish_criteria": {
-    "finish_method": "time",
+    "finish_method": "time_based",
     "finish_time_ms": 10000,
     "finish_generation_count": 30,
     "finish_optimum": {

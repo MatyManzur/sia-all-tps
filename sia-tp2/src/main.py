@@ -7,6 +7,7 @@ from classes import Warrior, Rogue, Warden, Archer, BaseClass
 from crossover import crossover_population, select_cross_function
 from selection import select, get_select_func
 from mutation import mutate_population
+from finish_criteria import get_finish_condition
 
 AMOUNT_STATS = 5
 
@@ -25,7 +26,6 @@ def main():
 
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
-
 
     finished = False
     generation = 0
@@ -53,7 +53,8 @@ def main():
         generation += 1
 
         # Crossover
-        child_pop = crossover_population(selected_pop)
+        random.shuffle(selected_pop)
+        child_pop = crossover_population(selected_pop, crossover)
 
         # Mutation
         child_pop = mutate_population(child_pop)
@@ -73,6 +74,7 @@ def main():
         print(new_population)
 
         # Finish condition
+        finished = finished_function(new_population, generation, time.time() - start_time)
 
 
 def generate_population(n: int, character_class: str) -> List[BaseClass]:

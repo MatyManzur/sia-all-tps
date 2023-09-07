@@ -25,23 +25,15 @@ def select_cross_function(name: str) -> CrossFunction:
     raise Exception('Invalid Crossover Function Name!')
 
 
-cross_fun_1 = select_cross_function(crossover_options['replacement_1'])
-cross_fun_2 = select_cross_function(crossover_options['replacement_2'])
-cross_1_part = crossover_options['B']
-
-
-def crossover_population(population: List[BaseClass]) -> List[BaseClass]:
+def crossover_population(population: List[BaseClass],cross_function: CrossFunction) -> List[BaseClass]:
     n = len(population)
     crossed_population = []
     character_class = population[0].__class__
     for i in range(0, n, 2):
         if i == n - 1:
-            crossed_population.append(population[i])
-            break
-        if (i / n) < cross_1_part:
-            new_chromies = cross_fun_1(population[i].get_cromies(), population[i + 1].get_cromies())
+            new_chromies = cross_function(population[i].get_cromies(), population[0].get_cromies()) 
         else:
-            new_chromies = cross_fun_2(population[i].get_cromies(), population[i + 1].get_cromies())
+            new_chromies = cross_function(population[i].get_cromies(), population[i+1].get_cromies())
         population.append(character_class(chromosome=new_chromies[0]))
         population.append(character_class(chromosome=new_chromies[1]))
     return crossed_population
