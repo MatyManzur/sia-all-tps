@@ -115,7 +115,7 @@ def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
         sum_value += f
 
     # hace falta esto? No podemos hacer de 0 a sum_value y listo?
-    fitness_sim = [val/sum_value for val in fitness_sim]
+    fitness_sim = [val / sum_value for val in fitness_sim]
 
     new_population = []
 
@@ -166,7 +166,7 @@ def get_select_func(string: str) -> SelectionFunction:
         return roulette
     elif string == 'universal':
         return universal
-    elif string == 'boltzman':
+    elif string == 'boltzmann':
         return boltzmann
     elif string == 'ranking':
         return ranking
@@ -178,17 +178,8 @@ def get_select_func(string: str) -> SelectionFunction:
         raise Exception('Invalid Selection Function Name!')
 
 
-#SELECTION_FUN_1 = get_select_func(selection_options['selection_1'])
-#SELECTION_FUN_2 = get_select_func(selection_options['selection_2'])
-#SEL_1_PROB = selection_options['A']
-
-
-def select(population: List[BaseClass], n, generation, select_fun_1: SelectionFunction, select_fun_2, sel_fun_1_part:float):
-    part_a = population[:int(len(population) * sel_fun_1_part)]
-    part_b = population[int(len(population) * sel_fun_1_part):]
-
-    selected_1 = select_fun_1(part_a, int(n * sel_fun_1_part), generation)
-    selected_2 = select_fun_2(part_b, n - len(selected_1), generation)
-
+def select(population: List[BaseClass], n, generation, select_fun_1: SelectionFunction,
+           select_fun_2: SelectionFunction, sel_fun_1_part: float):
+    selected_1 = select_fun_1(population, int(n * sel_fun_1_part), generation)
+    selected_2 = select_fun_2(population, n - len(selected_1), generation)
     return selected_1 + selected_2
-
