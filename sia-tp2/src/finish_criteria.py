@@ -1,3 +1,4 @@
+import math
 from typing import List, Callable
 
 from global_config import config
@@ -40,7 +41,7 @@ def content_based_init() -> Callable[[List[BaseClass], int, float], bool]:
         nonlocal prev_best
         nonlocal generation_count
         best_fitness = max(population, key=lambda x: x.get_fitness()).get_fitness()
-        if prev_best == -1 or best_fitness > prev_best:
+        if prev_best == -1 or not math.isclose(best_fitness, prev_best):
             generation_count = 0
             prev_best = best_fitness
             return False

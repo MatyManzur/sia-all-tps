@@ -31,7 +31,7 @@ def crossover_population(population: List[BaseClass],cross_function: CrossFuncti
     character_class = population[0].__class__
     for i in range(0, n, 2):
         if i == n - 1:
-            new_chromies = cross_function(population[i].get_cromies(), population[0].get_cromies()) 
+            new_chromies = cross_function(population[i].get_cromies(), population[0].get_cromies())
         else:
             new_chromies = cross_function(population[i].get_cromies(), population[i+1].get_cromies())
         population.append(character_class(chromosome=new_chromies[0]))
