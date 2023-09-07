@@ -7,7 +7,7 @@ MutationFunction = Callable[[BaseClass], BaseClass]
 
 mutation_config = config['mutation']
 
-MUTATION_PROBABILITY = mutation_config['mutation_probability']  # traer de config
+MUTATION_PROBABILITY = mutation_config['mutation_probability']
 
 GENE_VARIATION_BOUNDS = mutation_config['gene_bounds']
 

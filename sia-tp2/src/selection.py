@@ -7,7 +7,6 @@ from typing import Set, List, Callable
 from classes import BaseClass
 from global_config import config
 
-# TODO: Lift from config
 selection_options = config['selection']
 
 T_C = selection_options['t_c']
