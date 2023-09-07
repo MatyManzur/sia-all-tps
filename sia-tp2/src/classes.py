@@ -57,10 +57,10 @@ class BaseClass(ABC):
 
     # ojo hay que usar los p, no los items
     def _attack(self):
-        return (self.__agility_p() + self.__dexterity_p()) * self.__strength_p() * self.atm
+        return (self.__agility_p() + self.__dexterity_p()) * self.__strength_p() * self.atm  # 160*1.704 = 273
 
     def _defense(self):
-        return (self.__resistance_p() + self.__dexterity_p()) * self.__health_p() * self.dem
+        return (self.__resistance_p() + self.__dexterity_p()) * self.__health_p() * self.dem  # 160*2.84 = 455
 
     def __normalize(self):
         current_property_sum = (self.genes['strength'] + self.genes['agility'] +
@@ -111,7 +111,7 @@ class Warrior(BaseClass):
         super().__init__(strength, agility, dexterity, resistance, health, height)
 
     def get_fitness(self):
-        return 0.6 * self._attack() + 0.4 * self._defense()
+        return 0.6 * self._attack() + 0.4 * self._defense()  # 346
 
 
 
@@ -121,7 +121,7 @@ class Archer(BaseClass):
         super().__init__(strength, agility, dexterity, resistance, health, height)
 
     def get_fitness(self):
-        return 0.9 * self._attack() + 0.1 * self._defense()
+        return 0.9 * self._attack() + 0.1 * self._defense()  # 292
 
 
 class Warden(BaseClass):
@@ -131,7 +131,7 @@ class Warden(BaseClass):
         super().__init__(strength, agility, dexterity, resistance, health, height, chromosome)
 
     def get_fitness(self):
-        return 0.1 * self._attack() + 0.9 * self._defense()
+        return 0.1 * self._attack() + 0.9 * self._defense()  # 437
 
 
 class Rogue(BaseClass):
@@ -142,4 +142,4 @@ class Rogue(BaseClass):
         super().__init__(strength, agility, dexterity, resistance, health, height, chromosome)
 
     def get_fitness(self):
-        return 0.8 * self._attack() + 0.3 * self._defense()
+        return 0.8 * self._attack() + 0.3 * self._defense()  # 355

@@ -31,7 +31,9 @@ mutation_function = get_mutation_function(mutation_config['function'])
 def mutate_population(population: [BaseClass]) -> List[BaseClass]:
     new_population: List[BaseClass] = []
     for pop in population:
-        new_population.append(mutation_function(pop))
+        mutated = mutation_function(pop)
+        mutated.apply_bounds()
+        new_population.append(mutated)
     return new_population
 
 

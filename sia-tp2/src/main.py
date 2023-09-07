@@ -1,3 +1,4 @@
+import json
 import time
 
 from global_config import config
@@ -11,12 +12,6 @@ from finish_criteria import get_finish_condition
 
 AMOUNT_STATS = 5
 
-"""
-Poblacion
-Generacion
-Tiempo de ejecucion
-Devuelve true si termino
-"""
 FinishFunction = Callable[[List[BaseClass], int, float], bool]
 
 
@@ -45,9 +40,17 @@ def main():
     new_population = []
 
     finished_function = get_finish_condition(config['finish_criteria']['finish_method'])
-    start_time = time.time()
+    start_time = time.time() * 1000
+
+    result = {"all_generations": {}}
 
     while not finished:
+
+        # population.sort(key=lambda x: x.get_fitness(), reverse=True)
+        result["all_generations"][f"gen_{generation}"] = {
+            "population": population
+        }
+
         # Selection
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
         generation += 1
@@ -71,13 +74,26 @@ def main():
                 new_population = child_pop + select(population, pop_size - len(child_pop), generation,
                                                     replacement_1, replacement_2, replace_ratio)
 
-        print(new_population)
-
         # Finish condition
-        finished = finished_function(new_population, generation, time.time() - start_time)
+        finished = finished_function(population, generation, time.time() * 1000 - start_time)
+
+    end_time = time.time() * 1000
+
+    population.sort(key=lambda x: x.get_fitness(), reverse=True)
+    result["all_generations"][f"gen_{generation}"] = {
+        "population": population
+    }
+    result["generation_count"] = generation
+    result["elapsed_time"] = end_time - start_time
+
+    print(f"Generation_count: {generation} \nElapsed Time: {result['elapsed_time']}")
+    print(f"Top 10 of last generation:")
+    for i in range(10):
+        print(f"{i}: {population[i].get_fitness()} - {population[i]}")
 
     # with open("result.json", "w") as outfile:
     #     json.dump(result, outfile)
+
 
 def generate_population(n: int, character_class: str) -> List[BaseClass]:
     population = []
