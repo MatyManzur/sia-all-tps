@@ -1,3 +1,5 @@
+import time
+
 from global_config import config
 import random
 from typing import List, Callable

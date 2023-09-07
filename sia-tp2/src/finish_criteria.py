@@ -56,6 +56,19 @@ def optimum_based(population: List[BaseClass], generation: int, execution_time: 
     return best.get_fitness() >= finish_config["finish_optimum"]["acceptance"]
 
 
+def get_finish_condition(name: str) -> FinishFunction:
+    if name == "time_based":
+        return time_based
+    elif name == "structure_based":
+        return structure_based_init()
+    elif name == "content_based":
+        return content_based_init()
+    elif name == "optimum_based":
+        return optimum_based
+    elif name == "generation_based":
+        return generation_based
+
+
 def get_matches(population: list[Chromosome], to_match: list[Chromosome]) -> int:
     copy_pop = list(population)
     matches = 0
@@ -65,4 +78,3 @@ def get_matches(population: list[Chromosome], to_match: list[Chromosome]) -> int
                 matches += 1
                 copy_pop.remove(chromosome2)
     return matches
-        
