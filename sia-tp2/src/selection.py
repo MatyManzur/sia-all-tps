@@ -117,11 +117,11 @@ def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
 
     new_population = []
 
-    for c in range(amount_char):
+    for _ in range(n):
         r = random.uniform(0, 1)
         acc = 0
         for index, f in enumerate(fitness_sim):
-            if acc < r < acc + f:
+            if acc < r <= acc + f:
                 new_population.append(chars[index])
                 break
             acc += f
