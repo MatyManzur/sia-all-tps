@@ -14,7 +14,7 @@ GENE_VARIATION_BOUNDS = mutation_config['gene_bounds']
 
 def gen_mutation(character: BaseClass) -> BaseClass:
     if random.uniform(0, 1) < MUTATION_PROBABILITY:
-        gene_to_mutate = random.sample(PROPERTIES, 1)
+        gene_to_mutate = random.sample(PROPERTIES, 1)[0]
         new_gene_value = mutate(character.genes[gene_to_mutate],
                                 GENE_VARIATION_BOUNDS[gene_to_mutate]['lower_bound'],
                                 GENE_VARIATION_BOUNDS[gene_to_mutate]['upper_bound'])
@@ -38,7 +38,7 @@ def mutate(gene: float, lower_bound: float, upper_bound: float) -> float:
 
 def limited_multigen_mutation(character: BaseClass) -> BaseClass:
     if random.uniform(0, 1) < MUTATION_PROBABILITY:
-        gene_count = random.randint(0, len(PROPERTIES))
+        gene_count = random.randint(1, len(PROPERTIES))
         genes_to_mutate = random.sample(PROPERTIES, gene_count)
         for gene in genes_to_mutate:
             new_gene_value = mutate(character.genes[gene],
