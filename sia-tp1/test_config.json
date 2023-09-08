@@ -1,7 +1,7 @@
 {
   "map": "MAP_1",
-  "render_game": true,
-  "render_delay_in_ms": 1,
+  "render_game": false,
+  "render_delay_in_ms": 0,
   "algorithm": "BFS",
   "heuristic": "manhattan",
   "depth_increment": 100,

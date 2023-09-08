@@ -1,5 +1,6 @@
 import json
 import time
+import plotly.graph_objects as go
 
 from global_config import config
 import random
@@ -44,12 +45,24 @@ def main():
 
     result = {"all_generations": {}}
 
+    best_fitnesses=[]
+
     while not finished:
+        
+        fig = go.FigureWidget()
+        fig.add_scatter()
+        fig
+
 
         population.sort(key=lambda x: x.get_fitness(), reverse=True)
         result["all_generations"][f"gen_{generation}"] = {
             "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
         }
+
+
+        best_fitnesses.append(population[0].get_fitness())
+        fig.data[0].y = best_fitnesses
+
 
         # Selection
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
@@ -145,5 +158,14 @@ if __name__ == '__main__':
         Resultados por mutacion
             Tiempo de ejecucion
             Fitness
-            Variabilidad genetica        
+            Variabilidad genetica       
+
+        Habría que ver qué métodos de selección/reemplazo/crossover/mutación son mejores para exploración y cuáles son mejores
+        para explotación. Así no hacemos todas las combinaciones, sino que separamos en combinaciones más para exploración y más para
+        explotación. 
+        Algunas combinaciones interesantes: 
+        1- Universal y Prob_Tournament para sel 1 y sel 2. Boltzmann y cualquiera para 3 y 4 (más Boltzmann que la otra) con mutación
+        uniforme con alta probabilidad de mutación. Boltzmann empieza con exploración, termina con explotación, la combinación de sel 1 
+        con sel 2 y mutación nos asegura una requete exploración siempre. Boltzmann hace que cuando la temperatura sea baja, los hijos
+        deformes altamente mutados mueran siempre
 """
