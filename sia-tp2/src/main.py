@@ -1,6 +1,6 @@
 import json
 import time
-import plotly.graph_objects as go
+
 
 from global_config import config
 import random
@@ -45,23 +45,15 @@ def main():
 
     result = {"all_generations": {}}
 
-    best_fitnesses=[]
+
 
     while not finished:
-        
-        fig = go.FigureWidget()
-        fig.add_scatter()
-        fig
-
 
         population.sort(key=lambda x: x.get_fitness(), reverse=True)
         result["all_generations"][f"gen_{generation}"] = {
             "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
         }
 
-
-        best_fitnesses.append(population[0].get_fitness())
-        fig.data[0].y = best_fitnesses
 
 
         # Selection

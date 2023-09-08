@@ -11,7 +11,7 @@
     "selection_1": "universal",
     "selection_2": "boltzmann",
     "B": 0.8,
-    "selection_3": "elite",
+    "selection_3": "roulette",
     "selection_4": "roulette",
     "replacement_method": "traditional",
     "t_c": 40,
@@ -59,7 +59,7 @@
     }
   },
   "finish_criteria": {
-    "finish_method": "content_based",
+    "finish_method": "generation_based",
     "finish_time_ms": 100,
     "finish_generation_count": 100,
     "finish_optimum": {
