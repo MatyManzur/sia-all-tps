@@ -76,9 +76,10 @@ def get_finish_condition(name: str) -> FinishFunction:
 def get_matches(population: list[Chromosome], to_match: list[Chromosome]) -> int:
     copy_pop = list(population)
     matches = 0
-    for _, chromosome1 in enumerate(to_match):
-        for _, chromosome2 in enumerate(copy_pop):
+    for chromosome1 in to_match:
+        for chromosome2 in copy_pop:
             if chromosome_equals(chromosome1, chromosome2, finish_config["similarity"]):
                 matches += 1
                 copy_pop.remove(chromosome2)
+                break
     return matches

@@ -9,6 +9,7 @@ from crossover import crossover_population, select_cross_function
 from selection import select, get_select_func
 from mutation import mutate_population
 from finish_criteria import get_finish_condition
+from stats import *
 
 AMOUNT_STATS = 5
 
@@ -50,12 +51,11 @@ def main():
         result["all_generations"][f"gen_{generation}"] = {
             "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
         }
+        print_generation(generation, population)
 
         # Selection
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
         generation += 1
-        print(generation)
-        print(max(selected_pop, key=lambda x: x.get_fitness()).get_fitness())
 
         # Crossover
         random.shuffle(selected_pop)
