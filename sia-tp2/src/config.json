@@ -1,26 +1,26 @@
 {
   "initial": {
-    "population_size": 100,
-    "class": "warrior",
-    "population_seed": 1024,
+    "population_size": 200,
+    "class": "archer",
+    "population_seed": 1923,
     "children_count": 50,
     "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
-    "A": 0.9,
-    "selection_1": "universal",
-    "selection_2": "boltzmann",
-    "B": 0.8,
+    "A": 0.1,
+    "selection_1": "elite",
+    "selection_2": "probabilistic_tournament",
+    "B": 0.7,
     "selection_3": "roulette",
-    "selection_4": "roulette",
+    "selection_4": "universal",
     "replacement_method": "traditional",
     "t_c": 40,
     "t_0": 200,
     "t_k": 0.01,
     "tournament_m": 2,
-    "tournament_threshold": 0.6,
-    "/***guia_replacement": "traditional, young",
-    "/***guia": " elite, roulette, universal, boltzmann, ranking, deterministic_tournament, probabilistic_tournament  *////"
+    "tournament_threshold": 0.5,
+    "/***guia_replacement": "traditional, young**/",
+    "/***guia": "(+ explotacion) elite, roulette, ranking, deterministic_tournament, universal, probabilistic_tournament,  (+ exploracion) especial: boltzmann,*////"
   },
   "crossover": {
     "cross": "uniform_cross",
@@ -59,14 +59,14 @@
     }
   },
   "finish_criteria": {
-    "finish_method": "generation_based",
-    "finish_time_ms": 100,
+    "finish_method": "content_based",
+    "finish_time_ms": 2000,
     "finish_generation_count": 100,
     "finish_optimum": {
       "acceptance": 70
     },
     "relevant_population": 0.2,
-    "relevant_generations": 10,
+    "relevant_generations": 20,
     "similarity": 0.05,
     "/***guia": "time_based, structure_based, content_based, generation_based, optimum_based*////"
   }
