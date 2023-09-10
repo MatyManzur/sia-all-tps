@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.express as px
 
 MAX_DIFFERENCE = np.sqrt((5 * 150 ** 2) + (0.7 ** 2))
+RESULT_FILES = ["results/gen_mutation.json", "results/limited_mutation.json", "results/uniform_mutation.json", "results/complete_mutation.json"]
+RESULT_NAMES = ["Gen Mutation", "Limited Multigen Mutation", "Uniform Multigen Mutation", "Complete Mutation"]
 
 
 def chromosome_difference(c1: Tuple, c2: Tuple) -> float:
