@@ -11,8 +11,12 @@ def main():
         data.append(list(map(lambda c: c['fitness'], gen['population'])))
     df = pd.DataFrame(data)
     print(df)
-    fig = px.imshow(df)
-    fig.update_xaxes(autorange="reversed")
+    fig = px.imshow(df, color_continuous_scale='Jet')
+    fig.update_xaxes(autorange="reversed", title='Population Composition', tickfont={'size': 1})
+    fig.update_yaxes(title='Generation')
+    fig.update_layout(coloraxis_colorbar=dict(
+        title="Fitness",
+    ),)
     fig.show()
 
 
