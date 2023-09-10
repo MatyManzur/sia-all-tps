@@ -3,10 +3,12 @@ import json
 import plotly.express as px
 import pandas as pd
 import plotly.io as pio
+from sys import argv
 pio.renderers.default = "browser"
 
+
 def main():
-    raw_data = json.load(open('../src/result_all_chars.json', mode='r'))
+    raw_data = json.load(open(argv[1], mode='r'))
     data = []
     for char, gens in raw_data["characters"].items():
         for gen, info in gens['all_generations'].items():

@@ -1,9 +1,9 @@
 {
   "initial": {
-    "population_size": 200,
+    "population_size": 300,
     "class": "archer",
     "population_seed": 1923,
-    "children_count": 50,
+    "children_count": 300,
     "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
@@ -61,14 +61,14 @@
     }
   },
   "finish_criteria": {
-    "finish_method": "content_based",
+    "finish_method": "generation_based",
     "finish_time_ms": 2000,
     "finish_generation_count": 100,
     "finish_optimum": {
       "acceptance": 70
     },
     "relevant_population": 0.2,
-    "relevant_generations": 20,
+    "relevant_generations": 500,
     "similarity": 0.05,
     "/***guia": "time_based, structure_based, content_based, generation_based, optimum_based*////"
   }

@@ -1,11 +1,12 @@
 import json
+from sys import argv
 
 import plotly.express as px
 import pandas as pd
 
 
 def main():
-    raw_data = json.load(open('result.json', mode='r'))
+    raw_data = json.load(open(argv[1], mode='r'))
     data = []
     for gen in raw_data['all_generations'].values():
         data.append(list(map(lambda c: c['fitness'], gen['population'])))

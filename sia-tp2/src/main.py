@@ -9,6 +9,7 @@ from crossover import crossover_population, select_cross_function
 from selection import select, get_select_func
 from mutation import mutate_population
 from finish_criteria import get_finish_condition
+from sys import argv
 
 AMOUNT_STATS = 5
 
@@ -95,7 +96,9 @@ def main():
     for i in range(10):
         print(f"{i}: {population[i].get_fitness()} - {population[i]}")
 
-    with open("result.json", "w") as outfile:
+    output_file = argv[2] if len(argv) > 2 else "result.json"
+
+    with open(output_file, "w") as outfile:
         json.dump(result, outfile)
 
 

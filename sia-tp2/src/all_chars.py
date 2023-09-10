@@ -9,6 +9,7 @@ from crossover import crossover_population, select_cross_function
 from selection import select, get_select_func
 from mutation import mutate_population
 from finish_criteria import get_finish_condition
+from sys import argv
 
 AMOUNT_STATS = 5
 
@@ -104,7 +105,8 @@ def all_chars():
         result["characters"][char.__name__]["generation_count"] = generation
         result["characters"][char.__name__]["elapsed_time"] = end_time - start_time
 
-    with open("result_all_chars.json", "w") as outfile:
+    output_file = argv[2] if len(argv) > 2 else "result_all_chars.json"
+    with open(output_file, "w") as outfile:
         json.dump(result, outfile)
 
 

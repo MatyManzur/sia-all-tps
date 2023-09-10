@@ -1,3 +1,3 @@
 import json
-config = json.load(open('src/config.json', mode='r'))
-
+from sys import argv
+config = json.load(open(argv[1], mode='r'))
