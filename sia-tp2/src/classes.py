@@ -41,6 +41,9 @@ class BaseClass(ABC):
         elif height > MAX_HEIGHT:
             height = MAX_HEIGHT
 
+        if strength == 0 and agility == 0 and dexterity == 0 and resistance == 0 and health == 0:
+            strength = agility = dexterity = resistance = health = PROPERTIES_SUM / 5
+
         self.genes = {
             "strength": strength,
             "agility": agility,
