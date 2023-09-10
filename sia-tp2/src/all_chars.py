@@ -70,7 +70,7 @@ def all_chars():
             child_pop = crossover_population(selected_pop, crossover)
 
             # Mutation
-            child_pop = mutate_population(child_pop)
+            child_pop = mutate_population(child_pop,generation)
 
             # Replacement
 

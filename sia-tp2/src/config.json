@@ -31,6 +31,8 @@
     "/***guia": " limited, uniform, complete, gen *////",
     "function": "uniform",
     "mutation_probability": 0.5,
+    "non_uniform_type": "sinusoidal",
+    "non_uniform_speed": 2,
     "gene_bounds": {
       "strength": {
         "lower_bound": -30,
