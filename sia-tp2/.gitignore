@@ -1,6 +1,7 @@
 .idea
 result.json
 src/result.json
+result_all_chars.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
