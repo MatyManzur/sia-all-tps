@@ -7,8 +7,6 @@ import pandas as pd
 import plotly.express as px
 
 MAX_DIFFERENCE = np.sqrt((5 * 150 ** 2) + (0.7 ** 2))
-RESULT_FILES = ["results/gen_mutation.json", "results/limited_mutation.json", "results/uniform_mutation.json", "results/complete_mutation.json"]
-RESULT_NAMES = ["Gen Mutation", "Limited Multigen Mutation", "Uniform Multigen Mutation", "Complete Mutation"]
 
 
 def chromosome_difference(c1: Tuple, c2: Tuple) -> float:
@@ -29,7 +27,7 @@ def main():
         for i in range(1, amount_generations):
             print(f'Generation - {i}')
             prev_gen = gens[f"gen_{i - 1}"]['population']
-            this_gen = gens[f"gen_{i}"]['population']
+            this_gen = [x for x in gens[f"gen_{i}"]['population'] if x not in prev_gen]
 
             generation_exploration = 0
             for bichos_prev in prev_gen:
