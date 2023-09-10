@@ -54,7 +54,7 @@ class BaseClass(ABC):
             self.__normalize()
 
         self.atm = 0.5 - (3 * height - 5) ** 4 + (3 * height - 5) ** 2 + height / 2
-        self.dem = 2 + (3 * height - 5) ** 4 - (3 * height - 5) ** 2 + height / 2
+        self.dem = 2 + (3 * height - 5) ** 4 - (3 * height - 5) ** 2 - height / 2
 
     # Abstract Method
     def get_fitness(self):
