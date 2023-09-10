@@ -76,8 +76,8 @@ def uniform_multigen_mutation(character: BaseClass,generation:int) -> BaseClass:
 
 
 def non_uniform_multigen_mutation(character: BaseClass,generation:int) -> BaseClass:
-    if random.uniform(0, 1) < non_uniform_mutation_probability(generation):
-        for gene in PROPERTIES:
+    for gene in PROPERTIES:
+        if random.uniform(0, 1) < non_uniform_mutation_probability(generation):
             new_gene_value = mutate(character.genes[gene],
                                     GENE_VARIATION_BOUNDS[gene]['lower_bound'],
                                     GENE_VARIATION_BOUNDS[gene]['upper_bound'])
