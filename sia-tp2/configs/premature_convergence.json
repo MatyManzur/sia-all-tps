@@ -1,9 +1,9 @@
 {
   "initial": {
-    "population_size": 300,
+    "population_size": 100,
     "class": "warrior",
     "population_seed": 1923,
-    "children_count": 300,
+    "children_count": 100,
     "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
@@ -63,7 +63,7 @@
   "finish_criteria": {
     "finish_method": "generation_based",
     "finish_time_ms": 2000,
-    "finish_generation_count": 500,
+    "finish_generation_count": 100,
     "finish_optimum": {
       "acceptance": 70
     },
