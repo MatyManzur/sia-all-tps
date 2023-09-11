@@ -4,12 +4,15 @@ from sys import argv
 import plotly.express as px
 import pandas as pd
 
+FILE = "results/selection/boltzmann.json"
 
 def main():
     raw_data = json.load(open(argv[1], mode='r'))
     data = []
-    for gen in raw_data['all_generations'].values():
+    for i, gen in enumerate(raw_data['all_generations'].values()):
         data.append(list(map(lambda c: c['fitness'], gen['population'])))
+        if i >= 100:
+            break
     df = pd.DataFrame(data)
     print(df)
     fig = px.imshow(df, color_continuous_scale='Jet')
