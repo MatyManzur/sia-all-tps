@@ -28,8 +28,8 @@
     "/***guia": " one_point, two_point, anular_cross, uniform_cross*////"
   },
   "mutation": {
-    "/***guia": " limited, uniform, complete, gen *////",
-    "function": "uniform",
+    "/***guia": " limited, uniform, complete, gen, non_uniform(sinusoidal,increasing,decreasing) *////",
+    "function": "complete",
     "mutation_probability": 0.5,
     "non_uniform_type": "sinusoidal",
     "non_uniform_speed": 2,
@@ -63,7 +63,7 @@
   "finish_criteria": {
     "finish_method": "generation_based",
     "finish_time_ms": 2000,
-    "finish_generation_count": 200,
+    "finish_generation_count": 15,
     "finish_optimum": {
       "acceptance": 70
     },

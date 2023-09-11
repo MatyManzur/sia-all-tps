@@ -1,12 +1,17 @@
 import math
 from typing import List, Callable
 
-from global_config import config
+from global_config import get_config,config
 from classes import BaseClass, Chromosome, chromosome_equals
 
 finish_config = config["finish_criteria"]
 
 FinishFunction = Callable[[List[BaseClass], int, float], bool]
+
+
+def change_finish_config():
+    global finish_config
+    finish_config = get_config()["finish_criteria"]
 
 
 # in miliseconds

@@ -5,7 +5,7 @@ import numpy
 import numpy as np
 from typing import Set, List, Callable
 from classes import BaseClass
-from global_config import config
+from global_config import config, get_config
 
 selection_options = config['selection']
 
@@ -16,6 +16,16 @@ TOURNAMENT_M = selection_options['tournament_m']
 TOURNAMENT_THRESHOLD = selection_options['tournament_threshold']
 
 SelectionFunction = Callable[[List[BaseClass], int, int], List[BaseClass]]
+
+
+def change_selection_config():
+    global selection_options, T_C, T_0, T_K, TOURNAMENT_M, TOURNAMENT_THRESHOLD
+    selection_options = get_config()['selection']
+    T_C = selection_options['t_c']
+    T_0 = selection_options['t_0']
+    T_K = selection_options['t_k']
+    TOURNAMENT_M = selection_options['tournament_m']
+    TOURNAMENT_THRESHOLD = selection_options['tournament_threshold']
 
 
 def elite(characters: List[BaseClass], n, t) -> List[BaseClass]:
@@ -59,7 +69,7 @@ def universal(chars: List[BaseClass], n, t) -> List[BaseClass]:
         accum_aux += c.get_fitness() / total_fitness
         accumulated.append(accum_aux)
 
-    accumulated[len(accumulated)-1] = 1
+    accumulated[len(accumulated) - 1] = 1
 
     ret_list = []
     r = random.uniform(0, 1)
@@ -94,7 +104,7 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
         current_accumulated += exp_vals[i] / total_fitness
         accumulated_fitness.append(current_accumulated)
 
-    accumulated_fitness[len(accumulated_fitness)-1] = 1
+    accumulated_fitness[len(accumulated_fitness) - 1] = 1
 
     selected_n = []
     for i in range(n):
@@ -124,10 +134,10 @@ def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
     fitness_sim_accum = []
     accumulated = 0
     for val in fitness_sim:
-        fitness_sim_accum.append((accumulated + val)/sum_value)
+        fitness_sim_accum.append((accumulated + val) / sum_value)
         accumulated += val
 
-    fitness_sim_accum[len(fitness_sim_accum)-1] = 1
+    fitness_sim_accum[len(fitness_sim_accum) - 1] = 1
 
     new_population = []
     for _ in range(n):

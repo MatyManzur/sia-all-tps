@@ -7,8 +7,8 @@ import pandas as pd
 import plotly.express as px
 
 MAX_DIFFERENCE = np.sqrt((5 * 150 ** 2) + (0.7 ** 2))
-RESULT_FILES = ["results/gen_mutation.json", "results/limited_mutation.json", "results/uniform_mutation.json", "results/complete_mutation.json"]
-RESULT_NAMES = ["Gen Mutation", "Limited Multigen Mutation", "Uniform Multigen Mutation", "Complete Mutation"]
+RESULT_FILES = ["results/one_point.json", "results/two_point.json", "results/uniform_cross.json", "results/anular_cross.json"]
+RESULT_NAMES = ["One Point Cross", "Two Point Cross", "Uniform Cross", "Anular Cross"]
 
 
 def chromosome_difference(c1: Tuple, c2: Tuple) -> float:
@@ -39,8 +39,8 @@ def main():
                     generation_exploration += dif / (amount_bichos ** 2)
 
             data.append([RESULT_NAMES[j], i, generation_exploration])
-    df = pd.DataFrame(data, columns=['Mutation Method', 'Generation', 'Exploration'])
-    fig = px.line(df, x="Generation", y="Exploration", color='Mutation Method', title='Evolution of Exploration by Mutation Method', markers=True)
+    df = pd.DataFrame(data, columns=['Crossover Method', 'Generation', 'Exploration'])
+    fig = px.line(df, x="Generation", y="Exploration", color='Crossover Method', title='Evolution of Exploration by Crossover Method', markers=True)
     fig.show()
 
 

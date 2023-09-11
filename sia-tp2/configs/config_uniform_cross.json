@@ -63,7 +63,7 @@
   "finish_criteria": {
     "finish_method": "generation_based",
     "finish_time_ms": 2000,
-    "finish_generation_count": 200,
+    "finish_generation_count": 15,
     "finish_optimum": {
       "acceptance": 70
     },

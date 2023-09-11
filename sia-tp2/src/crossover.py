@@ -3,15 +3,16 @@ import random
 from typing import Callable, Tuple, List
 
 from classes import Chromosome, BaseClass
-from global_config import config
+from global_config import get_config, config
 
 # traerlo del config
 PARAMETER_UNIFORM_PROBABILITY = config['crossover']['uniform_probability']
 
 CrossFunction = Callable[[Chromosome, Chromosome], Tuple[Chromosome, Chromosome]]
 
-crossover_options = config['crossover']
-
+def change_cross_config():
+    global PARAMETER_UNIFORM_PROBABILITY
+    PARAMETER_UNIFORM_PROBABILITY = get_config()['crossover']['uniform_probability']
 
 def select_cross_function(name: str) -> CrossFunction:
     if name == 'one_point':
