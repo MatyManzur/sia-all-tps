@@ -7,8 +7,7 @@ import pandas as pd
 import plotly.express as px
 
 MAX_DIFFERENCE = np.sqrt((5 * 150 ** 2) + (0.7 ** 2))
-RESULT_FILES = ["results/one_cross_complete.json", "results/two_cross_complete.json", "results/uniform_cross_complete.json",
-                "results/anular_cross_complete.json"]
+RESULT_FILES = ["result.json"]
 RESULT_NAMES = ["One Point Cross", "Two Point Cross", "Uniform Cross", "Anular Cross"]
 
 

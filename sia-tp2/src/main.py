@@ -18,7 +18,7 @@ FinishFunction = Callable[[List[BaseClass], int, float], bool]
 
 def main():
     initial_config = config['initial']
-    random.seed(initial_config['population_seed'])
+    random.seed()
 
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
@@ -71,7 +71,7 @@ def main():
             new_population = select(population + child_pop, pop_size, generation,
                                     replacement_1, replacement_2, replace_ratio)
         elif config['selection']['replacement_method'] == 'young':
-            if len(child_pop) > pop_size:
+            if len(child_pop) >= pop_size:
                 new_population = select(child_pop, pop_size, generation, replacement_1, replacement_2, replace_ratio)
             else:
                 new_population = child_pop + select(population, pop_size - len(child_pop), generation,
@@ -158,4 +158,6 @@ if __name__ == '__main__':
         uniforme con alta probabilidad de mutación. Boltzmann empieza con exploración, termina con explotación, la combinación de sel 1 
         con sel 2 y mutación nos asegura una requete exploración siempre. Boltzmann hace que cuando la temperatura sea baja, los hijos
         deformes altamente mutados mueran siempre
+        2- Elite y roulette para las selecciones 1 y 2, la mayor parte del tiempo solo los mejores tendrán hijos.
+        Elite y Ranking para 3 y 4. Mutación no demasiado alta. Young para el reemplazo
 """
