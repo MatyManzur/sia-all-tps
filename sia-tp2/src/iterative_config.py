@@ -19,15 +19,16 @@ AMOUNT_STATS = 5
 
 FinishFunction = Callable[[List[BaseClass], int, float], bool]
 # Comentarlos si no se usan, para asi no copiamos devuelta
-# CONFIG_FILES = ["configs/config_complete.json", "configs/config_gen.json", "configs/config_limited.json",
-#                 "configs/config_uniform.json", "configs/config_decreasing.json", "configs/config_increasing.json",
-#                 "configs/config_sinusoidal.json"]
+CONFIG_FILES = ["configs/config_complete.json", "configs/config_gen.json", "configs/config_limited.json",
+                "configs/config_uniform.json", "configs/config_decreasing.json", "configs/config_increasing.json",
+                "configs/config_sinusoidal.json"]
 
-# RESULT_NAMES = ["results/complete.json", "results/gen.json", "results/limited.json", "results/uniform.json",
-#                 "results/decreasing.json", "results/increasing.json", "results/sinusoidal.json"]
-CONFIG_FILES = ["configs/config_anular.json","configs/config_one.json","configs/config_two.json",
-                "configs/config_uniform_cross.json"]
-RESULT_NAMES = ["results/anular.json","results/one.json","results/two.json","results/uniform_cross.json"]
+RESULT_NAMES = ["results/complete.json", "results/gen.json", "results/limited.json", "results/uniform.json",
+                "results/decreasing.json", "results/increasing.json", "results/sinusoidal.json"]
+
+# CONFIG_FILES = ["configs/config_anular.json","configs/config_one.json","configs/config_two.json",
+#                 "configs/config_uniform_cross.json"]
+# RESULT_NAMES = ["results/anular.json","results/one.json","results/two.json","results/uniform_cross.json"]
 
 LOOP_COUNT = 15
 
@@ -44,7 +45,10 @@ def iterative_config():
         change_finish_config()
 
         initial_config = config['initial']
-        random.seed(initial_config['population_seed'])
+        if initial_config['population_seed'] == -1:
+            random.seed()
+        else:
+            random.seed(initial_config['population_seed'])
 
         pop_size = initial_config['population_size']
 
