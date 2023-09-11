@@ -19,7 +19,8 @@ EPSILON = 10 ** -4
 def chromosome_equals(chromosome1: Chromosome, chromosome2: Chromosome, delta: float):
     equals = True
     for i in range(0, len(chromosome1)):
-        equals = equals and (chromosome1[i] - chromosome2[i]) / (chromosome1[i] + chromosome2[i]) < delta
+        equals = equals and ((chromosome1[i] == chromosome2[i] == 0) or (chromosome1[i] - chromosome2[i]) / (
+                chromosome1[i] + chromosome2[i]) < delta)
         if not equals:
             return False
     return equals
@@ -94,7 +95,6 @@ class BaseClass(ABC):
         if self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] + self.genes[
             'resistance'] + self.genes['health'] != PROPERTIES_SUM:
             self.__normalize()
-
 
     def get_cromies(self) -> Chromosome:
         return (self.genes['strength'], self.genes['agility'], self.genes['dexterity'],
