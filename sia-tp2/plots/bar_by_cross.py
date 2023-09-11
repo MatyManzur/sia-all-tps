@@ -21,7 +21,7 @@ def main():
 
     df = pd.DataFrame(data, columns=['Cross Type','Class','Average Fitness', 'STD'])
     print(df)
-    fig = px.bar(df, x="Cross Type", y="Average Fitness", error_y="STD",color='Class',barmode="group",title='Average Fitness by Cross Type and Class')
+    fig = px.bar(df, x="Cross Type", y="Average Fitness", error_y="STD",color='Class',barmode="group",title='Average Fitness by Cross Type and Class using Structured Based Finish')
     fig.show()
 
 
