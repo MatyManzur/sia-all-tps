@@ -44,6 +44,7 @@ def main():
     start_time = time.time() * 1000
 
     result = {"all_generations": {}}
+    last_fitness = 0
 
     while not finished:
 
@@ -55,8 +56,13 @@ def main():
         # Selection
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
         generation += 1
-        print(generation)
-        print(max(selected_pop, key=lambda x: x.get_fitness()).get_fitness())
+
+        new_fitness = max(selected_pop, key=lambda x: x.get_fitness()).get_fitness()
+        if new_fitness != last_fitness:
+            print(f"Generation {generation} - Fitness: {new_fitness}")
+            last_fitness = new_fitness
+        else:
+            print(f"Generation {generation} - Fitness: {new_fitness}", end="\r")
 
         # Crossover
         random.shuffle(selected_pop)
