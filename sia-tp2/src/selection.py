@@ -51,7 +51,7 @@ def roulette(chars: List[BaseClass], n, t) -> List[BaseClass]:
         r = random.uniform(0, 1)
         last = 0
         for j, acc in enumerate(accumulated_fitness):
-            if last <= r <= acc:
+            if last < r <= acc:
                 selected_n.append(chars[j])
                 break
             last = acc
@@ -77,7 +77,7 @@ def universal(chars: List[BaseClass], n, t) -> List[BaseClass]:
         r_i = (r + i) / n
         last = 0
         for j, acc in enumerate(accumulated):
-            if last <= r_i <= acc:
+            if last < r_i <= acc:
                 ret_list.append(chars[j])
                 break
             last = acc
@@ -111,7 +111,7 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
         r = random.uniform(0, 1)
         last = 0
         for j, acc in enumerate(accumulated_fitness):
-            if last <= r <= acc:
+            if last < r <= acc:
                 selected_n.append(chars[j])
                 break
             last = acc
@@ -144,7 +144,7 @@ def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
         r = random.uniform(0, 1)
         last = 0
         for index, acc in enumerate(fitness_sim):
-            if last <= r <= acc:
+            if last < r <= acc:
                 new_population.append(chars[index])
                 break
 

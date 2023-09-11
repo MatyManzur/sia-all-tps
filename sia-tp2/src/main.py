@@ -18,7 +18,11 @@ FinishFunction = Callable[[List[BaseClass], int, float], bool]
 
 def main():
     initial_config = config['initial']
-    random.seed(initial_config['population_seed'])
+    seed = initial_config['population_seed']
+    if seed == -1:
+        random.seed()
+    else:
+        random.seed(seed)
 
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
@@ -48,9 +52,9 @@ def main():
 
     while not finished:
 
-        population.sort(key=lambda x: x.get_fitness(), reverse=True)
         result["all_generations"][f"gen_{generation}"] = {
-            "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
+            "population": sorted(list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population)),
+                                 key=lambda x: x['fitness'], reverse=True)
         }
 
         # Selection
