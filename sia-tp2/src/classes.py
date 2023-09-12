@@ -19,7 +19,8 @@ EPSILON = 10 ** -4
 def chromosome_equals(chromosome1: Chromosome, chromosome2: Chromosome, delta: float):
     equals = True
     for i in range(0, len(chromosome1)):
-        equals = equals and ((chromosome2[i] == 0 and chromosome1[i] == 0) or abs((chromosome1[i] - chromosome2[i])) / (chromosome1[i] + chromosome2[i]) < delta)
+        equals = equals and ((chromosome1[i] == chromosome2[i] == 0) or (chromosome1[i] - chromosome2[i]) / (
+                chromosome1[i] + chromosome2[i]) < delta)
         if not equals:
             return False
     return equals
@@ -41,6 +42,9 @@ class BaseClass(ABC):
         elif height > MAX_HEIGHT:
             height = MAX_HEIGHT
 
+        if strength == 0 and agility == 0 and dexterity == 0 and resistance == 0 and health == 0:
+            strength = agility = dexterity = resistance = health = PROPERTIES_SUM / 5
+
         self.genes = {
             "strength": strength,
             "agility": agility,
@@ -54,7 +58,7 @@ class BaseClass(ABC):
             self.__normalize()
 
         self.atm = 0.5 - (3 * height - 5) ** 4 + (3 * height - 5) ** 2 + height / 2
-        self.dem = 2 + (3 * height - 5) ** 4 - (3 * height - 5) ** 2 + height / 2
+        self.dem = 2 + (3 * height - 5) ** 4 - (3 * height - 5) ** 2 - height / 2
 
     # Abstract Method
     def get_fitness(self):
@@ -91,7 +95,6 @@ class BaseClass(ABC):
         if self.genes['strength'] + self.genes['agility'] + self.genes['dexterity'] + self.genes[
             'resistance'] + self.genes['health'] != PROPERTIES_SUM:
             self.__normalize()
-
 
     def get_cromies(self) -> Chromosome:
         return (self.genes['strength'], self.genes['agility'], self.genes['dexterity'],

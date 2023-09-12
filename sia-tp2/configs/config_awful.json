@@ -1,0 +1,75 @@
+{
+    "initial": {
+      "population_size": 200,
+      "class": "archer",
+      "population_seed": 1520,
+      "children_count": 200,
+      "/***guia": " warrior, rogue, warden, archer *////"
+    },
+    "selection": {
+      "A": 1,
+      "selection_1": "probabilistic_tournament",
+      "selection_2": "universal",
+      "B": 0.75,
+      "selection_3": "universal",
+      "selection_4": "deterministic_tournament",
+      "replacement_method": "young",
+      "t_c": 1,
+      "t_0": 200,
+      "t_k": 0.01,
+      "tournament_m": 2,
+      "tournament_threshold": 0.0001,
+      "/***guia_replacement": "traditional, young**/",
+      "/***guia": "(+ explotacion) elite, roulette, ranking, deterministic_tournament, universal, probabilistic_tournament,  (+ exploracion) especial: boltzmann,*////"
+    },
+    "crossover": {
+      "cross": "uniform_cross",
+      "uniform_probability": 0.5,
+      "/***guia": " one_point, two_point, anular_cross, uniform_cross*////"
+    },
+    "mutation": {
+      "/***guia": " limited, uniform, complete, gen *////",
+      "function": "uniform",
+      "mutation_probability": 1,
+      "non_uniform_type": "sinusoidal",
+      "non_uniform_speed": 2,
+      "gene_bounds": {
+        "strength": {
+          "lower_bound": -30,
+          "upper_bound": 30
+        },
+        "agility": {
+          "lower_bound": -30,
+          "upper_bound": 30
+        },
+        "dexterity": {
+          "lower_bound": -30,
+          "upper_bound": 30
+        },
+        "resistance": {
+          "lower_bound": -30,
+          "upper_bound": 30
+        },
+        "health": {
+          "lower_bound": -30,
+          "upper_bound": 30
+        },
+        "height": {
+          "lower_bound": -0.2,
+          "upper_bound": 0.2
+        }
+      }
+    },
+    "finish_criteria": {
+      "finish_method": "optimum_based",
+      "finish_time_ms": 2000,
+      "finish_generation_count": 200,
+      "finish_optimum": {
+        "acceptance": 61
+      },
+      "relevant_population": 0.2,
+      "relevant_generations": 20,
+      "similarity": 0.05,
+      "/***guia": "time_based, structure_based, content_based, generation_based, optimum_based*////"
+    }
+  }

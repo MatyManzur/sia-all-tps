@@ -10,6 +10,7 @@ from selection import select, get_select_func
 from mutation import mutate_population
 from finish_criteria import get_finish_condition
 from stats import *
+from sys import argv
 
 AMOUNT_STATS = 5
 
@@ -18,11 +19,16 @@ FinishFunction = Callable[[List[BaseClass], int, float], bool]
 
 def main():
     initial_config = config['initial']
-    random.seed(initial_config['population_seed'])
+    seed = initial_config['population_seed']
+    if seed == -1:
+        random.seed()
+    else:
+        random.seed(seed)
 
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
 
+    random.seed()
     finished = False
     generation = 0
 
@@ -44,12 +50,13 @@ def main():
     start_time = time.time() * 1000
 
     result = {"all_generations": {}}
+    last_fitness = 0
 
     while not finished:
 
-        population.sort(key=lambda x: x.get_fitness(), reverse=True)
         result["all_generations"][f"gen_{generation}"] = {
-            "population": list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population))
+            "population": sorted(list(map(lambda p: {"fitness": p.get_fitness(), "genes": p.genes}, population)),
+                                 key=lambda x: x['fitness'], reverse=True)
         }
         print_generation(generation, population)
 
@@ -57,12 +64,19 @@ def main():
         selected_pop = select(population, children_count, generation, select_1, select_2, select_ratio)
         generation += 1
 
+        new_fitness = max(selected_pop, key=lambda x: x.get_fitness()).get_fitness()
+        if new_fitness != last_fitness:
+            print(f"Generation {generation} - Fitness: {new_fitness}")
+            last_fitness = new_fitness
+        else:
+            print(f"Generation {generation} - Fitness: {new_fitness}", end="\r")
+
         # Crossover
         random.shuffle(selected_pop)
         child_pop = crossover_population(selected_pop, crossover)
 
         # Mutation
-        child_pop = mutate_population(child_pop)
+        child_pop = mutate_population(child_pop,generation)
 
         # Replacement
 
@@ -70,7 +84,7 @@ def main():
             new_population = select(population + child_pop, pop_size, generation,
                                     replacement_1, replacement_2, replace_ratio)
         elif config['selection']['replacement_method'] == 'young':
-            if len(child_pop) > pop_size:
+            if len(child_pop) >= pop_size:
                 new_population = select(child_pop, pop_size, generation, replacement_1, replacement_2, replace_ratio)
             else:
                 new_population = child_pop + select(population, pop_size - len(child_pop), generation,
@@ -95,7 +109,9 @@ def main():
     for i in range(10):
         print(f"{i}: {population[i].get_fitness()} - {population[i]}")
 
-    with open("result.json", "w") as outfile:
+    output_file = argv[2] if len(argv) > 2 else "result.json"
+
+    with open(output_file, "w") as outfile:
         json.dump(result, outfile)
 
 
@@ -155,4 +171,6 @@ if __name__ == '__main__':
         uniforme con alta probabilidad de mutación. Boltzmann empieza con exploración, termina con explotación, la combinación de sel 1 
         con sel 2 y mutación nos asegura una requete exploración siempre. Boltzmann hace que cuando la temperatura sea baja, los hijos
         deformes altamente mutados mueran siempre
+        2- Elite y roulette para las selecciones 1 y 2, la mayor parte del tiempo solo los mejores tendrán hijos.
+        Elite y Ranking para 3 y 4. Mutación no demasiado alta. Young para el reemplazo
 """
