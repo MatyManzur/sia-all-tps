@@ -2,7 +2,7 @@
     "initial": {
       "population_size": 200,
       "class": "archer",
-      "population_seed": 1520,
+      "population_seed": -1,
       "children_count": 200,
       "/***guia": " warrior, rogue, warden, archer *////"
     },

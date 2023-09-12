@@ -1,22 +1,22 @@
 {
   "initial": {
     "population_size": 100,
-    "class": "warrior",
-    "population_seed": 1923,
+    "class": "archer",
+    "population_seed": -1,
     "children_count": 100,
     "/***guia": " warrior, rogue, warden, archer *////"
   },
   "selection": {
     "A": 1,
-    "selection_1": "elite",
+    "selection_1": "ranking",
     "selection_2": "probabilistic_tournament",
     "B": 1,
-    "selection_3": "universal",
+    "selection_3": "boltzmann",
     "selection_4": "universal",
     "replacement_method": "young",
-    "t_c": 40,
+    "t_c": 10,
     "t_0": 200,
-    "t_k": 0.01,
+    "t_k": 0.3,
     "tournament_m": 2,
     "tournament_threshold": 0.5,
     "/***guia_replacement": "traditional, young**/",
@@ -30,7 +30,7 @@
   "mutation": {
     "/***guia": " limited, uniform, complete, gen *////",
     "function": "uniform",
-    "mutation_probability": 0.01,
+    "mutation_probability": 0.1,
     "non_uniform_type": "sinusoidal",
     "non_uniform_speed": 2,
     "gene_bounds": {
