@@ -120,12 +120,13 @@ def boltzmann(chars: List[BaseClass], n, t) -> List[BaseClass]:
 
 def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
     # Ruleta pero primero armo un ranking
-    chars.sort(reverse=True)
+    sorted_chars= sorted(chars,reverse=True)
+
     fitness_sim = []
-    amount_char = len(chars)
+    amount_char = len(sorted_chars)
 
     sum_value = 0
-    for index, c in enumerate(chars):
+    for index, c in enumerate(sorted_chars):
         f = (amount_char - (index + 1)) / amount_char
         fitness_sim.append(f)
         sum_value += f
@@ -145,7 +146,7 @@ def ranking(chars: List[BaseClass], n, t) -> List[BaseClass]:
         last = 0
         for index, acc in enumerate(fitness_sim):
             if last < r <= acc:
-                new_population.append(chars[index])
+                new_population.append(sorted_chars[index])
                 break
 
     return new_population
