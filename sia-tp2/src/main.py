@@ -27,6 +27,7 @@ def main():
     population = generate_population(initial_config['population_size'], initial_config['class'])
     children_count: int = initial_config['children_count']
 
+    random.seed()
     finished = False
     generation = 0
 
