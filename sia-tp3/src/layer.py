@@ -10,3 +10,5 @@ class Layer: #N neuronas, con M inputs
     def forward(self, inputs): # inputs[0] must be 1 for bias
         return self.activation_function(np.dot(self.weights, inputs))
 
+    def get_excitement(self,inputs):
+        return np.dot(self.weights, inputs)
