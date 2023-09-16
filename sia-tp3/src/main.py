@@ -1,5 +1,7 @@
+import json
 import random
-
+import csv
+from sys import argv
 from typing import Tuple
 import numpy as np
 import pandas as pd
@@ -41,9 +43,7 @@ def step_compute_error(data, layer):
     return sum
 
 
-def simple_step_perceptron():
-    random.seed(123456789)
-    numpy.random.seed(123456789)
+def step_perceptron(data: pd.DataFrame):
     weights_at_min = None
     activation_fun = sign
     layer = Layer(N, 1, activation_fun)  # inicializa random

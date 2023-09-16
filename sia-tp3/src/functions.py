@@ -12,6 +12,8 @@ BETA = 1
 def identity(x: NDArray) -> NDArray:
     return x
 
+def derivative_identity(x: NDArray) -> NDArray:
+    return np.apply_along_axis(lambda h: 1, 0, x)
 
 def sign(x: NDArray) -> NDArray:
     return np.apply_along_axis(inclusive_sign, 0, x)
