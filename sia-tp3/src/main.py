@@ -5,8 +5,7 @@ import numpy as np
 import numpy.random
 
 from functions import *
-
-from src.layer import Layer
+from layer import Layer
 
 LEARNING_CONSTANT = 0.1
 
@@ -42,8 +41,8 @@ def compute_error(data, layer):
 
 
 def simple_step_perceptron():
-    random.seed(123456789)
-    numpy.random.seed(123456789)
+    random.seed()
+    numpy.random.seed()
     weights_at_min = None
     activation_fun = sign
     layer = Layer(N, 1, activation_fun)  # inicializa random
@@ -65,6 +64,12 @@ def simple_step_perceptron():
         print(i, end='\r')
     print()
     return weights_at_min
+
+def print_data_from_line(w):
+    b = w.weights[0][0]
+    x = w.weights[0][1]
+    y = w.weights[0][2]
+    print(f"Y = {x/-y} * X + {b/-y}")
 
 
 if __name__ == '__main__':
