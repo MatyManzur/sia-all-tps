@@ -43,7 +43,8 @@ def step_compute_error(data, layer):
     return sum
 
 
-def step_perceptron(data: pd.DataFrame):
+def step_perceptron():
+    result = {"weights": {}}
     weights_at_min = None
     activation_fun = sign
     layer = Layer(N, 1, activation_fun)  # inicializa random
@@ -61,10 +62,19 @@ def step_perceptron(data: pd.DataFrame):
         if error < min_error:
             min_error = error
             weights_at_min = layer
+            result["weights"][f"iteration_{i}"] = {"w0": layer.weights[0][0], "w1": layer.weights[0][1], "w2": layer.weights[0][2]}
         i += 1
         print(i, end='\r')
     print()
+    with open("results_step.json", "w") as outfile:
+        json.dump(result, outfile)
     return weights_at_min
+
+def print_data_from_line(w):
+    b = w.weights[0][0]
+    x = w.weights[0][1]
+    y = w.weights[0][2]
+    print(f"Y = {x/-y} * X + {b/-y}")
 
 
 EPSILON = 10 ** -1
@@ -109,23 +119,20 @@ def linear_perceptron(data: NDArray):
     print()
     return weights_at_min
 
-def print_data_from_line(w):
+
+
+if __name__ == '__main__':
+    random.seed()
+    numpy.random.seed()
+
+    #dataframe = pd.read_csv(argv[1])
+    #dataarray = np.array(dataframe)
+    #print(dataarray)
+    #w = linear_perceptron(dataarray)
+
+    w = step_perceptron()
+    print(f"{w.weights}")
     b = w.weights[0][0]
     x = w.weights[0][1]
     y = w.weights[0][2]
     print(f"Y = {x/-y} * X + {b/-y}")
-
-
-if __name__ == '__main__':
-    random.seed(123456789)
-    numpy.random.seed(123456789)
-
-    dataframe = pd.read_csv(argv[1])
-    dataarray = np.array(dataframe)
-    print(dataarray)
-    w = linear_perceptron(dataarray)
-    # print(f"{w.weights}")
-    # b = w.weights[0][0]
-    # x = w.weights[0][1]
-    # y = w.weights[0][2]
-    # print(f"Y = {x/-y} * X + {b/-y}")

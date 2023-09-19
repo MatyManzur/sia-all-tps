@@ -1,35 +1,35 @@
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
+import json
+from sys import argv
 
 
 
 x = [-1.5,1.5]
-y = [-0.8636881433540377*i+0.5498923464051484 for i in x ]
+y=[]
+data = json.load(open("results_step.json", mode='r'))
+for iteration in data["weights"].values():
+    y.append([-iteration['w1']/iteration['w2']*i- iteration['w0']/iteration['w2'] for i in x ])
+
 
 df = pd.DataFrame(dict(
     x = x,
-    y = y
+    y = y[-1]
 ))
 fig = px.line(df, x="x", y="y", title="Recta") 
 
 
-fig.add_trace(go.Scatter(x=[-1,-1,1,1], y=[-1,1,-1,1], marker_symbol='diamond-open-dot', marker_size=15, mode='markers', name='Datos'))
+fig.add_trace(go.Scatter(x=[-1,-1,1], y=[-1,1,-1], marker_symbol='diamond-open-dot', marker_size=15, mode='markers', name='Datos'))
+fig.add_trace(go.Scatter(x=[1], y=[1], marker_symbol='hexagon-open-dot', marker_size=15, mode='markers', fillcolor='aliceblue', name='Datos'))
 
 
 fig.show()
 
 
 
-
-x = [-1.5,1.5]
-y = [-2.125806496275092 * X + -1.055477873623969 for X in x ]
-y1 = [-1.0789594975415593 * X + -0.36708886249016376 for X in x]
-y2 = [-0.5573843144851826 * X + -0.024109778698086594 for X in x]
-y3 = [-1.0789594975415593 * X + 0.30272035313532114 for X in x]
-
 fig = go.Figure(
-    data=[go.Scatter(x=x, y=y)],
+    data=[go.Scatter(x=x, y=y[0])],
     layout=go.Layout(
         xaxis=dict(range=[-2, 2], autorange=False),
         yaxis=dict(range=[-2, 2], autorange=False),
@@ -40,10 +40,11 @@ fig = go.Figure(
                           method="animate",
                           args=[None])])]
     ),
-    frames=[go.Frame(data=[go.Scatter(x=x, y=y1)]),
-            go.Frame(data=[go.Scatter(x=x, y=y2)]), 
-            go.Frame(data=[go.Scatter(x=x, y=y3)], layout=go.Layout(title_text="Correcto!"))]
+    frames=[go.Frame(data=[go.Scatter(x=x, y=values)]) for values in y[1:]]
 )
+
+
+#frames=[go.Frame(data=[go.Scatter(x=x, y=y[i])]) for i in range(len(y))]
 
 fig.add_trace(go.Scatter(x=[-1,-1,1], y=[-1,1,-1], marker_symbol='diamond-open-dot', marker_size=15, mode='markers', name='Datos'))
 fig.add_trace(go.Scatter(x=[1], y=[1], marker_symbol='hexagon-open-dot', marker_size=15, mode='markers', fillcolor='aliceblue', name='Datos'))
