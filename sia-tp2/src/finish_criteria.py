@@ -33,7 +33,10 @@ def structure_based_init() -> Callable[[List[BaseClass], int, float], bool]:
             prev_generation = list(map(BaseClass.get_cromies, population))
             return False
         generation_count += 1
-        return generation_count >= finish_config["relevant_generations"]
+        if generation_count >= finish_config["relevant_generations"]:
+            generation_count = 0
+            prev_generation = []
+            return True
 
     return structure_based
 
@@ -51,7 +54,10 @@ def content_based_init() -> Callable[[List[BaseClass], int, float], bool]:
             prev_best = best_fitness
             return False
         generation_count += 1
-        return generation_count >= finish_config["relevant_generations"]
+        if generation_count >= finish_config["relevant_generations"]:
+            generation_count = 0
+            prev_best = -1
+            return True
 
     return content_based
 
