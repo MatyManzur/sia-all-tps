@@ -91,7 +91,7 @@ def linear_compute_error(data, layer):
     sum = float(0)
     for i in range(len(data)):
         (inputs, expected) = extract_in_out_ej2(data, i)
-        sum += (expected - layer.forward(inputs)) ** 2
+        sum += (layer.activation_function(expected) - layer.forward(inputs)) ** 2
 
     return sum / 2
 
@@ -105,11 +105,9 @@ def linear_perceptron(data: NDArray):
     limit = 1000
     i = 0
     while min_error > EPSILON and i < limit:
-
         (inputs, expected_out) = extract_in_out_ej2(data)
         actual_out = layer.forward(inputs)
-
-        delta_w = LEARNING_CONSTANT * (expected_out - actual_out) * derivative_fun(
+        delta_w = LEARNING_CONSTANT * (activation_fun(expected_out) - actual_out) * derivative_fun(
             layer.get_excitement(None)) * inputs
         layer.weights += delta_w
         error = linear_compute_error(data, layer)
