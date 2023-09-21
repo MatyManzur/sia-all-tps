@@ -6,6 +6,7 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 import numpy.random
+from typing import List
 
 from functions import *
 from layer import Layer
@@ -121,6 +122,33 @@ def linear_perceptron(data: NDArray):
         # print(i, end='\r')
     print()
     return weights_at_min,min_error
+
+
+# def train_perceptron(neural_net: List[Layer], learning_bias: float, data: NDArray, activation_func: Activation_Function, derivative_fun: Activation_Function):
+#     weights_at_min = None
+    
+#     layer = Layer(len(data[0]) - 1, 1, activation_fun)  # inicializa random
+#     min_error = float('inf')
+#     limit = 1000
+#     i = 0
+#     while min_error > EPSILON and i < limit:
+
+#         (inputs, expected_out) = extract_in_out_ej2(data)
+#         actual_out = layer.forward(inputs)
+
+#         delta_w = LEARNING_CONSTANT * (expected_out - actual_out) * derivative_fun(
+#             layer.get_excitement(None)) * inputs
+#         layer.weights += delta_w
+#         error = linear_compute_error(data, layer)
+#         print(error, end='\r')
+#         if error < min_error:
+#             print()
+#             min_error = error
+#             weights_at_min = layer
+#         i += 1
+#         # print(i, end='\r')
+#     print()
+#     return weights_at_min,min_error
 
 
 def print_data_from_line(w):
