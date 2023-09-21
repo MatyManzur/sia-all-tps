@@ -91,16 +91,17 @@ def linear_compute_error(data, layer):
     for i in range(len(data)):
         (inputs, expected) = extract_in_out_ej2(data, i)
         sum += (expected - layer.forward(inputs)) ** 2
+
     return sum / 2
 
 
 def linear_perceptron(data: NDArray):
     weights_at_min = None
-    activation_fun = identity
-    derivative_fun = derivative_identity
-    layer = Layer(len(data[0] - 1), 1, activation_fun)  # inicializa random
+    activation_fun = sigmoid
+    derivative_fun = sigmoid_derivative
+    layer = Layer(len(data[0]) - 1, 1, activation_fun)  # inicializa random
     min_error = float('inf')
-    limit = 10000
+    limit = 1000
     i = 0
     while min_error > EPSILON and i < limit:
 
@@ -108,31 +109,39 @@ def linear_perceptron(data: NDArray):
         actual_out = layer.forward(inputs)
 
         delta_w = LEARNING_CONSTANT * (expected_out - actual_out) * derivative_fun(
-            layer.get_excitement(inputs)) * inputs
+            layer.get_excitement(None)) * inputs
         layer.weights += delta_w
         error = linear_compute_error(data, layer)
+        print(error, end='\r')
         if error < min_error:
+            print()
             min_error = error
             weights_at_min = layer
         i += 1
-        print(i, end='\r')
+        # print(i, end='\r')
     print()
-    return weights_at_min
+    return weights_at_min,min_error
 
+
+def print_data_from_line(w):
+    b = w.weights[0][0]
+    x = w.weights[0][1]
+    y = w.weights[0][2]
+    print(f"Y = {x / -y} * X + {b / -y}")
 
 
 if __name__ == '__main__':
     random.seed()
     numpy.random.seed()
 
-    #dataframe = pd.read_csv(argv[1])
-    #dataarray = np.array(dataframe)
-    #print(dataarray)
-    #w = linear_perceptron(dataarray)
-
-    w = step_perceptron()
-    print(f"{w.weights}")
+    dataframe = pd.read_csv(argv[1])
+    dataarray = np.array(dataframe)
+#    print(dataarray)
+    w,error = linear_perceptron(dataarray)
     b = w.weights[0][0]
     x = w.weights[0][1]
     y = w.weights[0][2]
-    print(f"Y = {x/-y} * X + {b/-y}")
+    z = w.weights[0][3]
+    print(f"0=X*{x}+Y*{y}+Z*{z}+{b}")
+    print(error)
+    # print(f"Y = {x/-y} * X + {b/-y}")

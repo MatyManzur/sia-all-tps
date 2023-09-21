@@ -27,7 +27,7 @@ def hiperbolic(x: NDArray) -> NDArray:
     return np.apply_along_axis(lambda h: BETA * np.tanh(h), 0, x)
 
 
-def derivative_hiperbolic(x: NDArray) -> NDArray:
+def hiperbolic_derivative(x: NDArray) -> NDArray:
     return np.apply_along_axis(lambda h: BETA * (1 - (BETA * np.tanh(h)) ** 2), 0, x)
 
 
