@@ -36,7 +36,7 @@ DATA_OR_EXC = [
 
 ALGORITHM = 'online'
 MINI_BATCH_SIZE = 2
-LEARNING_CONSTANT = 0.1
+LEARNING_CONSTANT = 0.01
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
@@ -48,7 +48,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     min_err = float('inf')
     w_min = None
     i = 0
-    limit = 1
+    limit = 2000
 
     while i < limit and min_err > EPSILON:
         if ALGORITHM == 'online':
@@ -72,7 +72,22 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
             w_min = list(map(lambda layer: np.copy(layer.weights), network))
 
         i += 1
+    print(w_min)
     print(min_err)
 
+    for i in range(len(network)):
+        network[i].set_weights(w_min[i])
+
+    print(forward_propagation(network, np.array([-1, -1])))
+    print(forward_propagation(network, np.array([-1, 1])))
+    print(forward_propagation(network, np.array([1, -1])))
+    print(forward_propagation(network, np.array([1, 1])))
+
+
 if __name__ == '__main__':
-    multilayer_perceptron([2], identity,derivative_identity, DATA_OR_EXC)
+    multilayer_perceptron([6, 6, 6], identity, derivative_identity, DATA_OR_EXC)
+
+# ()    ()   ()
+# ()    ()   ()   ()
+#       ()
+#   3x3   2x4  1x3
