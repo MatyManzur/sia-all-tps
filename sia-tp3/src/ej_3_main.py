@@ -85,7 +85,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
 
 if __name__ == '__main__':
-    multilayer_perceptron([6, 6, 6], identity, derivative_identity, DATA_OR_EXC)
+    multilayer_perceptron([6, 6], identity, derivative_identity, DATA_OR_EXC)
 
 # ()    ()   ()
 # ()    ()   ()   ()
