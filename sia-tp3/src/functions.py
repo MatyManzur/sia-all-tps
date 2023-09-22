@@ -13,7 +13,7 @@ def identity(x: NDArray | float) -> NDArray:
     return x
 
 def derivative_identity(x: NDArray | float) -> NDArray:
-    return np.apply_along_axis(lambda h: 1, 0, x)
+    return np.apply_along_axis(lambda h: h-h+1, 0, x)  # no preguntes
 
 def sign(x: NDArray | float) -> NDArray | float:
     return np.apply_along_axis(inclusive_sign, 0, x)

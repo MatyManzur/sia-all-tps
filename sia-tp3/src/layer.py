@@ -6,7 +6,7 @@ from numpy._typing import NDArray
 
 class Layer:  # N neuronas, con M inputs
     def __init__(self, num_inputs: int, num_neurons: int, activation_function: Activation_Function):
-        self.weights = np.random.rand( num_neurons, num_inputs + 1)
+        self.weights = np.random.rand(num_neurons, num_inputs + 1)
         self.activation_function = activation_function
         self.output = None  # Aca se guarda el resultado despues de salir de la funcion de activacion
         self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input
@@ -64,7 +64,7 @@ def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Func
     # guarda el ΔW para aplicarlo más adelante
     layer_neurons[-1].add_pending_weight(weight_change)
     previous_delta = delta
-    previous_weight_change = layer_neurons[-1]
+    previous_layer = layer_neurons[-1]
     # reverse iteration
     for i in range(len(layer_neurons) - 2, -1, -1):
         # MxN.Nx1 = Mx1 => Nx1*Nx1 = Nx1
@@ -83,7 +83,6 @@ def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Func
 
 def calculate_error(calculated_output: NDArray, expected_out: NDArray) -> float:
     return (1 / 2) * (np.sum(np.square(np.subtract(expected_out, calculated_output))))
-
 
 
 def consolidate_weights(neural_net: List[Layer]):

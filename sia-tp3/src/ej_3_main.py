@@ -64,6 +64,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
             _sample = (np.array(sample[0]), np.array(sample[1]))
             train_perceptron(network, LEARNING_CONSTANT, _sample, act_func, deriv_func)
         consolidate_weights(network)
+        reset_pending_weights(network)
 
         err = calculate_error_from_items(network, data)
         if err < min_err:
