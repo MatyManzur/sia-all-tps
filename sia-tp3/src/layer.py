@@ -1,12 +1,12 @@
 import numpy as np
-from functions import Activation_Function
+from src.functions import Activation_Function
 from typing import List
 from numpy._typing import NDArray
 
 
 class Layer:  # N neuronas, con M inputs
     def __init__(self, num_inputs: int, num_neurons: int, activation_function: Activation_Function):
-        self.weights = np.random.rand(num_neurons, num_inputs + 1)
+        self.weights = np.random.rand( num_neurons, num_inputs + 1)
         self.activation_function = activation_function
         self.output = None  # Aca se guarda el resultado despues de salir de la funcion de activacion
         self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input
@@ -25,15 +25,17 @@ class Layer:  # N neuronas, con M inputs
         if inputs is not None:
             self.excitement = np.matmul(self.weights, inputs)
         return self.excitement
-    
-    def set_pending_weights(self, delta: NDArray):
-        self.weights = delta
+
+    def add_pending_weight(self, weight_change: NDArray):
+        #print(f"{self.pending_weight} + {weight_change}")
+        self.pending_weight = self.pending_weight + weight_change
 
     def consolidate_weights(self):
         self.weights += self.pending_weight
 
-    def reset_weights(self):
-        self.weights = np.subtract(self.weights, self.pending_weight)
+    def reset_pending_weights(self):
+        self.pending_weight = np.zeros_like(self.weights)
+
 
 def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Activation_Function) -> List[Layer]:
     prev_value = initial_inputs
@@ -44,20 +46,25 @@ def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Act
     return neural_network
 
 
-def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> List[Layer]:
+def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> List[float]:
     input = training_data
     for layer in layer_neurons:
-        input = layer.forward(input)
-    return layer_neurons
+        input = layer.forward(np.append([1], input))  # append bias
+    return input
 
-def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function, expected_output: NDArray, input: NDArray, learning_bias: float) -> List[Layer]:
-    # Nx1 * Nx1 = Nx1
-    initial_gradient = np.multiply(expected_output - layer_neurons[-1].output, derivative_func(layer_neurons[-1].excitement))
-    # Resultado: Nx1*1xM = NxM
-    initial_delta = learning_bias * np.matmul(initial_gradient, np.transpose(layer_neurons[-2].output))
-    layer_neurons[-1].set_pending_weights(initial_delta)
-    previous_gradient = initial_gradient
-    previous_layer = layer_neurons[-1]
+
+def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function, expected_output: NDArray,
+                    input: NDArray, learning_constant: float) -> List[Layer]:
+    # δ^f = θ'(h) * (ζ- V^f) (Nx1 * Nx1 = Nx1)
+    delta = np.multiply(layer_neurons[-1].activation_function(expected_output) - layer_neurons[-1].output,
+                        derivative_func(layer_neurons[-1].excitement))
+    # ΔW^m = η * δ^m * (V^m-1) (Nx1*1xM = NxM)
+    weight_change = learning_constant * np.matmul(delta, np.array([np.append(1, layer_neurons[-2].output)]))
+
+    # guarda el ΔW para aplicarlo más adelante
+    layer_neurons[-1].add_pending_weight(weight_change)
+    previous_delta = delta
+    previous_weight_change = layer_neurons[-1]
     # reverse iteration
     for i in range(len(layer_neurons) - 2, -1, -1):
         # MxN.Nx1 = Mx1 => Nx1*Nx1 = Nx1
@@ -66,8 +73,11 @@ def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Func
                             np.matmul((np.transpose(previous_weight_change.weights))[1:], previous_delta))
         curr_input = layer_neurons[i - 1].output if i != 0 else input
         # Nx1.1xM = NxM
-        delta = learning_bias * (gradient * np.transpose(curr_input))
-        layer.set_pending_weights(delta)
+        # ΔW^m = η * δ^m * (V^m-1)'
+        curr_input = np.append([1], curr_input)
+        weight_change = learning_constant * (np.array([delta]).T * np.tile(curr_input, (len(delta), 1)))
+
+        layer_neurons[i].add_pending_weight(weight_change)
     return layer_neurons
 
 
