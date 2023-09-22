@@ -10,12 +10,15 @@ class Layer:  # N neuronas, con M inputs
         self.activation_function = activation_function
         self.output = None  # Aca se guarda el resultado despues de salir de la funcion de activacion
         self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input
-        self.pending_weight = None
+        self.reset_pending_weights()
 
     #
     def forward(self, inputs):  # inputs[0] must be 1 for bias
         self.output = self.activation_function(self.get_excitement(inputs))
         return self.output
+
+    def test_forward(self, inputs):
+        return self.activation_function(self.get_excitement(inputs))
 
     # NxM * Mx1 = Nx1
     def get_excitement(self, inputs=None):
