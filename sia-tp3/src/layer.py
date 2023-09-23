@@ -57,15 +57,14 @@ def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> L
     return input
 
 
-def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function, expected_output: NDArray,
-                    input: NDArray, learning_constant: float) -> List[Layer]:
+def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
+                    expected_output: NDArray, input: NDArray, learning_constant: float) -> List[Layer]:
     # δ^f = θ'(h) * (ζ- V^f) (Nx1 * Nx1 = Nx1)
-    delta = np.multiply(np.array([layer_neurons[-1].activation_function(expected_output)]).T - layer_neurons[-1].output,
+    delta = np.multiply(np.array([expected_output]).T - layer_neurons[-1].output,
                         derivative_func(layer_neurons[-1].excitement))
     # ΔW^m = η * δ^m * (V^m-1) (Nx1*1xM = NxM)
     # print(f"Last Layer: \n{delta} * \n{np.array([np.append(1, layer_neurons[-2].output)])}")
     weight_change = learning_constant * np.matmul(delta, np.array([np.append(1, layer_neurons[-2].output)]))
-
 
     # guarda el ΔW para aplicarlo más adelante
     layer_neurons[-1].add_pending_weight(weight_change)
