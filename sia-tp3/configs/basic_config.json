@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "function_type": "hiperbolic",
+    "/***guia": " hiperbolic, identity, sigmoid *////"
+  },
+  "learning_constant": 1,
+  "momentum_beta_value": 0.3,
+  "/***guia_beta": " 0 < beta < 1*////",
+  "min_error": 0.0001,
+  "max_iterations": 10000,
+  "middle_layers_neurons": [30, 40, 50, 60],
+  "test": {
+    "training_type": "online",
+    "mini_batch_size": 2,
+    "/***guia_training_type": "batch, mini-batch, online*////"
+  }
+}
