@@ -96,7 +96,7 @@ def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Func
 
 
 def calculate_error(calculated_output: NDArray, expected_out: NDArray) -> float:
-    return (1 / 2) * (np.sum(np.square(np.subtract(expected_out, calculated_output))))
+    return (1 / 2) * (np.sum((expected_out - calculated_output) ** 2))
 
 
 def consolidate_weights(neural_net: List[Layer]):

@@ -23,8 +23,9 @@ def calculate_error_from_items(neural_net: List[Layer], items: List[Tuple[Tuple,
     error_sum = 0
     for inputs, expected in items:
         sample, expected_output = np.array(inputs), np.array(expected)
-        outputs = forward_propagation(neural_net, sample)
-        error_sum += calculate_error(np.array(outputs), output_func(expected_output))
+        outputs = np.array(forward_propagation(neural_net, sample))
+        expected_output = output_func(np.reshape(expected_output, outputs.shape))
+        error_sum += calculate_error(outputs, expected_output)
     return error_sum
 
 
@@ -38,9 +39,10 @@ DATA_OR_EXC = [
 ALGORITHM = 'mini-batch'
 MINI_BATCH_SIZE = 5
 LEARNING_CONSTANT = 0.1
-EPSILON = 10 ** -2
+EPSILON = 10 ** -1
 BETA = 0.3
 LIMIT = 1000000
+LAYERS = [5, 5, 5]
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
@@ -71,9 +73,9 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
         reset_pending_weights(network)
 
         err = calculate_error_from_items(network, data, output_func)
-        print(i)
+        print(f"{i} - {err}", end='\r')
         if err < min_err:
-            # print(f"{i} - {err}")
+            print()
             # sys.stdout.flush()
             min_err = err
             w_min = list(map(lambda layer: np.copy(layer.weights), network))
@@ -97,7 +99,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
 
 if __name__ == '__main__':
-    multilayer_perceptron([5, 5, 5], hiperbolic, hiperbolic_derivative, hiperbolic_normalization, DATA_DIGITOS)
+    multilayer_perceptron(LAYERS, hiperbolic, hiperbolic_derivative, hiperbolic_normalization, DATA_DIGITOS)
 
 # ()    ()   ()
 # ()    ()   ()   ()
