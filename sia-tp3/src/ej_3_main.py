@@ -4,6 +4,9 @@ from typing import *
 from functions import *
 from layer import *
 
+from data.ej3_digitos import DATA_DIGITOS
+from data.ej3_digitos_par import DATA_DIGITOS_PAR
+
 
 # Un entrenamiento del neural net
 def train_perceptron(neural_net: List[Layer], learning_constant: float, training_item: Tuple[NDArray, NDArray],
@@ -32,11 +35,12 @@ DATA_OR_EXC = [
     ((1, 1), (-1,))
 ]
 
-ALGORITHM = 'online'
-MINI_BATCH_SIZE = 2
-LEARNING_CONSTANT = 0.3
-EPSILON = 10 ** -4
+ALGORITHM = 'mini-batch'
+MINI_BATCH_SIZE = 5
+LEARNING_CONSTANT = 0.1
+EPSILON = 10 ** -2
 BETA = 0.3
+LIMIT = 1000000
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
@@ -49,9 +53,8 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     min_err = float('inf')
     w_min = None
     i = 0
-    limit = 100000
 
-    while i < limit and min_err > EPSILON:
+    while i < LIMIT and min_err > EPSILON:
         if ALGORITHM == 'online':
             samples = random.sample(data, 1)
         elif ALGORITHM == 'mini-batch':
@@ -68,13 +71,14 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
         reset_pending_weights(network)
 
         err = calculate_error_from_items(network, data, output_func)
+        print(i)
         if err < min_err:
-            print(f"{i} - {err}")
+            # print(f"{i} - {err}")
             # sys.stdout.flush()
             min_err = err
             w_min = list(map(lambda layer: np.copy(layer.weights), network))
-        else:
-            print(f"{i} - {err} - {min_err}", end='\r')
+        # else:
+        #     print(f"{i} - {err} - {min_err}", end='\r')
         i += 1
     print()
     print(w_min)
@@ -83,14 +87,17 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     for i in range(len(network)):
         network[i].set_weights(w_min[i])
 
-    print(forward_propagation(network, np.array([-1, -1])))
-    print(forward_propagation(network, np.array([-1, 1])))
-    print(forward_propagation(network, np.array([1, -1])))
-    print(forward_propagation(network, np.array([1, 1])))
+    # print(forward_propagation(network, np.array([-1, -1])))
+    # print(forward_propagation(network, np.array([-1, 1])))
+    # print(forward_propagation(network, np.array([1, -1])))
+    # print(forward_propagation(network, np.array([1, 1])))
+
+    for i, number in enumerate(DATA_DIGITOS):
+        print(f"{i} - {forward_propagation(network, np.array(number[0]))}")
 
 
 if __name__ == '__main__':
-    multilayer_perceptron([6, 6], hiperbolic, hiperbolic_derivative, hiperbolic_normalization, DATA_OR_EXC)
+    multilayer_perceptron([5, 5, 5], hiperbolic, hiperbolic_derivative, hiperbolic_normalization, DATA_DIGITOS)
 
 # ()    ()   ()
 # ()    ()   ()   ()
