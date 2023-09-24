@@ -62,7 +62,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
 
 def run_test(config):
-    layers = config['middle_layers_neurons']
+    layers = list(config['middle_layers_neurons'])
 
     if config['functions']['function_type'] == 'hiperbolic':
         activation_function = hiperbolic
