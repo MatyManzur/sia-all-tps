@@ -105,6 +105,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
 
 if __name__ == '__main__':
+    np.set_printoptions(suppress=True)
     multilayer_perceptron(LAYERS, sigmoid, sigmoid_derivative, sigmoid_normalization, DATA_DIGITOS)
 
 # ()    ()   ()
