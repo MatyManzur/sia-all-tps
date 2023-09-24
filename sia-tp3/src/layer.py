@@ -4,10 +4,13 @@ from typing import List
 from numpy._typing import NDArray
 
 
+LOWER_BOUND=-0.5
+UPPER_BOUND=0.5
+
 # 0 < BETA < 1 Para momentum
 class Layer:  # N neuronas, con M inputs
     def __init__(self, num_inputs: int, num_neurons: int, activation_function: Activation_Function, beta=0):
-        self.weights = np.random.rand(num_neurons, num_inputs + 1)
+        self.weights = np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND, size=(num_neurons, num_inputs + 1))  # +1 for bias
         self.activation_function = activation_function
         self.output = None  # Aca se guarda el resultado despues de salir de la funcion de activacion
         self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input

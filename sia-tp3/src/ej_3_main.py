@@ -1,4 +1,5 @@
 import random
+import time
 from typing import *
 
 from functions import *
@@ -38,8 +39,8 @@ DATA_OR_EXC = [
 
 ALGORITHM = 'mini-batch'
 MINI_BATCH_SIZE = 5
-LEARNING_CONSTANT = 0.1
-EPSILON = 10 ** -1
+LEARNING_CONSTANT = 10 ** -2
+EPSILON = 10 ** -2
 BETA = 0.3
 LIMIT = 1000000
 LAYERS = [5, 5, 5]
@@ -55,6 +56,8 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     min_err = float('inf')
     w_min = None
     i = 0
+
+    start_time = time.time()
 
     while i < LIMIT and min_err > EPSILON:
         if ALGORITHM == 'online':
@@ -97,9 +100,12 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     for i, number in enumerate(DATA_DIGITOS):
         print(f"{i} - {forward_propagation(network, np.array(number[0]))}")
 
+    end_time = time.time()
+    print(f"Time: {end_time - start_time}")
+
 
 if __name__ == '__main__':
-    multilayer_perceptron(LAYERS, hiperbolic, hiperbolic_derivative, hiperbolic_normalization, DATA_DIGITOS)
+    multilayer_perceptron(LAYERS, sigmoid, sigmoid_derivative, sigmoid_normalization, DATA_DIGITOS)
 
 # ()    ()   ()
 # ()    ()   ()   ()
