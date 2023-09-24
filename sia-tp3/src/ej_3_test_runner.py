@@ -5,6 +5,7 @@ import sys
 from sys import argv
 from typing import Tuple
 import numpy as np
+import os
 
 from data.ej3_digitos import DATA_DIGITOS
 from data.ej3_digitos_par import DATA_DIGITOS_PAR
@@ -22,6 +23,8 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     network = generate_layers(layers_neuron_count, len(learning_data[0][0]), act_func, beta)
     min_err = float('inf')
     w_min = None
+    min_err_generalization = float('inf')
+    epoch_reached = 0
     i = 0
 
     output_data = {'iterations': []}
@@ -45,18 +48,20 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
         err = calculate_error_from_items(network, learning_data, output_func)
         test_error = calculate_error_from_items(network, test_data, output_func)
         output_data['iterations'].append({
-            'iteration': i,
+            'epoch': i,
             'error': err,
             'test_error': test_error,
         })
-        print(f"\r{i} - {err} - {test_error}", end='')
         if err < min_err:
+            epoch_reached = i
             min_err = err
+            min_err_generalization = test_error
             w_min = list(map(lambda layer: layer.weights.tolist(), network))
         i += 1
 
-    print()
     output_data['min_error'] = min_err
+    output_data['min_error_generalization'] = min_err_generalization
+    output_data['epoch_reached'] = epoch_reached
     output_data['weights'] = w_min
     return output_data
 
@@ -98,7 +103,7 @@ def run_test(config):
                                  learning_data, test_data, beta, epsilon, limit, learning_constant, algorithm, mini_batch_size)
 
     test_data['config'] = {
-        'layers': layers,
+        'layers': layers[:-1], # remove last layer
         'data_set': config['data_set'],
         'functions': { 'function_type': config['functions']['function_type'] },
         'momentum_beta_value': beta,
@@ -120,19 +125,25 @@ if __name__ == '__main__':
         raise Exception('Invalid arguments!')
     config = json.load(open(argv[1], mode='r'))
 
+    # get path from a file name
+    # make directory
+    path = os.path.dirname(os.path.abspath(config['file-name-prefix']))
+    if not os.path.exists(path):
+        os.makedirs(path)
+
     for test in config['tests']:
         print(f"=====Test: {test['name']}=====")
         start_test = time.time()
         results = []
         for i in range(config['iterations-per-test']):
             print(f"Iteration: {i}")
-            sys.stdout.flush()
             # Run test
             test_results = run_test(test)
             results.append(test_results['min_error'])
+            print(f"Reached minimum in epoch: {test_results['epoch_reached']}")
             # Save results of test
-            with open(f"{config['file-name-prefix']}{i}.json", "w") as outfile:
-                json.dump(test_results, outfile)
+            with open(f"{config['file-name-prefix']}{test['name']}-{i}.json", "w") as outfile:
+                json.dump(test_results, outfile, indent=4)
         end_test = time.time()
-        print(f"Elapsed time: {end_test - start_test}")
+        print(f"\rElapsed time: {end_test - start_test}")
         print(f"Results: {results} - std: {np.std(results)} - mean: {np.mean(results)}")

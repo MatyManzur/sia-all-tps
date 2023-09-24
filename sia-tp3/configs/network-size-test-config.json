@@ -1,117 +1,97 @@
 {
   "iterations-per-test": 10,
-  "file-name-prefix": "../results/test-",
+  "file-name-prefix": "../results/network-size-test/test-",
   "tests": [
 
     {
-      "name": "test2",
+      "name": "5_5_5",
       "functions": {
-        "function_type": "sigmoid",
-        "/***guia": " hiperbolic, identity, sigmoid *////"
+        "function_type": "sigmoid"
       },
       "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "learning_constant": 0.1,
       "momentum_beta_value": 0.3,
-      "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
       "middle_layers_neurons": [5, 5, 5],
       "test": {
         "training_type": "mini-batch",
-        "mini_batch_size": 5,
-        "/***guia_training_type": "batch, mini-batch, online*////"
+        "mini_batch_size": 5
       },
-      "data_set": "DATA_DIGITOS",
-      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+      "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test3",
+      "name": "7_7_7",
       "functions": {
-        "function_type": "sigmoid",
-        "/***guia": " hiperbolic, identity, sigmoid *////"
+        "function_type": "sigmoid"
       },
       "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "learning_constant": 0.1,
       "momentum_beta_value": 0.3,
-      "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
       "middle_layers_neurons": [7, 7, 7],
       "test": {
         "training_type": "mini-batch",
-        "mini_batch_size": 5,
-        "/***guia_training_type": "batch, mini-batch, online*////"
+        "mini_batch_size": 5
       },
-      "data_set": "DATA_DIGITOS",
-      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+      "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test4",
+      "name": "10_10_10",
       "functions": {
-        "function_type": "sigmoid",
-        "/***guia": " hiperbolic, identity, sigmoid *////"
+        "function_type": "sigmoid"
       },
       "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "learning_constant": 0.1,
       "momentum_beta_value": 0.3,
-      "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
       "middle_layers_neurons": [10, 10, 10],
       "test": {
         "training_type": "mini-batch",
-        "mini_batch_size": 5,
-        "/***guia_training_type": "batch, mini-batch, online*////"
+        "mini_batch_size": 5
       },
-      "data_set": "DATA_DIGITOS",
-      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+      "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test5",
+      "name": "15_15_15",
       "functions": {
-        "function_type": "sigmoid",
-        "/***guia": " hiperbolic, identity, sigmoid *////"
+        "function_type": "sigmoid"
       },
       "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "learning_constant": 0.1,
       "momentum_beta_value": 0.3,
-      "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
       "middle_layers_neurons": [15, 15, 15],
       "test": {
         "training_type": "mini-batch",
-        "mini_batch_size": 5,
-        "/***guia_training_type": "batch, mini-batch, online*////"
+        "mini_batch_size": 5
       },
-      "data_set": "DATA_DIGITOS",
-      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+      "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test5",
+      "name": "30_30_30",
       "functions": {
-        "function_type": "sigmoid",
-        "/***guia": " hiperbolic, identity, sigmoid *////"
+        "function_type": "sigmoid"
       },
       "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "learning_constant": 0.1,
       "momentum_beta_value": 0.3,
-      "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
       "middle_layers_neurons": [30, 30, 30],
       "test": {
         "training_type": "mini-batch",
-        "mini_batch_size": 5,
-        "/***guia_training_type": "batch, mini-batch, online*////"
+        "mini_batch_size": 5
       },
-      "data_set": "DATA_DIGITOS",
-      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+      "data_set": "DATA_DIGITOS"
     }
   ]
 }
