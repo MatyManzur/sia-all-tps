@@ -58,11 +58,11 @@ def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Act
     return neural_network
 
 
-def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> List[float]:
-    input = training_data
+def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> NDArray:
+    input_values = training_data
     for layer in layer_neurons:
-        input = layer.forward(np.append([1], input))  # append bias
-    return input
+        input_values = layer.forward(np.append([1], input_values))  # append bias
+    return input_values
 
 
 def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
