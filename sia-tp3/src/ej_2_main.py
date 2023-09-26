@@ -1,12 +1,8 @@
-import json
 import random
-import csv
 from sys import argv
-from typing import Tuple
-import numpy as np
-import pandas as pd
+
 import numpy.random
-from typing import List
+import pandas as pd
 
 from src.functions import *
 from src.layer import *
@@ -44,7 +40,10 @@ def linear_perceptron(data: NDArray):
     weights_at_min = None
     activation_fun = sigmoid
     derivative_fun = sigmoid_derivative
-    layer = Layer(len(data[0]) - 1, 1, activation_fun)  # inicializa random
+    layer = Layer(len(data[0]) - 1, 1, activation_fun, {
+        "type": "momentum",
+        "beta": 0
+    })  # inicializa random
     min_error = float('inf')
     limit = 1000
     i = 0

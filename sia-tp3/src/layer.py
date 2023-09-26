@@ -9,7 +9,7 @@ UPPER_BOUND = 0.5
 
 # 0 < BETA < 1 Para momentum
 class Layer:  # N neuronas, con M inputs
-    def __init__(self, num_inputs: int, num_neurons: int, activation_function: Activation_Function, beta=0):
+    def __init__(self, num_inputs: int, num_neurons: int, activation_function: Activation_Function, optimization_config):
         self.weights = np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND,
                                          size=(num_neurons, num_inputs + 1))  # +1 for bias
         self.activation_function = activation_function
@@ -17,7 +17,9 @@ class Layer:  # N neuronas, con M inputs
         self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input
         self.pending_weight = np.zeros_like(self.weights)
         self.last_weight_change = np.zeros_like(self.weights)
-        self.BETA = beta
+        if optimization_config['type'] == 'momentum':
+            self.optimization = 'momentum'
+            self.BETA = optimization_config['beta']
 
     #
     def forward(self, inputs):  # inputs[0] must be 1 for bias
@@ -35,7 +37,8 @@ class Layer:  # N neuronas, con M inputs
 
     def add_pending_weight(self, weight_change: NDArray):
         #  print(f"{self.weights} : {self.pending_weight} + {weight_change}")
-        self.pending_weight = self.pending_weight + weight_change + self.BETA * self.last_weight_change
+        if self.optimization == 'momentum':
+            self.pending_weight = self.pending_weight + weight_change + self.BETA * self.last_weight_change
         self.last_weight_change = weight_change
 
     def consolidate_weights(self):
@@ -49,12 +52,12 @@ class Layer:  # N neuronas, con M inputs
         self.weights = weights
 
 
-def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Activation_Function, beta: int = 0) -> \
+def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Activation_Function, optimization_config) -> \
         List[Layer]:
     prev_value = initial_inputs
     neural_network = []
     for neuron_count in layer_neurons:
-        neural_network.append(Layer(prev_value, neuron_count, act_func, beta))
+        neural_network.append(Layer(prev_value, neuron_count, act_func, optimization_config))
         prev_value = neuron_count
     return neural_network
 

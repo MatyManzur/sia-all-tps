@@ -1,11 +1,9 @@
 import json
-import time
+import os
 import random
-import sys
+import time
 from sys import argv
 from typing import Tuple
-import numpy as np
-import os
 
 from data.ej3_digitos import DATA_DIGITOS
 from data.ej3_digitos_par import DATA_DIGITOS_PAR
@@ -16,11 +14,13 @@ from layer import *
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
                           deriv_func: Activation_Function, output_func, learning_data: List[Tuple[Tuple, Tuple]],
-                          test_data: List[Tuple[Tuple, Tuple]], beta, epsilon, limit, learning_constant, algorithm,
-                          mini_batch_size):
+                          test_data: List[Tuple[Tuple, Tuple]], epsilon, limit, learning_constant, algorithm,
+                          mini_batch_size, optimization_config=None):
+    if optimization_config is None:
+        optimization_config = {"type": "momentum", "beta": 0}
     # La capa final tiene tantos nodos como outputs
     layers_neuron_count.append(len(learning_data[0][1]))
-    network = generate_layers(layers_neuron_count, len(learning_data[0][0]), act_func, beta)
+    network = generate_layers(layers_neuron_count, len(learning_data[0][0]), act_func, optimization_config)
     min_err = float('inf')
     w_min = None
     min_err_generalization = float('inf')
@@ -93,20 +93,20 @@ def run_test(config):
     else:
         raise Exception('Invalid data set!')
 
-    beta = config['momentum_beta_value']
     epsilon = config['min_error']
     limit = config['max_iterations']
     learning_constant = config['learning_constant']
     algorithm = config['test']['training_type']
     mini_batch_size = config['test']['mini_batch_size']
     test_data = multilayer_perceptron(layers, activation_function, derivative_function, normalization_function,
-                                 learning_data, test_data, beta, epsilon, limit, learning_constant, algorithm, mini_batch_size)
+                                      learning_data, test_data, epsilon, limit, learning_constant, algorithm,
+                                      mini_batch_size, config['optimization'])
 
     test_data['config'] = {
-        'layers': layers[:-1], # remove last layer
+        'layers': layers[:-1],  # remove last layer
         'data_set': config['data_set'],
-        'functions': { 'function_type': config['functions']['function_type'] },
-        'momentum_beta_value': beta,
+        'functions': {'function_type': config['functions']['function_type']},
+        'optimization': config['optimization'],
         'min_error': epsilon,
         'max_iterations': limit,
         'learning_constant': learning_constant,

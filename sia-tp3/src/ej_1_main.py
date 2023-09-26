@@ -45,7 +45,10 @@ def step_perceptron(limit=10000, data=None, learning_rate = 0.1):
     result = {"weights": {}}
     weights_at_min = None
     activation_fun = sign
-    layer = Layer(len(data[0][0]), 1, activation_fun)  # inicializa random
+    layer = Layer(len(data[0][0]), 1, activation_fun, {
+        "type": "momentum",
+        "beta": 0
+    })  # inicializa random
     min_error = float('inf')
     i = 0
     while min_error > 0 and i < limit:
