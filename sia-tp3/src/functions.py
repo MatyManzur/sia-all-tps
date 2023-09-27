@@ -25,6 +25,15 @@ def identity_normalization(x: NDArray | float) -> NDArray | float:
 def sign(x: NDArray | float) -> NDArray | float:
     return -1 + 2 * (x >= 0)
 
+def sign_derivative(x: NDArray | float) -> NDArray | float:
+    return np.ones_like(x)
+
+def sign_normalization(x: NDArray | float) -> NDArray | float:
+    if isinstance(x, float) or isinstance(x, int):
+        return x / abs(x)
+    max_value = max(abs(x))
+    return x / max_value
+
 
 def inclusive_sign(x) -> int:
     return -1 + 2 * (x >= 0)
