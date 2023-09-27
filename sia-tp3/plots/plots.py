@@ -1,6 +1,11 @@
+import numpy as np
+import pandas
 import plotly.graph_objects as go
+import plotly.express as px
 import json
-from src.ej_1_main import step_perceptron, DATA_AND, DATA_OR_EXC
+from src.ej_1_main import step_perceptron, DATA_AND, DATA_OR_EXC, step_compute_error
+from src.functions import sign
+from src.layer import Layer
 
 
 def plot_ej_1(title, correct_x_y, incorrect_x_y, x, y):
@@ -31,25 +36,39 @@ def plot_ej_1(title, correct_x_y, incorrect_x_y, x, y):
     fig.show()
 
 
-def extract_data():
+def extract_data(data_set):
     x = [-1.5, 1.5]
     y = []
     data = json.load(open("results_step.json", mode='r'))
+    error_values = []
     for iteration in data["weights"].values():
         y.append([-iteration['w1'] / iteration['w2'] * i - iteration['w0'] / iteration['w2'] for i in x])
-    return x, y
+        layer = Layer(len(data_set[0][0]), 1, sign, {
+            "type": "momentum",
+            "beta": 0
+        })
+        layer.weights = np.array([[iteration['w0'], iteration['w1'], iteration['w2']]])
+        error_values.append(step_compute_error(data_set, layer)[0, 0])
+
+    return x, y, error_values
 
 
 def plot_or_exc():
     step_perceptron(100, DATA_OR_EXC, 0.01)
-    (x, y) = extract_data()
+    (x, y, error_values) = extract_data(DATA_OR_EXC)
     plot_ej_1("Visualization Exclusive OR", [[-1, 1], [1, -1]], [[-1, 1], [-1, 1]], x, y)
+    iterations = np.arange(0, len(error_values))
+    df = pandas.DataFrame({"Epoch": iterations, "Error": error_values})
+    px.line(df, x="Epoch", y="Error", title="Evolution of Error in XOR", markers='lines+markers').show()
 
 
 def plot_and():
     step_perceptron(1000, DATA_AND, 0.01)
-    (x, y) = extract_data()
+    (x, y, error_values) = extract_data(DATA_AND)
     plot_ej_1("Visualization AND", [[1], [1]], [[-1, -1, 1], [-1, 1, -1]], x, y)
+    iterations = np.arange(0, len(error_values))
+    df = pandas.DataFrame({"Epoch": iterations, "Error": error_values})
+    px.line(df, x="Epoch", y="Error", title="Evolution of Error in And", markers='lines+markers').show()
 
 
 if __name__ == "__main__":

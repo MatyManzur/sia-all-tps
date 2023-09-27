@@ -7,6 +7,7 @@ from typing import Tuple
 
 from data.ej3_digitos import DATA_DIGITOS
 from data.ej3_digitos_par import DATA_DIGITOS_PAR
+from data.xor_data import XOR_DATA
 from ej_3_main import train_perceptron, calculate_error_from_items
 from functions import *
 from layer import *
@@ -136,6 +137,10 @@ def run_test(config):
         activation_function = identity
         derivative_function = derivative_identity
         normalization_function = identity_normalization
+    elif config['functions']['function_type'] == 'sign':
+        activation_function = sign
+        derivative_function = sign_derivative
+        normalization_function = sign_normalization
     else:
         raise Exception('Invalid function type!')
 
@@ -143,8 +148,11 @@ def run_test(config):
         learning_data = [x for i, x in enumerate(DATA_DIGITOS) if i in config['learning_data_indexes']]
         test_data = [x for i, x in enumerate(DATA_DIGITOS) if i in config['test_data_indexes']]
     elif config['data_set'] == 'DATA_DIGITOS_PAR':
-        learning_data = [x for i, x in enumerate(DATA_DIGITOS_PAR) if i in config['test_data_indexes']]
+        learning_data = [x for i, x in enumerate(DATA_DIGITOS_PAR) if i in config['learning_data_indexes']]
         test_data = [x for i, x in enumerate(DATA_DIGITOS_PAR) if i in config['test_data_indexes']]
+    elif config['data_set'] == 'XOR_DATA':
+        learning_data = [x for i, x in enumerate(XOR_DATA) if i in config['learning_data_indexes']]
+        test_data = [x for i, x in enumerate(XOR_DATA) if i in config['test_data_indexes']]
     else:
         raise Exception('Invalid data set!')
 

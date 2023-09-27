@@ -1,0 +1,32 @@
+{
+  "iterations-per-test": 10,
+  "file-name-prefix": "../results/test-",
+  "tests": [
+
+    {
+      "name": "test2",
+      "functions": {
+        "function_type": "sign",
+        "/***guia": " hiperbolic, identity, sigmoid, sign *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.01,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.3
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [5],
+      "test": {
+        "training_type": "online",
+        "mini_batch_size": 1,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "XOR_DATA",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR, XOR_DATA"
+    }
+  ]
+}
