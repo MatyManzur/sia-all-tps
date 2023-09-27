@@ -2,7 +2,7 @@ from typing import Callable
 import numpy as np
 from numpy._typing import NDArray
 
-Activation_Function = Callable[[NDArray], NDArray]
+Activation_Function = Callable[[NDArray|float], NDArray]
 
 BETA = 1
 

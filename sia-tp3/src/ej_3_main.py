@@ -38,7 +38,7 @@ def change_learning_rate(last_errors, learning_rate):
 
     if should_change_rate:
         return lambda x: x #+ 0.009    # Podemos parametrizar esto
-    
+
     should_change_rate = True
     for j in range(1, LEARNING_RATE_CHANGE_ITER):
         if last_errors[j-1] - last_errors[j] > CONSTANT_RATE_EPS:
@@ -47,7 +47,7 @@ def change_learning_rate(last_errors, learning_rate):
 
     if should_change_rate:
         return lambda x: x #- learning_rate*0.0001    # Podemos parametrizar esto
-    
+
     return lambda x: x
 
 DATA_OR_EXC = [
