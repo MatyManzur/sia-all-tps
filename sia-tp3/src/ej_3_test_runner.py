@@ -11,6 +11,43 @@ from ej_3_main import train_perceptron, calculate_error_from_items
 from functions import *
 from layer import *
 
+def class_metrics_info(test_data, network):
+    CLASS_DISTINCTION_EPS = 0.3 # SI ESTO ES MUY BAJO LA ACCURACY SIEMPRE TE DA COMO MÍNIMO 9
+    different_classes = [input_output[1] for input_output in test_data]
+    values_of_classes = []  # Se van a ir guardando en el orden en el que aparecen en la data
+    actual_outputs = []
+    for in_out_values in test_data:
+        actual_outputs.append(np.array(forward_propagation(network, np.array(in_out_values[0]))))
+    for particular_class in different_classes:
+        tp = 0
+        tn = 0
+        fp = 0
+        fn = 0
+        for index, in_out_values in enumerate(test_data):
+            # Si estamos hablando de la misma clase
+            if particular_class == in_out_values[1]:
+                # tp o fn
+                true_positive = True
+                for i, outpt in enumerate(actual_outputs[index]):
+                    if abs(outpt - particular_class[i] > CLASS_DISTINCTION_EPS): # En alguno no me dio lo que pretendía
+                        true_positive = False
+                        fn+=1
+                        break
+                if true_positive:
+                    tp+=1
+            else:
+                # fp o tn
+                false_positive = True
+                for i, outpt in enumerate(actual_outputs[index]):
+                    if abs(outpt - particular_class[i] > CLASS_DISTINCTION_EPS): # En alguno no me dio igual que la clase
+                        false_positive = False
+                        tn+=1
+                        break
+                if false_positive:
+                    fp+=1
+        values_of_classes.append({"tp": tp, "tn": tn, "fp": fp, "fn": fn})
+    return values_of_classes
+
 
 def complete_confusion_matrix(test_data, network, output_func, confusion_matrix):
     DETERMINADO_EPSILON = 0.2
@@ -59,10 +96,16 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
         err = calculate_error_from_items(network, learning_data, output_func)
         test_error = calculate_error_from_items(network, test_data, output_func)
+        
+        class_metrics_test = class_metrics_info(test_data, network)
+        class_metrics_training = class_metrics_info(learning_data, network)
+
         output_data['iterations'].append({
             'epoch': i,
             'error': err,
             'test_error': test_error,
+            'class_metrics_test': class_metrics_test,
+            'class_metrics_train': class_metrics_training,
         })
         if err < min_err:
             epoch_reached = i

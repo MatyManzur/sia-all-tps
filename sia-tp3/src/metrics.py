@@ -12,28 +12,34 @@ Metrics ={
 
 
 def accuracy(metrics: Dict) -> float:
-    true_p = metrics['true_p']
-    true_n = metrics['true_n']
-    false_n = metrics['false_n']
-    false_p = metrics['false_p']
-    return true_n + true_p / (true_n + true_p + false_p + false_n)
+    true_p = metrics['tp']
+    true_n = metrics['tn']
+    false_n = metrics['fn']
+    false_p = metrics['fp']
+    return (true_n + true_p) / (true_n + true_p + false_p + false_n)
 
 
 def precision(metrics: Dict) -> float:
-    true_p = metrics['true_p']
-    false_p = metrics['false_p']
+    true_p = metrics['tp']
+    false_p = metrics['fp']
+    if true_p + false_p == 0:
+        return 0
     return true_p / (true_p + false_p)
 
 
 def recall(metrics: Dict) -> float:
-    true_p = metrics['true_p']
-    false_n = metrics['false_n']
+    true_p = metrics['tp']
+    false_n = metrics['fn']
+    if true_p + false_n == 0:
+        return 0
     return true_p / (true_p + false_n)
 
 
 def f1_score(metrics: Dict) -> float:
     prec = precision(metrics)
     rec = recall(metrics)
+    if prec + rec == 0:
+        return 0
     return (2 * prec * rec) / (prec + rec)
 
 
@@ -42,6 +48,8 @@ def true_p_rate(metrics: Dict) -> float:
 
 
 def false_p_rate(metrics: Dict) -> float:
-    false_p = metrics['false_p']
-    true_n = metrics['true_n']
+    false_p = metrics['fp']
+    true_n = metrics['tn']
+    if false_p + true_n == 0:
+        return 0
     return false_p / (false_p + true_n)

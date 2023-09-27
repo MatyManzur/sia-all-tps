@@ -1,10 +1,10 @@
 {
-    "iterations-per-test": 10,
+    "iterations-per-test": 1,
     "file-name-prefix": "../results/test-",
     "tests": [
   
       {
-        "name": "not_0",
+        "name": "only_0_test",
         "functions": {
           "function_type": "sigmoid",
           "/***guia": " hiperbolic, identity, sigmoid *////"
@@ -29,12 +29,12 @@
         "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
       },
       {
-        "name": "not_1",
+        "name": "0_and_1_test",
         "functions": {
           "function_type": "sigmoid"
         },
-        "learning_data_indexes": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        "test_data_indexes": [1],
+        "learning_data_indexes": [2, 3, 4, 5, 6, 7, 8, 9],
+        "test_data_indexes": [0,1],
         "learning_constant": 0.1,
         "optimization": {
           "type": "momentum",
@@ -42,7 +42,7 @@
         },
         "min_error": 0.01,
         "max_iterations": 10000,
-        "middle_layers_neurons": [7, 7, 7],
+        "middle_layers_neurons": [5, 5, 5],
         "test": {
           "training_type": "mini-batch",
           "mini_batch_size": 5
@@ -50,12 +50,12 @@
         "data_set": "DATA_DIGITOS"
       },
       {
-        "name": "not_2",
+        "name": "4_and_5_test",
         "functions": {
           "function_type": "sigmoid"
         },
-        "learning_data_indexes": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        "test_data_indexes": [2],
+        "learning_data_indexes": [0, 1, 2, 3, 6, 7, 8, 9],
+        "test_data_indexes": [4, 5],
         "learning_constant": 0.1,
         "optimization": {
           "type": "momentum",
@@ -63,7 +63,7 @@
         },
         "min_error": 0.01,
         "max_iterations": 10000,
-        "middle_layers_neurons": [10, 10, 10],
+        "middle_layers_neurons": [5, 5, 5],
         "test": {
           "training_type": "mini-batch",
           "mini_batch_size": 5
@@ -71,12 +71,12 @@
         "data_set": "DATA_DIGITOS"
       },
       {
-        "name": "not_3",
+        "name": "4_7_9_test",
         "functions": {
           "function_type": "sigmoid"
         },
-        "learning_data_indexes": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        "test_data_indexes": [3],
+        "learning_data_indexes": [0, 1, 2, 3, 5, 6, 8],
+        "test_data_indexes": [4,7,9],
         "learning_constant": 0.1,
         "optimization": {
           "type": "momentum",
@@ -84,7 +84,7 @@
         },
         "min_error": 0.01,
         "max_iterations": 10000,
-        "middle_layers_neurons": [15, 15, 15],
+        "middle_layers_neurons": [5, 5, 5],
         "test": {
           "training_type": "mini-batch",
           "mini_batch_size": 5
@@ -92,12 +92,12 @@
         "data_set": "DATA_DIGITOS"
       },
       {
-        "name": "not_4",
+        "name": "0_1_2_3_test",
         "functions": {
           "function_type": "sigmoid"
         },
-        "learning_data_indexes": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        "test_data_indexes": [4],
+        "learning_data_indexes": [4, 5, 6, 7, 8, 9],
+        "test_data_indexes": [0,1,2,3],
         "learning_constant": 0.1,
         "optimization": {
           "type": "momentum",
@@ -106,7 +106,7 @@
         "/***guia_beta": " 0 < beta < 1*////",
         "min_error": 0.01,
         "max_iterations": 10000,
-        "middle_layers_neurons": [30, 30, 30],
+        "middle_layers_neurons": [5, 5, 5],
         "test": {
           "training_type": "mini-batch",
           "mini_batch_size": 5

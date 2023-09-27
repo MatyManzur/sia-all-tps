@@ -1,10 +1,10 @@
 {
-  "iterations-per-test": 10,
+  "iterations-per-test": 1,
   "file-name-prefix": "../results/test-",
   "tests": [
 
     {
-      "name": "test2",
+      "name": "momentum6",
       "functions": {
         "function_type": "sigmoid",
         "/***guia": " hiperbolic, identity, sigmoid *////"
@@ -14,7 +14,7 @@
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
-        "beta": 0.3
+        "beta": 0.6
       },
       "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
@@ -29,7 +29,7 @@
       "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
     },
     {
-      "name": "test3",
+      "name": "momentum3",
       "functions": {
         "function_type": "sigmoid"
       },
@@ -50,7 +50,7 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test4",
+      "name": "no_momentum",
       "functions": {
         "function_type": "sigmoid"
       },
@@ -59,7 +59,7 @@
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
-        "beta": 0.3
+        "beta": 0
       },
       "min_error": 0.01,
       "max_iterations": 10000,
@@ -71,7 +71,7 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test5",
+      "name": "momentum1",
       "functions": {
         "function_type": "sigmoid"
       },
@@ -80,7 +80,7 @@
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
-        "beta": 0.3
+        "beta": 0.1
       },
       "min_error": 0.01,
       "max_iterations": 10000,
@@ -92,7 +92,7 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "test5",
+      "name": "momentum9",
       "functions": {
         "function_type": "sigmoid"
       },
@@ -101,7 +101,7 @@
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
-        "beta": 0.3
+        "beta": 0.9
       },
       "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
