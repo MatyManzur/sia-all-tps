@@ -66,12 +66,12 @@ def class_metrics_info(test_data, network):
     return values_of_classes
 
 
-def complete_confusion_matrix(test_data, network, output_func, confusion_matrix):
+def complete_confusion_matrix(test_data, network, confusion_matrix):
     DETERMINADO_EPSILON = 0.2
     for inputs, expected in test_data:
         values_to_run, expected_output = np.array(inputs), np.array(expected)
         outputs = np.array(forward_propagation(network, values_to_run))
-        expected_output = output_func(np.reshape(expected_output, outputs.shape))
+        expected_output = np.reshape(expected_output, outputs.shape)
         expected_output_index = expected_output.argmax() # Este es el valor de la fila de la matriz
         real_output_index = outputs.argmax() # Ojo, en realidad con tomar el máximo, según Eugenia no alcanza
                                              # Porque podrías tener un 40% como máximo
@@ -79,7 +79,7 @@ def complete_confusion_matrix(test_data, network, output_func, confusion_matrix)
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
-                          deriv_func: Activation_Function, output_func, learning_data: List[Tuple[Tuple, Tuple]],
+                          deriv_func: Activation_Function, learning_data: List[Tuple[Tuple, Tuple]],
                           test_data: List[Tuple[Tuple, Tuple]], epsilon, limit, learning_constant, algorithm,
                           mini_batch_size, optimization_config=None):
     if optimization_config is None:
@@ -107,12 +107,12 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
         for sample in samples:
             _sample = (np.array(sample[0]), np.array(sample[1]))
-            train_perceptron(network, learning_constant, _sample, act_func, deriv_func, output_func)
+            train_perceptron(network, learning_constant, _sample, act_func, deriv_func)
         consolidate_weights(network)
         reset_pending_weights(network)
 
-        err = calculate_error_from_items(network, learning_data, output_func)
-        test_error = calculate_error_from_items(network, test_data, output_func)
+        err = calculate_error_from_items(network, learning_data)
+        test_error = calculate_error_from_items(network, test_data)
         
         class_metrics_test = class_metrics_info(test_data, network)
         class_metrics_training = class_metrics_info(learning_data, network)
@@ -160,24 +160,31 @@ def run_test(config):
     else:
         raise Exception('Invalid function type!')
 
+
     if config['data_set'] == 'DATA_DIGITOS':
-        learning_data = [x for i, x in enumerate(DATA_DIGITOS) if i in config['learning_data_indexes']]
-        test_data = [x for i, x in enumerate(DATA_DIGITOS) if i in config['test_data_indexes']]
+        data_set = DATA_DIGITOS
     elif config['data_set'] == 'DATA_DIGITOS_PAR':
-        learning_data = [x for i, x in enumerate(DATA_DIGITOS_PAR) if i in config['learning_data_indexes']]
-        test_data = [x for i, x in enumerate(DATA_DIGITOS_PAR) if i in config['test_data_indexes']]
+        data_set = DATA_DIGITOS_PAR
     elif config['data_set'] == 'XOR_DATA':
-        learning_data = [x for i, x in enumerate(XOR_DATA) if i in config['learning_data_indexes']]
-        test_data = [x for i, x in enumerate(XOR_DATA) if i in config['test_data_indexes']]
+        data_set = XOR_DATA
     else:
         raise Exception('Invalid data set!')
+
+    unnormalized_results = np.array(list(map(lambda x: x[1], data_set)))
+    print(unnormalized_results)
+    normalized_results = normalization_function(unnormalized_results)
+    print(normalized_results)
+    normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data_set)))
+
+    learning_data = [x for i, x in enumerate(normalized_data) if i in config['learning_data_indexes']]
+    test_data = [x for i, x in enumerate(normalized_data) if i in config['test_data_indexes']]
 
     epsilon = config['min_error']
     limit = config['max_iterations']
     learning_constant = config['learning_constant']
     algorithm = config['test']['training_type']
     mini_batch_size = config['test']['mini_batch_size']
-    test_data = multilayer_perceptron(layers, activation_function, derivative_function, normalization_function,
+    test_data = multilayer_perceptron(layers, activation_function, derivative_function,
                                       learning_data, test_data, epsilon, limit, learning_constant, algorithm,
                                       mini_batch_size, config['optimization'])
 

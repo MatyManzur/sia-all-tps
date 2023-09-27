@@ -11,21 +11,20 @@ from data.ej3_digitos_par import DATA_DIGITOS_PAR
 
 # Un entrenamiento del neural net
 def train_perceptron(neural_net: List[Layer], learning_constant: float, training_item: Tuple[NDArray, NDArray],
-                     activation_func: Activation_Function, derivative_fun: Activation_Function,
-                     normalization_func: Activation_Function):
+                     activation_func: Activation_Function, derivative_fun: Activation_Function):
     inputs, expected = training_item
     forward_propagation(neural_net, inputs)
-    backpropagation(neural_net, derivative_fun, normalization_func(expected), inputs, learning_constant)
+    backpropagation(neural_net, derivative_fun, expected, inputs, learning_constant)
 
     return neural_net
 
 
-def calculate_error_from_items(neural_net: List[Layer], items: List[Tuple[Tuple, Tuple]], output_func) -> float:
+def calculate_error_from_items(neural_net: List[Layer], items: List[Tuple[Tuple, Tuple]]) -> float:
     error_sum = 0
     for inputs, expected in items:
         sample, expected_output = np.array(inputs), np.array(expected)
         outputs = np.array(forward_propagation(neural_net, sample))
-        expected_output = output_func(np.reshape(expected_output, outputs.shape))
+        expected_output = np.reshape(expected_output, outputs.shape)
         error_sum += calculate_error(outputs, expected_output)
     return error_sum
 
@@ -70,16 +69,18 @@ CONSTANT_RATE_EPS = 0.0001
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
-                          deriv_func: Activation_Function,
-                          output_func,
-                          data: List[Tuple[Tuple, Tuple]]):
+                          deriv_func: Activation_Function, output_func, data: List[Tuple[Tuple, Tuple]]):
     # La capa final tiene tantos nodos como outputs
     layers_neuron_count.append(len(data[0][1]))
     optimization = {}
     optimization['type'] ='momentum'
     optimization['beta'] = BETA
 
-    network = generate_layers(layers_neuron_count, len(data[0][0]), act_func, optimization)
+    unormalized_results = np.array(map(lambda x: x[1], data))
+    normalized_results = output_func(unormalized_results)
+    normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
+
+    network = generate_layers(layers_neuron_count, len(normalized_data[0][0]), act_func, optimization)
     min_err = float('inf')
     w_min = None
     i = 0
@@ -93,7 +94,7 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     elif ALGORITHM == 'mini-batch':
         sample_size = MINI_BATCH_SIZE
     elif ALGORITHM == 'batch':
-        sample_size = len(data)
+        sample_size = len(normalized_data)
     else:
         raise Exception('Invalid Algorithm!')
 
@@ -101,15 +102,15 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
     while i < LIMIT and min_err > EPSILON:
         
-        samples = random.sample(data, sample_size)
+        samples = random.sample(normalized_data, sample_size)
 
         for sample in samples:
             _sample = (np.array(sample[0]), np.array(sample[1]))
-            train_perceptron(network, learning_rate, _sample, act_func, deriv_func, output_func)
+            train_perceptron(network, learning_rate, _sample, act_func, deriv_func)
         consolidate_weights(network)
         reset_pending_weights(network)
 
-        err = calculate_error_from_items(network, data, output_func)
+        err = calculate_error_from_items(network, normalized_data)
         if i < LEARNING_RATE_CHANGE_ITER:
             last_errors.append(err)
         else:

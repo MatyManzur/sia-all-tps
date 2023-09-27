@@ -31,9 +31,8 @@ def sign_derivative(x: NDArray | float) -> NDArray | float:
 def sign_normalization(x: NDArray | float) -> NDArray | float:
     if isinstance(x, float) or isinstance(x, int):
         return x / abs(x)
-    max_value = max(abs(x))
-    return x / max_value
-
+    avg = np.average(x)
+    return np.sign(x - avg)
 
 def inclusive_sign(x) -> int:
     return -1 + 2 * (x >= 0)
@@ -50,8 +49,9 @@ def hiperbolic_derivative(x: NDArray | float) -> NDArray | float:
 def hiperbolic_normalization(x: NDArray | float) -> NDArray | float:
     if isinstance(x, float) or isinstance(x, int):
         return x / abs(x)
-    max_value = max(abs(x))
-    return x / max_value
+    max_value = np.max(x)
+    min_value = np.min(x)
+    return 2 * (x - min_value) / (max_value - min_value) - 1
 
 
 def sigmoid(x: NDArray) -> NDArray:
@@ -66,6 +66,6 @@ def sigmoid_derivative(x: NDArray | float) -> NDArray | float:
 def sigmoid_normalization(x: NDArray | float) -> NDArray | float:
     if isinstance(x, float) or isinstance(x, int):
         return x / abs(x)
-    max_value = max(x)
-    min_value = min(x)
+    max_value = np.max(x)
+    min_value = np.min(x)
     return (x - min_value) / (max_value - min_value)

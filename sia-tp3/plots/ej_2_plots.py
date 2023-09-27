@@ -6,7 +6,7 @@ from plotly.subplots import make_subplots
 
 
 def functions_plot():
-    results = json.load(open("./results/ej_2_function_test.json", "r"))
+    results = json.load(open("/home/jr/PycharmProjects/sia-all-tps/sia-tp3/results/ej_2_function_test.json", "r"))
     sub = make_subplots(rows=1, cols=2,
                         subplot_titles=("Sigmoid Activation Function", "Hyperbolic Activation Function"))
     output = results[0]['output']['iterations'][0:500]

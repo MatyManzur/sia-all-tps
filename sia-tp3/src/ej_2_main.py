@@ -94,6 +94,14 @@ def cross_validate(dataarray: NDArray, iterations, function_array: List[Activati
 def function_test(dataarray: NDArray, iterations):
     output = []
     for function_array in FUNCTIONS_ARRAY:
+
+        data_copy = np.array(dataarray)
+
+        unnormalized_results = dataarray[:, 3]
+        normalized_results = function_array[2](unnormalized_results)
+        normalized_results = np.reshape(normalized_results, (len(normalized_results), 1))
+        normalized_data = np.append(dataarray[:, :3], normalized_results, axis=1)
+
         weights, min_error, min_data, output_data = cross_validate(dataarray, iterations, function_array)
         output.append({
             'function': function_array[0].__name__,
