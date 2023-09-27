@@ -4,6 +4,8 @@ import numpy as np
 
 class CrossValidator:
 
+    ##Iterations son el K de K-fold cross validation
+    #Entonces 2 = 50% test 50% training
     def __init__(self, data, iterations):
         self.data = data
         np.random.seed()
