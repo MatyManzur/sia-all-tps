@@ -12,6 +12,22 @@ from ej_3_main import train_perceptron, calculate_error_from_items
 from functions import *
 from layer import *
 
+# Ahora que lo pienso, para determinado output, si está dandote fp -> está demasiado confiado (overscaling)
+# Si te da fn -> entonces te está diciendo "no sé" (esto es preferible)  
+# Habría que utilizar los negativos para esto
+def is_saying_nonsense(actual_output):
+    CLASS_DISTINCTION_EPS = 0.3 
+    greatest_value = max(actual_output)
+    if(greatest_value<1-CLASS_DISTINCTION_EPS):
+        return True
+    greatest_value_index = actual_output.index(greatest_value)
+    for index, value in enumerate(actual_output):
+        if index != greatest_value_index and value > CLASS_DISTINCTION_EPS:
+            return False
+    # Significa que piensa que es otro
+    return True
+
+
 def class_metrics_info(test_data, network):
     CLASS_DISTINCTION_EPS = 0.3 # SI ESTO ES MUY BAJO LA ACCURACY SIEMPRE TE DA COMO MÍNIMO 9
     different_classes = [input_output[1] for input_output in test_data]
