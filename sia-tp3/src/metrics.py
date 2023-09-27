@@ -22,7 +22,7 @@ def accuracy(metrics: Dict) -> float:
 def precision(metrics: Dict) -> float:
     true_p = metrics['true_p']
     false_p = metrics['false_p']
-    return true_p / (true_p - false_p)
+    return true_p / (true_p + false_p)
 
 
 def recall(metrics: Dict) -> float:

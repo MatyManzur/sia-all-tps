@@ -12,6 +12,18 @@ from functions import *
 from layer import *
 
 
+def complete_confusion_matrix(test_data, network, output_func, confusion_matrix):
+    DETERMINADO_EPSILON = 0.2
+    for inputs, expected in test_data:
+        values_to_run, expected_output = np.array(inputs), np.array(expected)
+        outputs = np.array(forward_propagation(network, values_to_run))
+        expected_output = output_func(np.reshape(expected_output, outputs.shape))
+        expected_output_index = expected_output.argmax() # Este es el valor de la fila de la matriz
+        real_output_index = outputs.argmax() # Ojo, en realidad con tomar el máximo, según Eugenia no alcanza
+                                             # Porque podrías tener un 40% como máximo
+        confusion_matrix[expected_output_index][real_output_index]+=1
+
+
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
                           deriv_func: Activation_Function, output_func, learning_data: List[Tuple[Tuple, Tuple]],
                           test_data: List[Tuple[Tuple, Tuple]], epsilon, limit, learning_constant, algorithm,
