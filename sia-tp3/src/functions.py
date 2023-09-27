@@ -65,7 +65,7 @@ def sigmoid_derivative(x: NDArray | float) -> NDArray | float:
 
 def sigmoid_normalization(x: NDArray | float) -> NDArray | float:
     if isinstance(x, float) or isinstance(x, int):
-        return x / x
+        return x / abs(x)
     max_value = max(x)
     min_value = min(x)
     return (x - min_value) / (max_value - min_value)
