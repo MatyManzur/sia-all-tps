@@ -1,0 +1,531 @@
+{
+  "iterations-per-test": 20,
+  "file-name-prefix": "../results/odd_even/test-",
+  "tests": [
+    {
+      "name": "2x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [2],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "4x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [4],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "6x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [6],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "8x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [8],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "10x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [10],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "12x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [12],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "14x1",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [14],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "2x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [2,2],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "4x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [4,4],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "6x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [6,6],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "8x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [8,8],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "10x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [10,10],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "12x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [12,12],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "14x2",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [14,14],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "2x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [2,2,2],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "4x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [4,4,4],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "6x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [6,6,6],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "8x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [8,8,8],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "10x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [10,10,10],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "12x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [12,12,12],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "14x3",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [14,14,14],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    }
+  ]
+}

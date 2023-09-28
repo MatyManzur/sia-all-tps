@@ -12,61 +12,30 @@ from ej_3_main import train_perceptron, calculate_error_from_items
 from functions import *
 from layer import *
 from src.crossvalidator import CrossValidator
-from src.metrics import accuracy
-
-
-# Ahora que lo pienso, para determinado output, si está dandote fp -> está demasiado confiado (overscaling)
-# Si te da fn -> entonces te está diciendo "no sé" (esto es preferible)  
-# Habría que utilizar los negativos para esto
-def is_saying_nonsense(actual_output):
-    CLASS_DISTINCTION_EPS = 0.3 
-    greatest_value = max(actual_output)
-    if(greatest_value<1-CLASS_DISTINCTION_EPS):
-        return True
-    greatest_value_index = actual_output.index(greatest_value)
-    for index, value in enumerate(actual_output):
-        if index != greatest_value_index and value > CLASS_DISTINCTION_EPS:
-            return False
-    # Significa que piensa que es otro
-    return True
+from src.metrics import accuracy, precision, recall
 
 
 def class_metrics_info(test_data, network):
-    CLASS_DISTINCTION_EPS = 0.3 # SI ESTO ES MUY BAJO LA ACCURACY SIEMPRE TE DA COMO MÍNIMO 9
-    different_classes = [input_output[1] for input_output in test_data]
-    values_of_classes = []  # Se van a ir guardando en el orden en el que aparecen en la data
     actual_outputs = []
     for in_out_values in test_data:
-        actual_outputs.append(np.array(forward_propagation(network, np.array(in_out_values[0]))))
-    for particular_class in different_classes:
-        tp = 0
-        tn = 0
-        fp = 0
-        fn = 0
-        for index, in_out_values in enumerate(test_data):
-            # Si estamos hablando de la misma clase
-            if np.array_equal(particular_class,in_out_values[1]):
-                # tp o fn
-                true_positive = True
-                for i, outpt in enumerate(actual_outputs[index]):
-                    if abs(outpt - particular_class[i] > CLASS_DISTINCTION_EPS): # En alguno no me dio lo que pretendía
-                        true_positive = False
-                        fn+=1
-                        break
-                if true_positive:
-                    tp+=1
-            else:
-                # fp o tn
-                false_positive = True
-                for i, outpt in enumerate(actual_outputs[index]):
-                    if abs(outpt - particular_class[i] > CLASS_DISTINCTION_EPS): # En alguno no me dio igual que la clase
-                        false_positive = False
-                        tn+=1
-                        break
-                if false_positive:
-                    fp+=1
-        values_of_classes.append({"tp": tp, "tn": tn, "fp": fp, "fn": fn})
-    return values_of_classes
+        output = np.array(forward_propagation(network, np.array(in_out_values[0])))
+        actual_outputs.append(output)
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
+    for index, in_out_values in enumerate(test_data):
+        expected_value = in_out_values[1][0]
+        actual_value = -1 if actual_outputs[index][0] < 0 else 1
+        if expected_value == -1 == actual_value:
+            tn += 1
+        elif expected_value == 1 == actual_value:
+            tp += 1
+        elif expected_value == 1 and actual_value == -1:
+            fn += 1
+        elif actual_value == 1 and expected_value == -1:
+            fp += 1
+    return {"tp": tp, "tn": tn, "fp": fp, "fn": fn}
 
 
 def complete_confusion_matrix(test_data, network, confusion_matrix):
@@ -75,10 +44,10 @@ def complete_confusion_matrix(test_data, network, confusion_matrix):
         values_to_run, expected_output = np.array(inputs), np.array(expected)
         outputs = np.array(forward_propagation(network, values_to_run))
         expected_output = np.reshape(expected_output, outputs.shape)
-        expected_output_index = expected_output.argmax() # Este es el valor de la fila de la matriz
-        real_output_index = outputs.argmax() # Ojo, en realidad con tomar el máximo, según Eugenia no alcanza
-                                             # Porque podrías tener un 40% como máximo
-        confusion_matrix[expected_output_index][real_output_index]+=1
+        expected_output_index = expected_output.argmax()  # Este es el valor de la fila de la matriz
+        real_output_index = outputs.argmax()  # Ojo, en realidad con tomar el máximo, según Eugenia no alcanza
+        # Porque podrías tener un 40% como máximo
+        confusion_matrix[expected_output_index][real_output_index] += 1
 
 
 def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_Function,
@@ -116,9 +85,10 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
 
         err = calculate_error_from_items(network, learning_data)
         test_error = calculate_error_from_items(network, test_data)
-        
+
         class_metrics_test = class_metrics_info(test_data, network)
         class_metrics_training = class_metrics_info(learning_data, network)
+
 
         output_data['iterations'].append({
             'epoch': i,
@@ -138,14 +108,10 @@ def multilayer_perceptron(layers_neuron_count: List[int], act_func: Activation_F
     output_data['min_error_generalization'] = min_err_generalization
     output_data['epoch_reached'] = epoch_reached
     output_data['weights'] = w_min
-
-    for i, number in enumerate(DATA_DIGITOS_PAR):
-        print(f"{i} - {forward_propagation(network, np.array(number[0]))}")
-
     return output_data
 
 
-def run_test(config, training_test_sets = None):
+def run_test(config, training_test_sets=None):
     layers = list(config['middle_layers_neurons'])
 
     if config['functions']['function_type'] == 'hiperbolic':
@@ -215,7 +181,8 @@ def run_test(config, training_test_sets = None):
     }
     return test_data
 
-def regular_test_runner():
+
+def cross_validator_test():
     if len(argv) < 2:
         raise Exception('Invalid arguments!')
     config = json.load(open(argv[1], mode='r'))
@@ -226,28 +193,43 @@ def regular_test_runner():
     if not os.path.exists(path):
         os.makedirs(path)
 
+    DATA_DIGITOS_PAR_NORMALIZADO = []
+    for digito in DATA_DIGITOS_PAR:
+        DATA_DIGITOS_PAR_NORMALIZADO.append((digito[0], (1,) if digito[1] == (1,) else (-1,)))
+
     for test in config['tests']:
         print(f"=====Test: {test['name']}=====")
         start_test = time.time()
-        results = []
-        epochs = []
-        for i in range(config['iterations-per-test']):
-            print(f"Iteration: {i}")
-            # Run test
-            test_results = run_test(test)
-            results.append(test_results['min_error'])
-            print(f"Reached minimum in epoch: {test_results['epoch_reached']}")
-            epochs.append(test_results['epoch_reached'])
-            # Save results of test
-            with open(f"{config['file-name-prefix']}{test['name']}-{i}.json", "w") as outfile:
-                json.dump(test_results, outfile, indent=4)
+        metrics = {
+            f'{i}':{
+                'train_accuracy': [],
+                'test_accuracy': [],
+            } for i in range(1,6,1)
+        }
+        for _ in range(20):
+            for iterations in range(1,6,1):
+                cross_validator_data = CrossValidator(DATA_DIGITOS_PAR_NORMALIZADO, iterations)
+                for i in range(10):
+                    data = cross_validator_data.next()
+                    print(f"Iteration: {i} - Training: {len(data[0])} - Test: {len(data[1])}")
+                    # Run test
+                    test_results = run_test(test, training_test_sets=data)
+                    test_metrics = test_results['iterations'][test_results['epoch_reached']]['class_metrics_test']
+                    training_metrics = test_results['iterations'][test_results['epoch_reached']]['class_metrics_train']
+                    metrics[f"{len(data[1])}"]['train_accuracy'].append(accuracy(training_metrics))
+                    metrics[f"{len(data[1])}"]['test_accuracy'].append(accuracy(test_metrics))
         end_test = time.time()
         print(f"\rElapsed time: {end_test - start_test}")
-        print(f"Results: {results} - std: {np.std(results)} - mean: {np.mean(results)}")
-        print(f"Average epoch reached: {np.average(epochs)}")
+        for num in metrics.keys():
+            metrics[num]['train_accuracy'] = np.mean(metrics[num]['train_accuracy'])
+            metrics[num]['test_accuracy'] = np.mean(metrics[num]['test_accuracy'])
+            metrics[num]['train_accuracy_error'] = np.std(metrics[num]['train_accuracy'])
+            metrics[num]['test_accuracy_error'] = np.std(metrics[num]['test_accuracy'])
 
+        with open(f"{config['file-name-prefix']}{test['name']}-global.json", "w") as outfile:
+            json.dump(metrics, outfile, indent=4)
 
 
 
 if __name__ == '__main__':
-    regular_test_runner()
+    cross_validator_test()

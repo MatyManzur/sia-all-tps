@@ -1,0 +1,56 @@
+{
+  "iterations-per-test": 20,
+  "file-name-prefix": "../results/odd_even/test-",
+  "tests": [
+    {
+      "name": "hiperbolic",
+      "functions": {
+        "function_type": "hiperbolic",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [5, 5],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    },
+    {
+      "name": "logistic",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.9
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 10000,
+      "middle_layers_neurons": [5, 5],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_PAR",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
+    }
+  ]
+}
