@@ -47,6 +47,7 @@ def linear_perceptron(training_data: NDArray, test_data: NDArray, function_array
     })
 
     min_error = float('inf')
+    min_error_testing = float('inf')
     limit = 5000
     i = 0
 
@@ -67,11 +68,12 @@ def linear_perceptron(training_data: NDArray, test_data: NDArray, function_array
         output_data['iterations'].append([i + 1, error_training[0][0], error_test[0][0]])  ## epoch, training,test
 
         if error_test < min_error:
-            min_error = error_test
+            min_error = error_training
+            min_error_testing = error_test
             weights_at_min = layer
         i += 1
 
-    return weights_at_min, min_error, output_data
+    return weights_at_min, min_error, min_error_testing, output_data
 
 
 def cross_validate(dataarray: NDArray, iterations, function_array: List[Activation_Function], learning_constant):
@@ -86,14 +88,14 @@ def cross_validate(dataarray: NDArray, iterations, function_array: List[Activati
         data = cross_validator.next()
         if data is None:
             break
-        weights, final_error, output = linear_perceptron(np.array(data[0]), np.array(data[1]), function_array,
+        weights, final_error, min_error_testing, output = linear_perceptron(np.array(data[0]), np.array(data[1]), function_array,
                                                          learning_constant)
         if final_error < min_error:
             min_error = final_error
             min_data = data
             min_error_weights = weights
     if iterations == 0:
-        weights, final_error, output = linear_perceptron(np.array(dataarray), np.array(dataarray), function_array,
+        weights, final_error, min_error_testing, output = linear_perceptron(np.array(dataarray), np.array(dataarray), function_array,
                                                          learning_constant)
         min_error_weights = weights
         min_error = final_error
@@ -140,6 +142,33 @@ def learning_test(dataarray: NDArray, iterations):
     json.dump(output, open('./results/ej_2_learning_test.json', 'w'), indent=4)
 
 
+def data_parting_test(data_array: NDArray):
+    outputs = []
+
+    for function_list in FUNCTIONS_ARRAY:
+        unnormalized_results = data_array[:, 3]
+        normalized_results = function_list[2](unnormalized_results)
+        normalized_results = np.reshape(normalized_results, (len(normalized_results), 1))
+        normalized_data = np.append(data_array[:, :3], normalized_results, axis=1)
+        for i in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 100]:
+            testing_data = normalized_data[:int(len(normalized_data) * i)]
+            if i == 100:
+                training_data = testing_data
+            else:
+                training_data = normalized_data[int(len(normalized_data) * i):]
+            weights, final_error, min_error_testing, output = linear_perceptron(training_data, testing_data, function_list, 0.01)
+            data = list(map(lambda x: list(x), training_data)), list(map(lambda x: list(x), testing_data))
+
+            outputs.append({
+                'function': function_list[0].__name__,
+                'min_error': final_error[0][0],
+                'min_error_testing': min_error_testing[0][0],
+                'percentage': i,
+                'data': data
+            })
+    json.dump(outputs, open('./results/ej_2_data_parting_test.json', 'w'), indent=4)
+
+
 if __name__ == '__main__':
     random.seed()
     numpy.random.seed()
@@ -148,4 +177,5 @@ if __name__ == '__main__':
     dataarray = np.array(dataframe)
 
     # function_test(dataarray, 2)
-    learning_test(dataarray, 2)
+    # learning_test(dataarray, 2)
+    data_parting_test(dataarray)
