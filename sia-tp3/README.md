@@ -1,4 +1,4 @@
-# SIA - TP2: Algoritmos genéticos
+# SIA - TP3: Perceptrones Simples y Multicapa
 
 Autores: Mauro Leandro Baez, Juan Ramiro Castro, Matias Manzur, Franco David Rupnik, Federico Poyen Shih.
 ---
