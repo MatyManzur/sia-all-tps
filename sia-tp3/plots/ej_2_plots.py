@@ -8,19 +8,29 @@ from plotly.subplots import make_subplots
 
 
 def functions_plot():
-    results = json.load(open("results/ej_2_function_test.json", "r"))
+    results = json.load(open("/home/jr/PycharmProjects/sia-all-tps/sia-tp3/results/ej_2_function_test.json", "r"))
     sub = make_subplots(rows=1, cols=2,
                         subplot_titles=("Sigmoid Activation Function", "Hyperbolic Activation Function"))
-    output = results[0]['output']['iterations'][0:500]
+
+    output = results[0]['output']['iterations']
     df = pd.DataFrame(output, columns=['Epoch', 'Training', 'Test'])
     melt = df.melt(id_vars=['Epoch'], value_vars=['Training', 'Test'], var_name='Data Set', value_name='Error')
     line = px.line(melt, x='Epoch', y='Error', color='Data Set',title='Error by Epoch with Sigmoid Activation '
+                                                                        'Function with Half Testing and Training Data')
+    line.update_layout(yaxis_type="log")
+    line.show()
+
+    output = results[1]['output']['iterations']
+    df = pd.DataFrame(output, columns=['Epoch', 'Training', 'Test'])
+    melt = df.melt(id_vars=['Epoch'], value_vars=['Training', 'Test'], var_name='Data Set', value_name='Error')
+    line = px.line(melt, x='Epoch', y='Error', color='Data Set',title='Error by Epoch with Hyperbolic Activation '
                                                                       'Function with Half Testing and Training Data')
+    line.update_layout(yaxis_type="log")
     line.show()
 
 
 def functions_linear_plot():
-    results = json.load(open("results/ej_2_function_test.json", "r"))
+    results = json.load(open("/home/jr/PycharmProjects/sia-all-tps/sia-tp3/results/ej_2_function_test.json", "r"))
     sub = make_subplots(rows=1, cols=2,
                         subplot_titles=("Sigmoid Activation Function", "Hyperbolic Activation Function"))
     output = results[2]['output']['iterations'][0:500]
@@ -47,7 +57,7 @@ def learning_plot():
 
 
 def data_parting_plot():
-    results = json.load(open("results/ej_2_data_parting_test.json", "r"))
+    results = json.load(open("/home/jr/PycharmProjects/sia-all-tps/sia-tp3/results/ej_2_data_parting_test.json", "r"))
     data_sigmoid = []
     data_hyperbolic = []
     for result in results:
@@ -65,15 +75,19 @@ def data_parting_plot():
     df_sigmoid = df_sigmoid.sort_values(by=['Percentage'])
     df_hyperbolic = pd.DataFrame(data_hyperbolic, columns=['Percentage', 'Error Learning', 'Error Testing'])
     df_hyperbolic = df_hyperbolic.sort_values(by=['Percentage'])
-    px.line(df_sigmoid, x='Percentage', y= ['Error Learning', 'Error Testing'],
-               title='Error Based on Percentage of Data Used for Learning - Sigmoid', markers='lines+markers').show()
-    px.line(df_hyperbolic, x='Percentage', y=['Error Learning', 'Error Testing'],
-               title='Error Based on Percentage of Data - Hyperbolic', markers='lines+markers').show()
+    line = px.line(df_sigmoid, x='Percentage', y= ['Error Learning', 'Error Testing'],
+               title='Error Based on Percentage of Data Used for Learning - Sigmoid', markers='lines+markers')
+    line.update_layout(yaxis_type="log")
+    line.show()
+    line = px.line(df_hyperbolic, x='Percentage', y=['Error Learning', 'Error Testing'],
+               title='Error Based on Percentage of Data - Hyperbolic', markers='lines+markers')
+    line.update_layout(yaxis_type="log")
+    line.show()
     # print(df_sigmoid)
     # print()
     # print(df_hyperbolic)
 
 if __name__ == '__main__':
-    # functions_plot()
+    functions_plot()
     # learning_plot()
-    data_parting_plot()
+    # data_parting_plot()

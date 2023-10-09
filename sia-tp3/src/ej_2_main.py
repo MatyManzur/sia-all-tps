@@ -8,7 +8,7 @@ from src.functions import *
 from src.layer import *
 from src.crossvalidator import CrossValidator
 
-LEARNING_CONSTANT = 0.1
+LEARNING_CONSTANT = 0.01
 
 EPSILON = 10 ** -10
 
@@ -176,6 +176,6 @@ if __name__ == '__main__':
     dataframe = pd.read_csv(argv[1])
     dataarray = np.array(dataframe)
 
-    # function_test(dataarray, 2)
+    function_test(dataarray, 2)
     # learning_test(dataarray, 2)
-    data_parting_test(dataarray)
+    # data_parting_test(dataarray)
