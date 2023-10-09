@@ -1,4 +1,4 @@
 # SIA - TP4: Aprendizaje No Supervisado
 
-Autores: Mauro Leandro Baez, Juan Ramiro Castro, Matias Manzur, Franco David Rupnik, Federico Poyen Shih.
+Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Franco David Rupnik, Federico Poyen Shih.
 ---

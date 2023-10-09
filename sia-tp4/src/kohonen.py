@@ -12,15 +12,9 @@ def euclidean_distance(first: NDArray[float], second: NDArray[float]) -> float:
     return np.linalg.norm(first - second)
 
 
-def exponential_distance(first: tuple[int, int], second: tuple[int, int]) -> float:
+def exponential_distance(first: NDArray[float], second: NDArray[float]) -> float:
     return math.exp(-1 * math.pow(euclidean_distance(first, second), 2))
 
-
-fixed_learning_rate = lambda epoch: 0.3
-decreasing_learning_rate = lambda epoch: 1 / epoch
-
-
-# args (position-tuple, matrix-size, iteration) -> List(position-tuple)
 
 def zscore(array: NDArray[float]) -> NDArray[float]:
     mean = np.mean(array)
@@ -31,45 +25,40 @@ def zscore(array: NDArray[float]) -> NDArray[float]:
 class Kohonen:
     def __init__(self, k: int, input_size: int, max_iterations: int,
                  get_learning_rate: Callable[[int], float], distance_function: SimilarityFunction,
-                 initial_radius: float, get_radius: Callable[[float, int], float],
-                 data: List[NDArray[float]] | None = None):
+                 initial_radius: float, radius_change: Callable[[float, int], float],
+                 data: List[NDArray[float]], random_initial_weights: bool):
         self.k = k
         self.initial_radius = initial_radius
         self.current_iteration = 0
         self.learning_rate = get_learning_rate
         self.distance_function = distance_function
-        self.radius_change = get_radius
+        self.radius_change = radius_change
         self.max_iterations = max_iterations
         self.data = data
 
-        if data is None:
+        if random_initial_weights:
             self.weights = np.random.rand(k, k, input_size)
         else:
-            self.weights = np.array((k, k, input_size))
+            self.weights = np.zeros(shape=(k,k,input_size))
             for y in range(self.k):
                 for x in range(self.k):
-                    self.weights[y, x] = zscore(random.sample(data, 1)[0])
+                    self.weights[x][y] = zscore(random.sample(data, 1)[0])
 
-    def train(self, inputs: List[NDArray[float]]):
+    def train(self):
         while self.current_iteration < self.max_iterations:
-            raw_input = random.sample(inputs, 1)[0]
-            standardized_input = raw_input
-            self.__next(standardized_input)
+            _input = random.sample(self.data, 1)[0]
+            self.__next(_input)
 
-    # automatically standarizes
     def __next(self, input: NDArray[float]):
-
-        # Seleccionar un registro de entrada Xp estandarizado!!!
-        # Encontrar la neurona ganadora que tenga el vector de pesos más cercano a Xp
         most_similar = None
         most_similar_difference = 0
         (most_similar, most_similar_difference) = self.get_most_similar_neuron(input)
 
         radius = self.radius_change(self.initial_radius, self.current_iteration)
 
-        self.__update_weights_in_neighbourhood(most_similar[0], most_similar[1], self.weights, radius)
+        self.__update_weights_in_neighbourhood(most_similar[0], most_similar[1], input, radius)
+        self.current_iteration += 1
         return self.weights
-        # Actualizar los pesos de las neuronas vecinas
 
     def get_most_similar_neuron(self, _input: NDArray[float]) -> Tuple[Tuple[int, int], float]:
         standarized_input = zscore(_input)
@@ -83,7 +72,7 @@ class Kohonen:
                     most_similar = (x, y)
         return most_similar, most_similar_difference
 
-    def __update_weights_in_neighbourhood(self, x: int, y: int, current_weight: NDArray[float], radius: float):
+    def __update_weights_in_neighbourhood(self, x: int, y: int, _input: NDArray[float], radius: float):
         rows, cols, weights = self.weights.shape
         eta = self.learning_rate(self.current_iteration)
 
@@ -91,4 +80,4 @@ class Kohonen:
             for j in range(max(0, y - math.ceil(radius)), min(cols, y + math.ceil(radius) + 1)):
                 distance = np.sqrt((x - i) ** 2 + (y - j) ** 2)
                 if distance <= radius and distance != 0:
-                    self.weights[j][i] += eta * (current_weight - self.weights[j][i])
+                    self.weights[j][i] += eta * (_input - self.weights[j][i])
