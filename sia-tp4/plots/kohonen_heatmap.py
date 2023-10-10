@@ -1,6 +1,7 @@
 import numpy as np
 import plotly.express as px
 import pandas as pd
+import plotly.graph_objs as go
 from src.kohonen import *
 import csv
 
@@ -35,17 +36,42 @@ def heatmap_winner_neurons():
 
     kohonen.train()
     countries_winners = {}
+    countries_count_foreach_neuron = [[0 for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+    countries_names_foreach_neuron = [['' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+    # Esto es para el mapa de mapa.py
     countries_winners["countries"] = []
     countries_winners["winner_row"] = []
-    countries_winners["winner_col"] = []    
+    countries_winners["winner_col"] = []
+
     for country in data:
         winner, distance = kohonen.get_most_similar_neuron(country[1])
+        countries_count_foreach_neuron[winner[0]][winner[1]] += 1
+        countries_names_foreach_neuron[winner[0]][winner[1]] += f"{country[0]}, "
+        if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][winner[1]] % 3 == 0:
+            countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"
+
         countries_winners["countries"].append(country[0])
         countries_winners["winner_row"].append(winner[0])
         countries_winners["winner_col"].append(winner[1])
 
         print(f"{country[0]} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
-    
+
+    # Create a heatmap trace with text annotations
+    heatmap = go.Heatmap(z=countries_count_foreach_neuron, text=countries_names_foreach_neuron, texttemplate="%{text}")
+
+    # Create a layout for the heatmap
+    layout = go.Layout(
+        title='Heatmap with Text Annotations',
+        xaxis=dict(title='X-axis Labels'),
+        yaxis=dict(title='Y-axis Labels')
+    )
+
+    # Create a figure and add the heatmap trace to it
+    fig = go.Figure(data=[heatmap], layout=layout)
+
+    # Show the heatmap
+    fig.show()
+
     return countries_winners
 
 
