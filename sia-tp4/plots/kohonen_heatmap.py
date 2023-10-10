@@ -34,9 +34,19 @@ def heatmap_winner_neurons():
                       random_initial_weights=True)
 
     kohonen.train()
+    countries_winners = {}
+    countries_winners["countries"] = []
+    countries_winners["winner_row"] = []
+    countries_winners["winner_col"] = []    
     for country in data:
         winner, distance = kohonen.get_most_similar_neuron(country[1])
+        countries_winners["countries"].append(country[0])
+        countries_winners["winner_row"].append(winner[0])
+        countries_winners["winner_col"].append(winner[1])
+
         print(f"{country[0]} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
+    
+    return countries_winners
 
 
 
