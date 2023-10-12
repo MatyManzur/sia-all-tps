@@ -18,7 +18,7 @@ def pc1_bar():
     df = pd.DataFrame(data=list(map(lambda x: x[0], pca_features)), columns=['PC1'], index=dataset['Country'])
 
     fig = px.bar(data_frame=df, text_auto='.2f')
-    fig.update_layout(yaxis_title='PCA1', title='PCA1 per country', showlegend=False)
+    fig.update_layout(yaxis_title='PC1', title='PC1 per country', showlegend=False)
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.show()
 
