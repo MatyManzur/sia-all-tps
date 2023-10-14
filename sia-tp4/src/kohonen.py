@@ -41,7 +41,7 @@ class Kohonen:
 
     def train(self):
         while self.current_iteration < self.max_iterations:
-            _input = random.sample(self.data, 1)[0]
+            _input = random.sample(self.standardized_data, 1)[0]
             self.__next(_input)
 
     def __next(self, input: NDArray[float]):
