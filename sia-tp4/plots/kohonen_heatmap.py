@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.graph_objs as go
 
 from src.kohonen import *
+from src.standardization import z_score
 import csv
 
 CSV_FILE = '../data/europe.csv'

@@ -8,7 +8,7 @@ def feature_scaling(x: NDArray, a: float, b: float):
 
 
 def z_score(x: NDArray):
-    return sp.stats.zscore(x)
+    return sp.stats.zscore(x, axis=0)
 
 
 def unit_vector(x: NDArray):
