@@ -3,6 +3,7 @@ import random
 from typing import List, Callable, Tuple, Dict
 
 import numpy as np
+import scipy as sp
 from numpy._typing import NDArray
 
 SimilarityFunction = Callable[[NDArray[float], NDArray[float]], float]
@@ -20,7 +21,7 @@ class Kohonen:
     def __init__(self, k: int, input_size: int, max_iterations: int,
                  get_learning_rate: Callable[[int], float], distance_function: SimilarityFunction,
                  initial_radius: float, radius_change: Callable[[float, int], float],
-                 data: List[NDArray[float]], random_initial_weights: bool):
+                 standardized_data: List[NDArray[float]], random_initial_weights: bool):
         self.k = k
         self.initial_radius = initial_radius
         self.current_iteration = 0
@@ -28,15 +29,15 @@ class Kohonen:
         self.distance_function = distance_function
         self.radius_change = radius_change
         self.max_iterations = max_iterations
-        self.data = data
+        self.standardized_data = standardized_data
 
         if random_initial_weights:
             self.weights = np.random.rand(k, k, input_size)
         else:
-            self.weights = np.zeros(shape=(k,k,input_size))
+            self.weights = np.zeros(shape=(k, k, input_size))
             for y in range(self.k):
                 for x in range(self.k):
-                    self.weights[x][y] = zscore(random.sample(data, 1)[0])
+                    self.weights[x][y] = random.sample(standardized_data, 1)[0]
 
     def train(self):
         while self.current_iteration < self.max_iterations:
@@ -55,7 +56,7 @@ class Kohonen:
         return self.weights
 
     def get_most_similar_neuron(self, _input: NDArray[float]) -> Tuple[Tuple[int, int], float]:
-        standarized_input = zscore(_input)
+        standarized_input = _input
         most_similar_difference = 0
         most_similar = None
         for y, rows in enumerate(self.weights):

@@ -42,19 +42,19 @@ def heatmap_winner_neurons():
     countries_winners["winner_row"] = []
     countries_winners["winner_col"] = []
 
-    for country in data:
-        winner, distance = kohonen.get_most_similar_neuron(country[1])
+    for i, country in enumerate(countries):
+        winner, distance = kohonen.get_most_similar_neuron(data_array[i])
         countries_count_foreach_neuron[winner[0]][winner[1]] += 1
         countries_names_foreach_neuron[winner[0]][winner[1]] += f"{country}, "
         if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][
             winner[1]] % 3 == 0:
             countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"
 
-        countries_winners["countries"].append(country[0])
+        countries_winners["countries"].append(country)
         countries_winners["winner_row"].append(winner[0])
         countries_winners["winner_col"].append(winner[1])
 
-        print(f"{country[0]} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
+        print(f"{country} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
 
     # Create a heatmap trace with text annotations
     heatmap = go.Heatmap(z=countries_count_foreach_neuron, text=countries_names_foreach_neuron, texttemplate="%{text}")
