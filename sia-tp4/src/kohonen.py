@@ -16,12 +16,6 @@ def exponential_distance(first: NDArray[float], second: NDArray[float]) -> float
     return math.exp(-1 * math.pow(euclidean_distance(first, second), 2))
 
 
-def zscore(array: NDArray[float]) -> NDArray[float]:
-    mean = np.mean(array)
-    stddev = np.std(array)
-    return (array - mean) / stddev
-
-
 class Kohonen:
     def __init__(self, k: int, input_size: int, max_iterations: int,
                  get_learning_rate: Callable[[int], float], distance_function: SimilarityFunction,
@@ -30,7 +24,7 @@ class Kohonen:
         self.k = k
         self.initial_radius = initial_radius
         self.current_iteration = 0
-        self.learning_rate = get_learning_rate
+        self.get_learning_rate = get_learning_rate
         self.distance_function = distance_function
         self.radius_change = radius_change
         self.max_iterations = max_iterations
@@ -74,7 +68,7 @@ class Kohonen:
 
     def __update_weights_in_neighbourhood(self, x: int, y: int, _input: NDArray[float], radius: float):
         rows, cols, weights = self.weights.shape
-        eta = self.learning_rate(self.current_iteration)
+        eta = self.get_learning_rate(self.current_iteration)
 
         for i in range(max(0, x - math.ceil(radius)), min(rows, x + math.ceil(radius) + 1)):
             for j in range(max(0, y - math.ceil(radius)), min(cols, y + math.ceil(radius) + 1)):
