@@ -7,12 +7,12 @@ from src.kohonen import *
 from src.standardization import z_score
 import csv
 
-CSV_FILE = '../data/europe.csv'
+CSV_FILE = 'data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 GRID_SIZE = 4
 MAX_ITERATIONS = 3000
 INITIAL_RADIUS = 3.5
-RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS * (0.96 ** epoch), 1.0)
+RADIUS_CHANGE = lambda initial, epoch: max(initial * (0.96 ** epoch), 1.0)
 LEARNING_RATE = lambda epoch: max(0.9 * (0.96 ** epoch), 0.001)
 INITIALIZE_RANDOM_WEIGHTS = False
 
@@ -44,8 +44,10 @@ def heatmap_winner_neurons():
 
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
+        
+        countries_names_foreach_neuron[winner[0]][winner[1]] += f", {country}" if countries_names_foreach_neuron[winner[0]][winner[1]]!='' and countries_count_foreach_neuron[winner[0]][winner[1]] % 3 != 0 else f"{country}"
+
         countries_count_foreach_neuron[winner[0]][winner[1]] += 1
-        countries_names_foreach_neuron[winner[0]][winner[1]] += f"{country}, "
         if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][
             winner[1]] % 3 == 0:
             countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"

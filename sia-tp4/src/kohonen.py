@@ -3,7 +3,6 @@ import random
 from typing import List, Callable, Tuple, Dict
 
 import numpy as np
-import scipy as sp
 from numpy._typing import NDArray
 
 SimilarityFunction = Callable[[NDArray[float], NDArray[float]], float]

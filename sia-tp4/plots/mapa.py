@@ -16,20 +16,73 @@ def map_europe():
     # Estos son los códigos como ARG para Argentina, DEU para Alemania, etc. Sirven para pintar el mapa
     codes = [countries_codes.get(country, 'Unknown code') for country in data["countries"]]
 
+
+    increments_of = 255/GRID_SIZE
+    
+    color_by_country=[]
+    for i in range(0, len(data["winner_row"])):
+        row_val = data["winner_row"][i]
+        col_val = data["winner_col"][i]
+        color_by_country.append('rgb({0}, {1}, 0)'.format(row_val * increments_of, col_val * increments_of))
+
+
+
+    """ Forma sin tomar en cuenta la grilla
+    colors = [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "brown",
+    "cyan",
+    "magenta",
+    "violet",
+    "teal",
+    "lime",
+    "indigo",
+    "maroon",
+    "navy",
+    "silver",
+    "gold",
+    "olive",
+    "gray",
+    "black",
+    "white",
+    "turquoise",
+    "orchid",
+    "salmon",
+    "peru",
+    "slategray",
+    "darkgreen",
+    "tomato"
+    ]
+
     seen_values = {}
     curr_color=0
-    colors = []
+    color_values = []
     for i in range(0, len(data["winner_row"])):
         row = data["winner_row"][i]
         col = data["winner_col"][i]
         value = seen_values.get((row,col),None)
         if value == None:
             seen_values[(row,col)] = curr_color
-            curr_color+=7   # Ir probando cuál conviene
-        colors.append(value)
+            value = curr_color
+            curr_color+=1   # Ir probando cuál conviene
+        color_values.append(value)
 
-    print(seen_values)
-    dictionary = { "country": data["countries"], "colors": colors, "iso_alpha":codes}
+    color_names = [colors[value] for value in color_values]
+
+    dictionary = { "country": data["countries"], "colors": color_names, "iso_alpha":codes}
+    df2 = pn.DataFrame.from_dict(dictionary)
+
+    df2["colors"] = df2["colors"].astype(str)
+
+    """
+
+    dictionary = { "country": data["countries"], "colors": color_by_country, "iso_alpha":codes}
     df2 = pn.DataFrame.from_dict(dictionary)
 
     fig2 = px.choropleth(df2, locations="iso_alpha",
@@ -37,6 +90,7 @@ def map_europe():
                         hover_name="country", # column to add to hover information
                         hover_data={"colors": False, "iso_alpha": False}
                         )
+    fig2.update_traces(showlegend=False)
     fig2.update_geos(fitbounds="locations")
     fig2.show()
 
