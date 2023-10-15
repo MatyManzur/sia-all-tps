@@ -267,3 +267,32 @@ Z = [
 alphabet = [A, B, C, D, E, F, G, H, I, J, K,
             L, M, N, O, P, Q, R, S, T, U, V,
             W, X, Y, Z]
+
+alphabetMap = {
+  'A': A,
+  'B': B,
+  'C': C,
+  'D': D,
+  'E': E,
+  'F': F,
+  'G': G,
+  'H': H,
+  'I': I,
+  'J': J,
+  'K': K,
+  'L': L,  # Define the value for 'L' here
+  'M': M,  # Define the value for 'M' here
+  'N': N,  # Define the value for 'N' here
+  'O': O,  # Define the value for 'O' here
+  'P': P,  # Define the value for 'P' here
+  'Q': Q,  # Define the value for 'Q' here
+  'R': R,  # Define the value for 'R' here
+  'S': S,  # Define the value for 'S' here
+  'T': T,  # Define the value for 'T' here
+  'U': U,  # Define the value for 'U' here
+  'V': V,  # Define the value for 'V' here
+  'W': W,  # Define the value for 'W' here
+  'X': X,  # Define the value for 'X' here
+  'Y': Y,  # Define the value for 'Y' here
+  'Z': Z   # Define the value for 'Z' here
+}

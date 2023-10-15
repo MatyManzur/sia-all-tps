@@ -6,13 +6,16 @@ from numpy._typing import NDArray
 
 def generate_hopfield_matrix(training_set: List[NDArray]):
     elements = np.column_stack(training_set)
-    return (1.0 / len(training_set)) * elements * np.transpose(elements)
+    base = (1.0 / len(training_set)) * (np.dot(elements, np.transpose(elements)))
+    np.fill_diagonal(base, 0)
+    return base
 
 
 def most_similar_pattern(hopfield: NDArray, consult: NDArray, max_iter: int):
     iteration = 0
-    current = np.sign(hopfield * consult)
-    while current != consult and iteration < max_iter:
-        current = np.sign(hopfield * consult)
+    current = np.sign(hopfield.dot(consult))
+    while not np.array_equal(current, consult) and iteration < max_iter:
+        current = np.sign(hopfield.dot(current))
         iteration += 1
-    return current
+    return current, iteration, np.array_equal(current, consult)
+
