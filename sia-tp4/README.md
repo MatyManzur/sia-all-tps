@@ -5,7 +5,7 @@ Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Franco David R
 # TODO:
 
 - [x] Implementar la red de Kohonen.
-  - [ ] Asociar paı́ses que posean las mismas características geopolitical, económicas y sociales.
+  - [x] Asociar paı́ses que posean las mismas características geopolitical, económicas y sociales.
   - [ ] Realizar al menos un gráfico que muestre los resultados.
   - [ ] Realizar un gráfico que muestre las distancias promedio entre neuronas vecinas.
   - [ ] Analizar la cantidad de elementos que fueron asociados a cada neurona.
@@ -20,4 +20,3 @@ Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Franco David R
   - [ ] Construir patrones de letras del abecedario utilizando 1 y −1 y matrices de 5 × 5.
   - [ ] Almacenar 4 patrones de letras. Implementar el modelo de Hopfield para asociar matrices ruidosas de 5 × 5 con los patrones de las letras almacenadas. Los patrones de consulta deben ser alteraciones aleatorias de los patrones originales. Mostrar los resultados que se obtienen en cada paso hasta llegar al resultado final.
   - [ ] Ingresar un patrón muy ruidoso e identificar un estado espúreo.
-  - 
