@@ -31,7 +31,7 @@ class Kohonen:
         self.standardized_data = standardized_data
 
         if random_initial_weights:
-            self.weights = np.random.rand(k, k, input_size)
+            self.weights = np.random.rand(k, k, input_size) * 2 - 1
         else:
             self.weights = np.zeros(shape=(k, k, input_size))
             for y in range(self.k):
