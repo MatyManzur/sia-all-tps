@@ -1,3 +1,7 @@
+import numpy as np
+import pandas as pd
+import itertools as it
+
 """ A-I
 [
     -1,  1,  1,  1, -1,
@@ -129,7 +133,7 @@ I = [
 ]
 
 J = [
-    [-1, -1, -1, 1, -1],
+    [-1, -1, 1, 1, 1],
     [-1, -1, -1, 1, -1],
     [-1, -1, -1, 1, -1],
     [1, -1, -1, 1, -1],
@@ -264,11 +268,8 @@ Z = [
     [1, 1, 1, 1, 1]
 ]
 
-alphabet = [A, B, C, D, E, F, G, H, I, J, K,
-            L, M, N, O, P, Q, R, S, T, U, V,
-            W, X, Y, Z]
 
-alphabetMap = {
+alphabet_map = {
   'A': A,
   'B': B,
   'C': C,
@@ -296,3 +297,33 @@ alphabetMap = {
   'Y': Y,  # Define the value for 'Y' here
   'Z': Z   # Define the value for 'Z' here
 }
+
+orthogonal_letters = {"I": I,
+                      "J": J,
+                      "R": R,
+                      "X": X}
+
+
+def orthogonal_like_letters():
+    flat_letters = {k: np.array(v).flatten() for k, v in alphabet_map.items()}
+    all_combinations = it.combinations(flat_letters.keys(), r=4)
+    avg_dot_products = []
+    max_dot_products = []
+
+    for c in all_combinations:
+        combination = np.array([v for k, v in flat_letters.items() if k in c])
+        orto_matrix = combination.dot(combination.T)
+        np.fill_diagonal(orto_matrix, 0)
+        avg_dot_products.append((np.mean(np.abs(orto_matrix)), c))
+        max_value = np.max(np.abs(orto_matrix))
+        max_dot_products.append(((max_value, np.count_nonzero(np.abs(orto_matrix) == max_value)), c))
+
+    df = pd.DataFrame(sorted(avg_dot_products), columns=["avg_dot_product", "letters"])
+    print(df.head(15))
+    df2 = pd.DataFrame(sorted(max_dot_products), columns=["max_dot_product", "letters"])
+    print(df2.head(15))
+
+
+if __name__ == '__main__':
+    orthogonal_like_letters()
+
