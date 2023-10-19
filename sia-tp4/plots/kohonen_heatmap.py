@@ -21,6 +21,22 @@ INITIALIZE_RANDOM_WEIGHTS = True
 # np.random.seed(None)
 # random.seed(None)
 
+def get_unified_mean_distance(weight_matrix: NDArray[float]):
+    neighborhood_radius = 1
+    rows, cols, _ = weight_matrix.shape
+    u_matrix = np.zeros((rows, cols))
+    for i in range(rows):
+        for j in range(cols):
+            neuron = weight_matrix[i, j]
+            i_min = max(0, i - neighborhood_radius)
+            i_max = min(rows, i + neighborhood_radius + 1)
+            j_min = max(0, j - neighborhood_radius)
+            j_max = min(cols, j + neighborhood_radius + 1)
+            neighborhood_arr = weight_matrix[i_min:i_max, j_min:j_max]
+            distance = np.linalg.norm(neighborhood_arr - neuron, axis = -1)
+            u_matrix[i, j] = np.mean(distance)
+    return u_matrix
+
 
 def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: float, radius_change: Callable[[float, int], float],
                             learning_rate: Callable[[int], float], initialize_random_weights: bool):
@@ -51,11 +67,11 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
         
-        countries_names_foreach_neuron[winner[0]][winner[1]] += f", {country}" if countries_names_foreach_neuron[winner[0]][winner[1]]!='' and countries_count_foreach_neuron[winner[0]][winner[1]] % 3 != 0 else f"{country}"
+        countries_names_foreach_neuron[winner[0]][winner[1]] += f"{country}" if countries_names_foreach_neuron[winner[0]][winner[1]]!='' and countries_count_foreach_neuron[winner[0]][winner[1]] % 3 != 0 else f"{country}"
 
         countries_count_foreach_neuron[winner[0]][winner[1]] += 1
         if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][
-            winner[1]] % 3 == 0:
+            winner[1]] % 1 == 0:
             countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"
 
         countries_winners["countries"].append(country)
@@ -64,7 +80,10 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
 
         print(f"{country} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
 
-    # Create a heatmap trace with text annotations
+    distance = get_unified_mean_distance(kohonen.weights)
+
+    distance_heatmap = go.Heatmap(z=distance, text=countries_names_foreach_neuron, texttemplate="%{text}")
+    
     heatmap = go.Heatmap(z=countries_count_foreach_neuron, text=countries_names_foreach_neuron, texttemplate="%{text}")
 
     # Create a layout for the heatmap
@@ -74,11 +93,20 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
         yaxis=dict(title='Y-axis Labels')
     )
 
+    layout2 = go.Layout(
+        title="Unified Distance Matrix",
+        xaxis=dict(title='X-axis Labels'),
+        yaxis=dict(title='Y-axis Labels'),
+    )
+
     # Create a figure and add the heatmap trace to it
     fig = go.Figure(data=[heatmap], layout=layout)
 
     # Show the heatmap
+    fig2 = go.Figure(data=[distance_heatmap], layout=layout2)
+
     fig.show()
+    fig2.show()
 
     return countries_winners
 
