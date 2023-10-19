@@ -1,0 +1,81 @@
+{
+  "iterations-per-test": 3,
+  "file-name-prefix": "results/AAAAAA-",
+  "tests": [
+    {
+      "name": "MINIBATCH",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.6
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 2000,
+      "middle_layers_neurons": [64],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "TRAINING_SET_RUIDO",
+      "test_dataset": "TESTING_DATASET",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR",
+      "noise_probability": 0.10
+    },
+    {
+      "name": "BATCH",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.6
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 2000,
+      "middle_layers_neurons": [64],
+      "test": {
+        "training_type": "batch",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "TRAINING_SET_RUIDO",
+      "test_dataset": "TESTING_DATASET",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR",
+      "noise_probability": 0.10
+    },
+    {
+      "name": "ONLINE",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.6
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 2000,
+      "middle_layers_neurons": [64],
+      "test": {
+        "training_type": "online",
+        "mini_batch_size": 5,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "TRAINING_SET_RUIDO",
+      "test_dataset": "TESTING_DATASET",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR",
+      "noise_probability": 0.10
+    }
+  ]
+}

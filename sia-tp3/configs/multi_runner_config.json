@@ -4,13 +4,13 @@
   "tests": [
 
     {
-      "name": "momentum6",
+      "name": "5-FOLD-1",
       "functions": {
         "function_type": "sigmoid",
         "/***guia": " hiperbolic, identity, sigmoid *////"
       },
-      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_data_indexes": [2, 3, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [0, 1],
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
@@ -19,7 +19,7 @@
       "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
-      "middle_layers_neurons": [5, 5, 5],
+      "middle_layers_neurons": [64],
       "test": {
         "training_type": "mini-batch",
         "mini_batch_size": 5,
@@ -29,12 +29,12 @@
       "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR"
     },
     {
-      "name": "momentum3",
+      "name": "5-FOLD-2",
       "functions": {
         "function_type": "sigmoid"
       },
-      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_data_indexes": [0, 1, 4, 5, 6, 7, 8, 9],
+      "test_data_indexes": [2, 3],
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
@@ -42,7 +42,7 @@
       },
       "min_error": 0.01,
       "max_iterations": 10000,
-      "middle_layers_neurons": [7, 7, 7],
+      "middle_layers_neurons": [64],
       "test": {
         "training_type": "mini-batch",
         "mini_batch_size": 5
@@ -50,12 +50,12 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "no_momentum",
+      "name": "5-FOLD-3",
       "functions": {
         "function_type": "sigmoid"
       },
-      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_data_indexes": [0, 1, 2, 3, 6, 7, 8, 9],
+      "test_data_indexes": [4, 5],
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
@@ -63,7 +63,7 @@
       },
       "min_error": 0.01,
       "max_iterations": 10000,
-      "middle_layers_neurons": [10, 10, 10],
+      "middle_layers_neurons": [64],
       "test": {
         "training_type": "mini-batch",
         "mini_batch_size": 5
@@ -71,12 +71,12 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "momentum1",
+      "name": "5-FOLD-4",
       "functions": {
         "function_type": "sigmoid"
       },
-      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 8, 9],
+      "test_data_indexes": [6, 7],
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
@@ -84,7 +84,7 @@
       },
       "min_error": 0.01,
       "max_iterations": 10000,
-      "middle_layers_neurons": [15, 15, 15],
+      "middle_layers_neurons": [64],
       "test": {
         "training_type": "mini-batch",
         "mini_batch_size": 5
@@ -92,12 +92,12 @@
       "data_set": "DATA_DIGITOS"
     },
     {
-      "name": "momentum9",
+      "name": "5-FOLD-5",
       "functions": {
         "function_type": "sigmoid"
       },
-      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      "test_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "learning_data_indexes": [0, 1, 2, 3, 4, 5, 6, 7],
+      "test_data_indexes": [8, 9],
       "learning_constant": 0.1,
       "optimization": {
         "type": "momentum",
@@ -106,7 +106,7 @@
       "/***guia_beta": " 0 < beta < 1*////",
       "min_error": 0.01,
       "max_iterations": 10000,
-      "middle_layers_neurons": [30, 30, 30],
+      "middle_layers_neurons": [64],
       "test": {
         "training_type": "mini-batch",
         "mini_batch_size": 5

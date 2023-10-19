@@ -1,0 +1,56 @@
+{
+  "iterations-per-test": 1,
+  "file-name-prefix": "results/test-sound-",
+  "tests": [
+    {
+      "name": "64",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.6
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 2000,
+      "middle_layers_neurons": [64],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 2,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS",
+      "test_dataset": "DATA_DIGITOS_RUIDO",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR",
+      "noise_probability": 0.15
+    },
+    {
+      "name": "64BIS",
+      "functions": {
+        "function_type": "sigmoid",
+        "/***guia": " hiperbolic, identity, sigmoid *////"
+      },
+      "learning_constant": 0.1,
+      "optimization": {
+        "type": "momentum",
+        "beta": 0.6
+      },
+      "/***guia_beta": " 0 < beta < 1*////",
+      "min_error": 0.01,
+      "max_iterations": 2000,
+      "middle_layers_neurons": [64],
+      "test": {
+        "training_type": "mini-batch",
+        "mini_batch_size": 2,
+        "/***guia_training_type": "batch, mini-batch, online*////"
+      },
+      "data_set": "DATA_DIGITOS_OVER",
+      "test_dataset": "DATA_DIGITOS_RUIDO",
+      "/***data-guia": "DATA_DIGITOS, DATA_DIGITOS_PAR",
+      "noise_probability": 0.15
+    }
+  ]
+}
