@@ -20,7 +20,8 @@ class Kohonen:
     def __init__(self, k: int, input_size: int, max_iterations: int,
                  get_learning_rate: Callable[[int], float], distance_function: SimilarityFunction,
                  initial_radius: float, radius_change: Callable[[float, int], float],
-                 standardized_data: List[NDArray[float]], random_initial_weights: bool):
+                 standardized_data: List[NDArray[float]], random_initial_weights: bool,
+                 seed: int = np.random.randint(1, 1000)):
         self.k = k
         self.initial_radius = initial_radius
         self.current_iteration = 0
@@ -29,6 +30,9 @@ class Kohonen:
         self.radius_change = radius_change
         self.max_iterations = max_iterations
         self.standardized_data = standardized_data
+        print(f"SEED: {seed}")
+        np.random.seed(seed)
+        random.seed(seed)
 
         if random_initial_weights:
             self.weights = np.random.rand(k, k, input_size) * 2 - 1

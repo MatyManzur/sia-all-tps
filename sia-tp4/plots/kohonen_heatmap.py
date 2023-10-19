@@ -13,13 +13,12 @@ CSV_FILE = 'data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 GRID_SIZE = 4
 MAX_ITERATIONS = 10000
-INITIAL_RADIUS = math.sqrt(2)
-RADIUS_CHANGE = lambda prev, epoch: INITIAL_RADIUS - 0.5 * (epoch // 250)
+INITIAL_RADIUS = 3
+SEED = 703  # 703 para grid de 4 y 885 para grid de 3
+RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
-INITIALIZE_RANDOM_WEIGHTS = True
+INITIALIZE_RANDOM_WEIGHTS = False
 
-# np.random.seed(None)
-# random.seed(None)
 
 def get_unified_mean_distance(weight_matrix: NDArray[float]):
     neighborhood_radius = 1
@@ -38,8 +37,9 @@ def get_unified_mean_distance(weight_matrix: NDArray[float]):
     return u_matrix
 
 
-def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: float, radius_change: Callable[[float, int], float],
-                            learning_rate: Callable[[int], float], initialize_random_weights: bool):
+def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: float,
+                           radius_change: Callable[[float, int], float],
+                           learning_rate: Callable[[int], float], initialize_random_weights: bool):
     data = pd.read_csv(CSV_FILE)
     columns = ['Area', 'GDP', 'Inflation', 'Life.expect', 'Military', 'Pop.growth', 'Unemployment']
     data_array = z_score(data[columns].to_numpy())
@@ -53,6 +53,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
                       initial_radius=initial_radius,
                       radius_change=radius_change,
                       standardized_data=list(data_array),
+                      seed=SEED,
                       random_initial_weights=initialize_random_weights)
 
     kohonen.train()
@@ -66,12 +67,14 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
 
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
-        
-        countries_names_foreach_neuron[winner[0]][winner[1]] += f"{country}" if countries_names_foreach_neuron[winner[0]][winner[1]]!='' and countries_count_foreach_neuron[winner[0]][winner[1]] % 3 != 0 else f"{country}"
+
+        countries_names_foreach_neuron[winner[0]][winner[1]] += f", {country}" if \
+        countries_names_foreach_neuron[winner[0]][winner[1]] != '' and countries_count_foreach_neuron[winner[0]][
+            winner[1]] % 3 != 0 else f"{country}"
 
         countries_count_foreach_neuron[winner[0]][winner[1]] += 1
         if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][
-            winner[1]] % 1 == 0:
+            winner[1]] % 3 == 0:
             countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"
 
         countries_winners["countries"].append(country)
@@ -82,21 +85,24 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
 
     distance = get_unified_mean_distance(kohonen.weights)
 
-    distance_heatmap = go.Heatmap(z=distance, text=countries_names_foreach_neuron, texttemplate="%{text}")
-    
-    heatmap = go.Heatmap(z=countries_count_foreach_neuron, text=countries_names_foreach_neuron, texttemplate="%{text}")
+    distance_heatmap = go.Heatmap(z=distance, text=countries_names_foreach_neuron, texttemplate="%{text}", colorscale='oranges')
+
+    heatmap = go.Heatmap(z=countries_count_foreach_neuron,
+                         text=countries_names_foreach_neuron,
+                         texttemplate="%{text}",
+                         )
 
     # Create a layout for the heatmap
     layout = go.Layout(
-        title='Heatmap with Text Annotations',
-        xaxis=dict(title='X-axis Labels'),
-        yaxis=dict(title='Y-axis Labels')
+        title='Countries per Neuron',
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False)
     )
 
     layout2 = go.Layout(
         title="Unified Distance Matrix",
-        xaxis=dict(title='X-axis Labels'),
-        yaxis=dict(title='Y-axis Labels'),
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False)
     )
 
     # Create a figure and add the heatmap trace to it
@@ -105,10 +111,23 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     # Show the heatmap
     fig2 = go.Figure(data=[distance_heatmap], layout=layout2)
 
+    """    
+    # Color de cada grupo
+    color_grid = [
+        ["midnightblue", "green", "red"],
+        ["blue", "aquamarine", "orange"],
+        ["lightskyblue", "darkseagreen", "yellow"]
+    ]
+    for i in range(3):
+        for j in range(3):
+            fig.add_scatter(x=[j], y=[i-0.3], marker=dict(color=color_grid[i][j], size=30))
+    fig.update_layout(showlegend=False)
+    """
     fig.show()
     fig2.show()
 
     return countries_winners
+
 
 def get_learning_rate(initial, function_name):
     if function_name == 'linear':\
@@ -119,6 +138,7 @@ def get_learning_rate(initial, function_name):
         return lambda epoch: initial / (1.0 + (epoch / MAX_ITERATIONS))
     else:
         return None
+
 
 def get_radius_change(function_name):
     if function_name == 'linear':

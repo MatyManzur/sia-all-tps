@@ -24,10 +24,11 @@ def pca_fun():
     loadings = pca.components_.T * np.sqrt(pca.explained_variance_)  # matriz de las cargas
     total_var = pca.explained_variance_ratio_.sum() * 100
 
-    fig = px.scatter(pca_features, x=0, y=1, hover_name=dataset['Country'],
+    fig = px.scatter(pca_features, x=0, y=1, text=dataset['Country'],
                      title=f'PCA BiPlot - Total Explained Variance {total_var:.2f}%')
 
     fig.update_traces(marker_color="rgba(0,0,0,0)")
+    fig.update_traces(textposition='bottom right')
     fig.update_layout(xaxis_title='PCA1', yaxis_title='PCA2')
 
     for i, row in enumerate(pca_features):
@@ -45,7 +46,7 @@ def pca_fun():
                 sizey=0.4,
                 sizing="contain",
                 opacity=1,
-                layer="above"
+                layer="below"
             )
         )
 
@@ -72,7 +73,7 @@ def pca_fun():
             yanchor="bottom",
             text=feature,
             yshift=5,
-            font={"size": 15, "color": colors[i]}
+            font={"size": 10, "color": colors[i]}
         )
     fig.show()
 
