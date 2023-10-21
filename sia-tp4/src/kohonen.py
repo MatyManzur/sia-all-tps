@@ -30,9 +30,14 @@ class Kohonen:
         self.radius_change = radius_change
         self.max_iterations = max_iterations
         self.standardized_data = standardized_data
-        print(f"SEED: {seed}")
-        np.random.seed(seed)
-        random.seed(seed)
+        if seed is not None:
+            print(f"SEED: {seed}")
+            np.random.seed(seed)
+            random.seed(seed)
+        else:
+            print("SEED: None")
+            print(f"np.random.seed = {np.random.get_state()[1][0]}")
+            print(f"random.seed = {random.getstate()[1][0]}")
 
         if random_initial_weights:
             self.weights = np.random.rand(k, k, input_size) * 2 - 1
@@ -62,8 +67,10 @@ class Kohonen:
         standarized_input = _input
         most_similar_difference = 0
         most_similar = None
+
         for y, rows in enumerate(self.weights):
             for x, col in enumerate(rows):
+                # array[y][x]
                 aux = self.distance_function(standarized_input, col)  # usar distance function
                 if most_similar_difference > aux or most_similar is None:
                     most_similar_difference = aux

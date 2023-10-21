@@ -9,12 +9,12 @@ from src.kohonen import *
 from src.standardization import z_score
 from sys import argv
 
-CSV_FILE = 'data/europe.csv'
+CSV_FILE = '../data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 GRID_SIZE = 4
 MAX_ITERATIONS = 10000
 INITIAL_RADIUS = 3
-SEED = 703  # 703 para grid de 4 y 885 para grid de 3
+SEED = 5  # 5 para grid de 4 y 11 para grid de 3
 RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 INITIALIZE_RANDOM_WEIGHTS = False
@@ -44,6 +44,10 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     columns = ['Area', 'GDP', 'Inflation', 'Life.expect', 'Military', 'Pop.growth', 'Unemployment']
     data_array = z_score(data[columns].to_numpy())
     countries = data.Country.to_list()
+    for i, country in enumerate(countries):
+        print(f"{country}: {data_array[i]}")
+
+    print("=" * 20)
 
     kohonen = Kohonen(k=grid_size,
                       input_size=len(columns),
@@ -68,18 +72,18 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
 
-        countries_names_foreach_neuron[winner[0]][winner[1]] += f", {country}" if \
-        countries_names_foreach_neuron[winner[0]][winner[1]] != '' and countries_count_foreach_neuron[winner[0]][
-            winner[1]] % 3 != 0 else f"{country}"
+        countries_names_foreach_neuron[winner[1]][winner[0]] += f", {country}" if \
+        countries_names_foreach_neuron[winner[1]][winner[0]] != '' and countries_count_foreach_neuron[winner[1]][
+            winner[0]] % 3 != 0 else f"{country}"
 
-        countries_count_foreach_neuron[winner[0]][winner[1]] += 1
-        if countries_count_foreach_neuron[winner[0]][winner[1]] != 0 and countries_count_foreach_neuron[winner[0]][
-            winner[1]] % 3 == 0:
-            countries_names_foreach_neuron[winner[0]][winner[1]] += "<br>"
+        countries_count_foreach_neuron[winner[1]][winner[0]] += 1
+        if countries_count_foreach_neuron[winner[1]][winner[0]] != 0 and countries_count_foreach_neuron[winner[1]][
+            winner[0]] % 3 == 0:
+            countries_names_foreach_neuron[winner[1]][winner[0]] += "<br>"
 
         countries_winners["countries"].append(country)
-        countries_winners["winner_row"].append(winner[0])
-        countries_winners["winner_col"].append(winner[1])
+        countries_winners["winner_row"].append(winner[1])
+        countries_winners["winner_col"].append(winner[0])
 
         print(f"{country} - Winner: ({winner[0]}, {winner[1]}) - Distance: {distance}")
 
@@ -91,6 +95,18 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
                          text=countries_names_foreach_neuron,
                          texttemplate="%{text}",
                          )
+
+    variable_heatmaps = []
+    variable_layouts = []
+
+    for variable in columns:
+        weights = kohonen.weights[:, :, columns.index(variable)]
+        print(f"Variable: {variable} - Weights: {weights}")
+        variable_heatmaps.append(go.Heatmap(z=weights, text=countries_names_foreach_neuron,
+                                            texttemplate="%{text}", colorscale='Blues'))
+        variable_layouts.append(go.Layout(title=f"Variable per Neuron: {variable}",
+                                          xaxis=dict(visible=False), yaxis=dict(visible=False)))
+
 
     # Create a layout for the heatmap
     layout = go.Layout(
@@ -111,6 +127,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     # Show the heatmap
     fig2 = go.Figure(data=[distance_heatmap], layout=layout2)
 
+
     """    
     # Color de cada grupo
     color_grid = [
@@ -125,6 +142,10 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     """
     fig.show()
     fig2.show()
+
+    for i in range(len(variable_heatmaps)):
+        fig3 = go.Figure(data=[variable_heatmaps[i]], layout=variable_layouts[i])
+        fig3.show()
 
     return countries_winners
 
