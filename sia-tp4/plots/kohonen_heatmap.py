@@ -103,7 +103,8 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
         weights = kohonen.weights[:, :, columns.index(variable)]
         print(f"Variable: {variable} - Weights: {weights}")
         variable_heatmaps.append(go.Heatmap(z=weights, text=countries_names_foreach_neuron,
-                                            texttemplate="%{text}", colorscale='Blues'))
+                                            texttemplate="%{text}",
+                                            colorscale='RdBu', zmid=0))
         variable_layouts.append(go.Layout(title=f"Variable per Neuron: {variable}",
                                           xaxis=dict(visible=False), yaxis=dict(visible=False)))
 
