@@ -11,10 +11,10 @@ from sys import argv
 
 CSV_FILE = '../data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
-GRID_SIZE = 4
+GRID_SIZE = 2
 MAX_ITERATIONS = 10000
-INITIAL_RADIUS = 3
-SEED = 5  # 5 para grid de 4 y 11 para grid de 3
+INITIAL_RADIUS = 2
+SEED = 11  # 5 para grid de 4 y 11 para grid de 3
 RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 INITIALIZE_RANDOM_WEIGHTS = False
@@ -94,6 +94,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     heatmap = go.Heatmap(z=countries_count_foreach_neuron,
                          text=countries_names_foreach_neuron,
                          texttemplate="%{text}",
+                         colorscale='greys'
                          )
 
     variable_heatmaps = []
@@ -129,7 +130,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     fig2 = go.Figure(data=[distance_heatmap], layout=layout2)
 
 
-    """    
+
     # Color de cada grupo
     color_grid = [
         ["midnightblue", "green", "red"],
@@ -140,7 +141,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
         for j in range(3):
             fig.add_scatter(x=[j], y=[i-0.3], marker=dict(color=color_grid[i][j], size=30))
     fig.update_layout(showlegend=False)
-    """
+
     fig.show()
     fig2.show()
 

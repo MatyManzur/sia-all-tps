@@ -18,7 +18,7 @@ HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 GRID_SIZE = 3
 MAX_ITERATIONS = 10000
 INITIAL_RADIUS = 3
-SEED = 885  # 703 para grid de 4 y 885 para grid de 3
+SEED = 11  # 5 para grid de 4 y 11 para grid de 3
 RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 INITIALIZE_RANDOM_WEIGHTS = False
@@ -33,7 +33,7 @@ def kohonen_pca_clusters(kohonen: Kohonen, data_array: List, countries: List, gr
     colors = []
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
-        colors.append(color_grid[winner[0]][winner[1]])
+        colors.append(color_grid[winner[1]][winner[0]])
 
     dataset = pd.read_csv('../data/europe.csv')
     columns = dataset.columns

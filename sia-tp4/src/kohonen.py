@@ -21,7 +21,7 @@ class Kohonen:
                  get_learning_rate: Callable[[int], float], distance_function: SimilarityFunction,
                  initial_radius: float, radius_change: Callable[[float, int], float],
                  standardized_data: List[NDArray[float]], random_initial_weights: bool,
-                 seed: int = np.random.randint(1, 1000)):
+                 seed: int | None = np.random.randint(1, 1000)):
         self.k = k
         self.initial_radius = initial_radius
         self.current_iteration = 0
