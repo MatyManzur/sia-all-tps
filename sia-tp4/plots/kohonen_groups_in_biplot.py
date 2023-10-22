@@ -8,12 +8,14 @@ import plotly.subplots as sp
 import plotly.express as px
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+import pycountry
+
 
 from src.kohonen import *
 from src.standardization import z_score
 from sys import argv
 
-CSV_FILE = '../data/europe.csv'
+CSV_FILE = 'data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 GRID_SIZE = 3
 MAX_ITERATIONS = 10000
@@ -30,12 +32,34 @@ def kohonen_pca_clusters(kohonen: Kohonen, data_array: List, countries: List, gr
         ["blue", "aquamarine", "orange"],
         ["lightskyblue", "darkseagreen", "yellow"]
     ]
+
+    category_colors = {
+        "midnightblue": "midnightblue",
+        "green": "green",
+        "red": "red",
+        "blue": "blue",
+        "aquamarine": "aquamarine",
+        "orange": "orange",
+        "lightskyblue": "lightskyblue",
+        "darkseagreen": "darkseagreen",
+        "yellow": "yellow"
+    }
+
+    """color_grid_rgb = [
+        ['rgb(25,25,112)', 'rgb(0,128,0)', 'rgb(255,0,0)'],
+        ['rgb(255,0,0)', 'rgb(127,255,212)', 'rgb(255,165,0)'],
+        ['rgb(255,165,0)', 'rgb(143,188,143)', 'rgb(255,255,0)']
+    ]"""
+
     colors = []
+    country_color_mapping = {}
     for i, country in enumerate(countries):
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
         colors.append(color_grid[winner[1]][winner[0]])
+        country_color_mapping[country] = color_grid[winner[1]][winner[0]]
+        #colors_map.append(color_grid_rgb[winner[1]][winner[0]])
 
-    dataset = pd.read_csv('../data/europe.csv')
+    dataset = pd.read_csv(CSV_FILE)
     columns = dataset.columns
     features = ['Area', 'GDP', 'Inflation', 'Life.expect', 'Military', 'Pop.growth', 'Unemployment']
 
@@ -67,6 +91,28 @@ def kohonen_pca_clusters(kohonen: Kohonen, data_array: List, countries: List, gr
         )
 
     fig.show()
+
+
+    countries_codes = {}
+    for country in pycountry.countries:
+        countries_codes[country.name] = country.alpha_3
+    codes = [countries_codes.get(country, 'Unknown code') for country in countries]
+
+
+    dictionary = { "country": countries, "colors": colors, "iso_alpha":codes}
+
+    df2 = pd.DataFrame.from_dict(dictionary)
+
+    df2['colors'] = df2['country'].map(country_color_mapping)
+
+    fig2 = px.choropleth(df2, locations="iso_alpha",
+                        color="colors", # Un color por cada neurona
+                        hover_name="country", # column to add to hover information
+                        color_discrete_map=category_colors
+                        )
+    fig2.update_traces(showlegend=False) # Así no muestra lo de la derecha
+    fig2.update_geos(fitbounds="locations")
+    fig2.show()
 
     return 0
 

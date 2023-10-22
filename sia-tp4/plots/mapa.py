@@ -10,7 +10,7 @@ def map_europe():
     for country in pycountry.countries:
         countries_codes[country.name] = country.alpha_3
 
-    data = heatmap_winner_neurons()
+    data = heatmap_winner_neurons(4, 1000, math.sqrt(2), lambda prev, epoch: INITIAL_RADIUS - 0.5 * (epoch // 250), lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS)), False)
 
 
     # Estos son los códigos como ARG para Argentina, DEU para Alemania, etc. Sirven para pintar el mapa
@@ -21,44 +21,12 @@ def map_europe():
     
     color_by_country=[]
     for i in range(0, len(data["winner_row"])):
-        row_val = data["winner_row"][i]
-        col_val = data["winner_col"][i]
-        color_by_country.append('rgb({0}, {1}, 0)'.format(row_val * increments_of, col_val * increments_of))
+        color_by_country.append('rgb({0}, {1}, 0)'.format(data["winner_row"][i] * increments_of, data["winner_col"][i] * increments_of))
 
 
 
     """ Forma sin tomar en cuenta la grilla
-    colors = [
-    "red",
-    "blue",
-    "green",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "brown",
-    "cyan",
-    "magenta",
-    "violet",
-    "teal",
-    "lime",
-    "indigo",
-    "maroon",
-    "navy",
-    "silver",
-    "gold",
-    "olive",
-    "gray",
-    "black",
-    "white",
-    "turquoise",
-    "orchid",
-    "salmon",
-    "peru",
-    "slategray",
-    "darkgreen",
-    "tomato"
-    ]
+    colors = ["red","blue","green","yellow","orange","purple","pink","brown","cyan","magenta","violet","teal","lime","indigo","maroon","navy","silver","gold","olive","gray","black","white","turquoise","orchid","salmon","peru","slategray","darkgreen","tomato"]
 
     seen_values = {}
     curr_color=0
