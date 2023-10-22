@@ -14,7 +14,16 @@ def generate_hopfield_matrix(training_set: List[NDArray]):
 def most_similar_pattern(hopfield: NDArray, consult: NDArray, max_iter: int):
     iteration = 0
     current = np.sign(hopfield.dot(consult))
-    while not np.array_equal(current, consult) and iteration < max_iter:
-        current = np.sign(hopfield.dot(current))
+    iterations = [(iteration, current, get_energy(hopfield, current))]
+    previous = current
+    while iteration < max_iter:
         iteration += 1
-    return current, iteration, np.array_equal(current, consult)
+        current = np.sign(hopfield.dot(current))
+        iterations.append((iteration, current, get_energy(hopfield, current)))
+        if np.array_equal(current, previous):
+            break
+        previous = current
+    return current, iteration, np.array_equal(current, consult), iterations
+
+def get_energy(hopfield: NDArray, consult: NDArray):
+    return -0.5 * consult.dot(hopfield.dot(consult))
