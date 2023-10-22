@@ -21,7 +21,7 @@ GRID_SIZE = 3
 MAX_ITERATIONS = 10000
 INITIAL_RADIUS = 3
 SEED = 11  # 5 para grid de 4 y 11 para grid de 3
-RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
+RADIUS_CHANGE = lambda initial, epoch: max(initial - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 INITIALIZE_RANDOM_WEIGHTS = False
 

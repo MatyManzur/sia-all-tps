@@ -11,11 +11,11 @@ from sys import argv
 
 CSV_FILE = '../data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
-GRID_SIZE = 2
+GRID_SIZE = 4
 MAX_ITERATIONS = 10000
-INITIAL_RADIUS = 2
-SEED = 11  # 5 para grid de 4 y 11 para grid de 3
-RADIUS_CHANGE = lambda prev, epoch: max(INITIAL_RADIUS - 0.05 * epoch, 1)
+INITIAL_RADIUS = 3
+SEED = 5  # 5 para grid de 4 y 11 para grid de 3
+RADIUS_CHANGE = lambda initial, epoch: max(initial - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 INITIALIZE_RANDOM_WEIGHTS = False
 
@@ -32,7 +32,7 @@ def get_unified_mean_distance(weight_matrix: NDArray[float]):
             j_min = max(0, j - neighborhood_radius)
             j_max = min(cols, j + neighborhood_radius + 1)
             neighborhood_arr = weight_matrix[i_min:i_max, j_min:j_max]
-            distance = np.linalg.norm(neighborhood_arr - neuron, axis = -1)
+            distance = np.linalg.norm(neighborhood_arr - neuron, axis=-1)
             u_matrix[i, j] = np.mean(distance)
     return u_matrix
 
@@ -73,8 +73,8 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
         winner, distance = kohonen.get_most_similar_neuron(data_array[i])
 
         countries_names_foreach_neuron[winner[1]][winner[0]] += f", {country}" if \
-        countries_names_foreach_neuron[winner[1]][winner[0]] != '' and countries_count_foreach_neuron[winner[1]][
-            winner[0]] % 3 != 0 else f"{country}"
+            countries_names_foreach_neuron[winner[1]][winner[0]] != '' and countries_count_foreach_neuron[winner[1]][
+                winner[0]] % 3 != 0 else f"{country}"
 
         countries_count_foreach_neuron[winner[1]][winner[0]] += 1
         if countries_count_foreach_neuron[winner[1]][winner[0]] != 0 and countries_count_foreach_neuron[winner[1]][
@@ -89,12 +89,13 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
 
     distance = get_unified_mean_distance(kohonen.weights)
 
-    distance_heatmap = go.Heatmap(z=distance, text=countries_names_foreach_neuron, texttemplate="%{text}", colorscale='oranges')
+    distance_heatmap = go.Heatmap(z=distance, text=countries_names_foreach_neuron, texttemplate="%{text}",
+                                  colorscale='oranges', colorbar=dict(tickvals=[1, 5, 9]))
 
     heatmap = go.Heatmap(z=countries_count_foreach_neuron,
                          text=countries_names_foreach_neuron,
                          texttemplate="%{text}",
-                         colorscale='greys'
+                         colorscale='PuRd'
                          )
 
     variable_heatmaps = []
@@ -107,14 +108,15 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
                                             texttemplate="%{text}",
                                             colorscale='RdBu', zmid=0))
         variable_layouts.append(go.Layout(title=f"Variable per Neuron: {variable}",
-                                          xaxis=dict(visible=False), yaxis=dict(visible=False)))
-
+                                          xaxis=dict(visible=False), yaxis=dict(visible=False),font={
+            'size': 16
+        }))
 
     # Create a layout for the heatmap
     layout = go.Layout(
         title='Countries per Neuron',
         xaxis=dict(visible=False),
-        yaxis=dict(visible=False)
+        yaxis=dict(visible=False),
     )
 
     layout2 = go.Layout(
@@ -129,8 +131,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
     # Show the heatmap
     fig2 = go.Figure(data=[distance_heatmap], layout=layout2)
 
-
-
+    """
     # Color de cada grupo
     color_grid = [
         ["midnightblue", "green", "red"],
@@ -141,7 +142,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
         for j in range(3):
             fig.add_scatter(x=[j], y=[i-0.3], marker=dict(color=color_grid[i][j], size=30))
     fig.update_layout(showlegend=False)
-
+    """
     fig.show()
     fig2.show()
 
@@ -153,8 +154,8 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
 
 
 def get_learning_rate(initial, function_name):
-    if function_name == 'linear':\
-        return lambda epoch: initial * (1.0 - (epoch / MAX_ITERATIONS))
+    if function_name == 'linear': \
+            return lambda epoch: initial * (1.0 - (epoch / MAX_ITERATIONS))
     elif function_name == 'exponential':
         return lambda epoch: initial * math.exp(-epoch / MAX_ITERATIONS)
     elif function_name == 'inverse':

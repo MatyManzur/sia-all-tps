@@ -8,11 +8,12 @@ from sklearn.preprocessing import StandardScaler
 from src.kohonen import *
 from src.standardization import z_score
 from sys import argv
+from kohonen_heatmap import get_unified_mean_distance
 
 CSV_FILE = '../data/europe.csv'
 HEADER_COLUMNS_COUNT = 1  # Tengo que excluir el título del país
 MAX_ITERATIONS = 10000
-RADIUS_CHANGE = lambda prev, epoch: max(prev - 0.05 * epoch, 1)
+RADIUS_CHANGE = lambda initial, epoch: max(initial - 0.05 * epoch, 1)
 LEARNING_RATE = lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
 
 
@@ -42,8 +43,7 @@ def get_dead_neurons(data, grid_size: int, random_weights: bool, seed: int):
         for col in row:
             if col == 0:
                 count += 1
-    return count
-
+    return count/(grid_size**2)
 
 if __name__ == '__main__':
     data = pd.read_csv(CSV_FILE)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         "max-mean_dead_neurons": []
     }
     SAMPLE_COUNT = 16
-    for size in range(2, 7):
+    for size in range(3, 7):
         print(f"-------- GRID SIZE: {size} --------")
         for random_weights in [True, False]:
             dead_neurons = [get_dead_neurons(data, size, random_weights, size*SAMPLE_COUNT + i) for i in range(SAMPLE_COUNT)]
@@ -72,6 +72,8 @@ if __name__ == '__main__':
         color='random_initial_weights',
         barmode='group',
         error_y='max-mean_dead_neurons',
-        error_y_minus='mean-min_dead_neurons'
+        error_y_minus='mean-min_dead_neurons',
+        title='Dead Neuron Percentage by Grid Size'
     )
+    fig.update_layout(yaxis=dict(tickformat='.0%'))
     fig.show()
