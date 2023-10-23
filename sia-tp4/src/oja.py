@@ -25,7 +25,7 @@ class SimplePerceptron:
         return self.activation_function(np.dot(self.weights, inputs))
 
 
-def oja(data_list: List[NDArray], column_count: int,initial_learning_rate: float = 0.17, max_epoch: int = 100):
+def oja(data_list: List[NDArray], column_count: int,initial_learning_rate: float = 0.17, max_epoch: int = 5000):
     perceptron = SimplePerceptron(column_count, identity)
     np.random.seed()
     random.seed()
