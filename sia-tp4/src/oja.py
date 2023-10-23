@@ -18,7 +18,7 @@ class SimplePerceptron:
     def __init__(self, num_inputs: int, activation_function: Activation_Function):
         self.weights = np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND,
                                          size=num_inputs)
-        print(self.weights)
+        # print(self.weights)
         self.activation_function = activation_function
 
     def forward(self, inputs):

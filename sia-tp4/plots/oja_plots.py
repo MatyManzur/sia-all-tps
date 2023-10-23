@@ -4,16 +4,17 @@ from sys import argv
 from typing import List
 
 import numpy as np
-from sklearn.decomposition import PCA
-from src.standardization import z_score
 import pandas as pd
 import plotly.express as px
+from sklearn.decomposition import PCA
+
 from src.oja import oja
+from src.standardization import z_score
 
 CSV_FILE = '../data/europe.csv'
 
 
-def plot_error(weights_in_epoch, pca_components):
+def plot_error(weights_in_epoch, pca_components, epochs, learning_rate):
     error = []
     for w in weights_in_epoch:
         direction_independent_error = min((np.linalg.norm(w[0] - pca_components) ** 2) / len(columns),
@@ -22,7 +23,8 @@ def plot_error(weights_in_epoch, pca_components):
     df = pd.DataFrame(error, columns=['ECM', 'Epoch'])
     print(df)
     fig = px.line(df, x='Epoch', y='ECM',
-                  title='Error between the output of Oja and the Value calculated through the eigenvector',
+                  title=f"Error between the output of Oja and the Value calculated through the eigenvector<br>"
+                        f"<sup>Epochs: {epochs} - Learning Rate: {learning_rate}</sup>",
                   markers='lines+markers')
     fig.update_layout(yaxis_type="log")  # Set y-axis to logarithmic scale
     fig.show()
@@ -42,7 +44,8 @@ def plot_oja(final_weights, data, countries, learning_rate, epochs):
         pca_oja.append([countries[i], np.dot(final_weights, data_row)])
     df = pd.DataFrame(pca_oja, columns=['Country', 'PC1'])
     fig = px.bar(data_frame=df, x='Country', y='PC1', text_auto='.3f',
-                 title=f'PC1 per country determined by Oja in {epochs} epochs and initial learning rate {learning_rate}')
+                 title=f"PC1 per country determined by Oja<br>"
+                       f"<sup>Epochs: {epochs} - Learning Rate: {learning_rate}</sup>")
     fig.update_layout(showlegend=False)
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.show()
@@ -53,18 +56,24 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
     np.random.seed()
     output_data = []
     for eta in etas:
+        print(f"ETA: {eta}")
         error = []
         for i in range(0, repetitions):
+            print(f"\rREPETITION: {i}", end='')
             weights = oja(data, len(columns), eta, max_epoch)[-1][0]
-            error.append((min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns))
-        output_data.append([str(eta), np.mean(error), np.std(error)])
-    df = pd.DataFrame(output_data, columns=['Eta', 'ECM', 'STD'])
+            error.append(
+                (min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns)
+            )
+        print()
+        mean = np.mean(error)
+        output_data.append([str(eta), mean, mean-np.min(error), np.max(error)-mean])
+    df = pd.DataFrame(output_data, columns=['Eta', 'ECM', 'MEAN-MIN', 'MAX-MEAN'])
     print(df)
 
     title = (f"Error between the output of Oja and the Value from SciKit with different learning rates "
              f"<br><sup>Repetitions: {repetitions}, Max Epochs: {max_epoch}</sup>")
 
-    fig = px.bar(data_frame=df, y='ECM', x='Eta', error_y='STD', title=title)
+    fig = px.bar(data_frame=df, y='ECM', x='Eta', error_y='MAX-MEAN', error_y_minus='MEAN-MIN', title=title)
     fig.update_layout(showlegend=False,
                       yaxis_type="log")
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
@@ -103,6 +112,6 @@ if __name__ == '__main__':
         weights_in_epoch = oja(data_array, len(columns), config['learning_rate'], config['max_epochs'])
         plot_pca(pca_features, countries)
         plot_oja(weights_in_epoch[-1][0], data_array, countries, config['learning_rate'], config['max_epochs'])
-        plot_error(weights_in_epoch, pca.components_)
+        plot_error(weights_in_epoch, pca.components_, config['max_epochs'], config['learning_rate'])
         plot_ecm_different_eta(data_array, columns, pca.components_, config['repetitions'],
                                config['test_rates'], config['max_epochs'])
