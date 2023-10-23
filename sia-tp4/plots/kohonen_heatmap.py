@@ -38,7 +38,7 @@ def get_unified_mean_distance(weight_matrix: NDArray[float]):
 
 
 def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: float,
-                           radius_change: Callable[[float, int], float],
+                           radius_change: Callable[[float, int], float], seed: int|None,
                            learning_rate: Callable[[int], float], initialize_random_weights: bool):
     data = pd.read_csv(CSV_FILE)
     columns = ['Area', 'GDP', 'Inflation', 'Life.expect', 'Military', 'Pop.growth', 'Unemployment']
@@ -57,7 +57,7 @@ def heatmap_winner_neurons(grid_size: int, max_iterations: int, initial_radius: 
                       initial_radius=initial_radius,
                       radius_change=radius_change,
                       standardized_data=list(data_array),
-                      seed=SEED,
+                      seed=seed,
                       random_initial_weights=initialize_random_weights)
 
     kohonen.train()
@@ -160,6 +160,8 @@ def get_learning_rate(initial, function_name):
         return lambda epoch: initial * math.exp(-epoch / MAX_ITERATIONS)
     elif function_name == 'inverse':
         return lambda epoch: initial / (1.0 + (epoch / MAX_ITERATIONS))
+    elif function_name == 'linear2':
+        return lambda epoch: 0.1 * (1.0 - (epoch / MAX_ITERATIONS))
     else:
         return None
 
@@ -167,6 +169,8 @@ def get_learning_rate(initial, function_name):
 def get_radius_change(function_name):
     if function_name == 'linear':
         return lambda prev, epoch: prev - 1
+    elif function_name == 'linear2':
+        return lambda initial, epoch: max(initial - 0.05 * epoch, 1)
     elif function_name == 'exponential':
         return lambda prev, epoch: prev * math.exp(-epoch / MAX_ITERATIONS)
     elif function_name == 'inverse':
@@ -183,7 +187,8 @@ if __name__ == '__main__':
             initial_radius=INITIAL_RADIUS,
             radius_change=RADIUS_CHANGE,
             learning_rate=LEARNING_RATE,
-            initialize_random_weights=INITIALIZE_RANDOM_WEIGHTS
+            initialize_random_weights=INITIALIZE_RANDOM_WEIGHTS,
+            seed=SEED
         )
     else:
         config = json.load(open(argv[1]))
@@ -195,5 +200,6 @@ if __name__ == '__main__':
             initial_radius=config['initial_radius'],
             radius_change=radius_change,
             learning_rate=learning_rate,
-            initialize_random_weights=config['initialize_random_weights']
+            initialize_random_weights=config['initialize_random_weights'],
+            seed=config['seed']
         )

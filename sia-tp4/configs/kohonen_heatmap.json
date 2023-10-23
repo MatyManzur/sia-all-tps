@@ -1,0 +1,10 @@
+{
+  "initial_learning_rate": 0.001,
+  "learning_function": "linear2",
+  "radius_change": "linear2",
+  "initial_radius": 3,
+  "grid_size": 4,
+  "max_iterations": 10000,
+  "initialize_random_weights": false,
+  "seed": null
+}
