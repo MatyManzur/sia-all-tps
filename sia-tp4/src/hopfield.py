@@ -26,4 +26,4 @@ def most_similar_pattern(hopfield: NDArray, consult: NDArray, max_iter: int):
     return current, iteration, np.array_equal(current, consult), iterations
 
 def get_energy(hopfield: NDArray, consult: NDArray):
-    return -0.5 * consult.dot(hopfield.dot(consult))
+    return -0.5 * consult.dot(hopfield.dot(consult.T))
