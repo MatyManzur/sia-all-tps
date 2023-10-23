@@ -1,22 +1,35 @@
 # SIA - TP4: Aprendizaje No Supervisado
 
-Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Franco David Rupnik, Federico Poyen Shih.
+Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Amanda Nilsson, Franco David Rupnik, Federico Poyen Shih.
 ---
-# TODO:
 
-- [x] Implementar la red de Kohonen.
-  - [x] Asociar paı́ses que posean las mismas características geopolitical, económicas y sociales.
-  - [ ] Realizar al menos un gráfico que muestre los resultados.
-  - [ ] Realizar un gráfico que muestre las distancias promedio entre neuronas vecinas.
-  - [ ] Analizar la cantidad de elementos que fueron asociados a cada neurona.
+Se implementaron los siguientes algoritmos de aprendizaje no supervisado:
+ - Kohonen
+   - Vecindad y learning rate variable
+ - Oja
+ - Hopfield
 
-- [ ] Modelo de Oja
-  - [ ] Implementar una red neuronal utilizando la regla de Oja para resolver los siguientes problemas:
-  - [ ] Calcular la primer componente principal para este conjunto de datos.
-  - [ ] Interpretar el resultado de la primer componente.
-  - [ ] Comparar el resultado del ejercicio de Oja con el resultado de calcular la primer componente principal con una librerı́a.
+## Ejecución
 
-- [ ] Modelo de Hopfield
-  - [ ] Construir patrones de letras del abecedario utilizando 1 y −1 y matrices de 5 × 5.
-  - [ ] Almacenar 4 patrones de letras. Implementar el modelo de Hopfield para asociar matrices ruidosas de 5 × 5 con los patrones de las letras almacenadas. Los patrones de consulta deben ser alteraciones aleatorias de los patrones originales. Mostrar los resultados que se obtienen en cada paso hasta llegar al resultado final.
-  - [ ] Ingresar un patrón muy ruidoso e identificar un estado espúreo.
+Para ejecutar el programa, se deben instalar las dependencias usando Pipenv
+
+```bash
+pipenv install
+```
+
+Luego, en el paquete `plots` se encuentran los scripts para generar los gráficos de los resultados obtenidos. Para ejecutarlos, se debe correr el siguiente comando:
+
+```bash
+  pipenv run python3 plots/<script>.py
+```
+
+Los programas ejecutables son:
+ - [pca_pc1_bar](plots/pca_pc1_bar.py): Genera el grafico de PCA para el dataset.
+ - [kohonen_heatmap](plots/kohonen_heatmap.py): Genera el mapa de calor usando la red de Kohonen. Acepta opcionalmente como argumento el path a un archivo json para configurarlo. 
+ - [oja_plots](plots/oja_plots.py): Genera los gráficos de Oja. Acepta opcionalmente como argumento el path a un archivo json para configurarlo.
+ - [pca_biplot](plots/pca_biplot.py): Genera el biplot de PCA para el dataset.
+ - [countries_boxplot](plots/countries_boxplot.py): Genera los boxplot de las variables de los paises, antes y después de estandarizarlas.
+ - [kohonen_groups_in_biplot](plots/kohonen_groups_in_biplot): Genera un biplot coloreado con los grupos obtenidos por la red de Kohonen.
+ - [mapa](plots/mapa.py): Genera un mapa coloreado con los paises obtenidos por la red de Kohonen.
+ - [kohonen_dead_neurons](plots/kohonen_dead_neurons.py): Genera un gráfico de barras con la cantidad de neuronas muertas por cada configuración de la red de Kohonen.
+

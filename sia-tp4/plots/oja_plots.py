@@ -58,15 +58,21 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
     np.random.seed()
     start = time.time()
     output_data = []
+    overflows = [0 for _ in etas]
     for eta in etas:
         print(f"ETA: {eta}")
         error = []
         for i in range(0, repetitions):
             print(f"\rREPETITION: {i}", end='')
-            weights = oja(data, len(columns), eta, max_epoch)[-1][0]
-            error.append(
-                (min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns)
-            )
+            with np.errstate(all='raise'):
+                try:
+                    weights = oja(data, len(columns), eta, max_epoch)[-1][0]
+                    error.append((min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2)
+                                 / len(columns))
+                except Exception as e:
+                    overflows[etas.index(eta)] += 1
+                    print(f"\n{e}")
+                    continue
         print()
         mean = np.mean(error)
         output_data.append([str(eta), mean, mean-np.min(error), np.max(error)-mean])
@@ -83,6 +89,9 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
     fig.update_layout(showlegend=False,
                       yaxis_type="log")
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+    for i, overflow in enumerate(overflows):
+        if overflow > 0:
+            fig.add_annotation(x=i, text=f"Overflows: {overflow}", showarrow=False)
     fig.show()
 
 
@@ -102,7 +111,7 @@ if __name__ == '__main__':
         weights_in_epoch = oja(data_array, len(columns))
         plot_pca(pca_features, countries)
         plot_oja(weights_in_epoch[-1][0], data_array, countries, 0.17, 100)
-        plot_error(weights_in_epoch, pca.components_)
+        plot_error(weights_in_epoch, pca.components_, 100, 0.17)
         plot_ecm_different_eta(data_array, columns, pca.components_, 5,
                                [0.17, 0.125, 0.1, 0.087, 0.05, 0.01, 0.005, 0.001], 150)
     else:
