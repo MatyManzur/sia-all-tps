@@ -4,10 +4,11 @@ from src.standardization import z_score
 import pandas as pd
 import random
 import plotly.express as px
-from functions import *
+from numpy._typing import NDArray
+from .functions import Activation_Function, identity
 from typing import List
 
-CSV_FILE = 'data/europe.csv'
+CSV_FILE = '../data/europe.csv'
 LOWER_BOUND = 0
 UPPER_BOUND = 1
 
@@ -17,14 +18,14 @@ class SimplePerceptron:
     def __init__(self, num_inputs: int, activation_function: Activation_Function):
         self.weights = np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND,
                                          size=num_inputs)
-        print(self.weights)
+        # print(self.weights)
         self.activation_function = activation_function
 
     def forward(self, inputs):
         return self.activation_function(np.dot(self.weights, inputs))
 
 
-def oja(data_list: List[NDArray], column_count: int,initial_learning_rate: float = 0.17, max_epoch: int = 100):
+def oja(data_list: List[NDArray], column_count: int,initial_learning_rate: float = 0.17, max_epoch: int = 5000):
     perceptron = SimplePerceptron(column_count, identity)
     np.random.seed()
     random.seed()
