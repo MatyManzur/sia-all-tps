@@ -1,5 +1,7 @@
 import json
 import random
+import time
+from datetime import timedelta
 from sys import argv
 from typing import List
 
@@ -54,6 +56,7 @@ def plot_oja(final_weights, data, countries, learning_rate, epochs):
 def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[float], max_epoch):
     random.seed()
     np.random.seed()
+    start = time.time()
     output_data = []
     for eta in etas:
         print(f"ETA: {eta}")
@@ -67,6 +70,9 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
         print()
         mean = np.mean(error)
         output_data.append([str(eta), mean, mean-np.min(error), np.max(error)-mean])
+
+    print(f"Time: {str(timedelta(seconds=time.time() - start))}")
+
     df = pd.DataFrame(output_data, columns=['Eta', 'ECM', 'MEAN-MIN', 'MAX-MEAN'])
     print(df)
 
