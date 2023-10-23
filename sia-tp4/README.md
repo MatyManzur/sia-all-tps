@@ -6,15 +6,15 @@ Autores: Mauro Leandro Báez, Juan Ramiro Castro, Matías Manzur, Franco David R
 
 - [x] Implementar la red de Kohonen.
   - [x] Asociar paı́ses que posean las mismas características geopolitical, económicas y sociales.
-  - [ ] Realizar al menos un gráfico que muestre los resultados.
-  - [ ] Realizar un gráfico que muestre las distancias promedio entre neuronas vecinas.
+  - [x] Realizar al menos un gráfico que muestre los resultados.
+  - [x] Realizar un gráfico que muestre las distancias promedio entre neuronas vecinas.
   - [ ] Analizar la cantidad de elementos que fueron asociados a cada neurona.
 
-- [ ] Modelo de Oja
-  - [ ] Implementar una red neuronal utilizando la regla de Oja para resolver los siguientes problemas:
-  - [ ] Calcular la primer componente principal para este conjunto de datos.
-  - [ ] Interpretar el resultado de la primer componente.
-  - [ ] Comparar el resultado del ejercicio de Oja con el resultado de calcular la primer componente principal con una librerı́a.
+- [x] Modelo de Oja
+  - [x] Implementar una red neuronal utilizando la regla de Oja para resolver los siguientes problemas:
+  - [x] Calcular la primer componente principal para este conjunto de datos.
+  - [x] Interpretar el resultado de la primer componente.
+  - [x] Comparar el resultado del ejercicio de Oja con el resultado de calcular la primer componente principal con una librerı́a.
 
 - [ ] Modelo de Hopfield
   - [ ] Construir patrones de letras del abecedario utilizando 1 y −1 y matrices de 5 × 5.

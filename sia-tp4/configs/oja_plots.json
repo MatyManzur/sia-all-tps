@@ -1,7 +1,7 @@
 {
   "learning_rate": 0.03,
   "max_epochs": 5000,
-  "test_rates": [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.087, 0.1, 0.125, 0.17],
+  "test_rates": [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.087, 0.1, 0.125, 0.17, 0.2],
   "repetitions": 40,
   "random_seed": null,
   "numpy_random_seed": null

@@ -1,6 +1,7 @@
 import json
 import random
 import time
+import warnings
 from datetime import timedelta
 from sys import argv
 from typing import List
@@ -58,15 +59,22 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
     np.random.seed()
     start = time.time()
     output_data = []
+    overflows = [0 for x in etas]
     for eta in etas:
         print(f"ETA: {eta}")
         error = []
         for i in range(0, repetitions):
             print(f"\rREPETITION: {i}", end='')
-            weights = oja(data, len(columns), eta, max_epoch)[-1][0]
-            error.append(
-                (min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns)
-            )
+            with np.errstate(all='raise'):
+                try:
+                    weights = oja(data, len(columns), eta, max_epoch)[-1][0]
+                    error.append(
+                        (min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns)
+                    )
+                except Exception as e:
+                    overflows[etas.index(eta)] += 1
+                    print(f"\n{e}")
+                    continue
         print()
         mean = np.mean(error)
         output_data.append([str(eta), mean, mean-np.min(error), np.max(error)-mean])
@@ -83,6 +91,9 @@ def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[fl
     fig.update_layout(showlegend=False,
                       yaxis_type="log")
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+    for i, overflow in enumerate(overflows):
+        if overflow > 0:
+            fig.add_annotation(x=i, text=f"Overflows: {overflow}", showarrow=False)
     fig.show()
 
 
