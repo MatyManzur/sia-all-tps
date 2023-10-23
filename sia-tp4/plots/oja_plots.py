@@ -5,18 +5,19 @@ import pandas as pd
 import plotly.express as px
 from src.oja import oja
 
-CSV_FILE = 'data/europe.csv'
+CSV_FILE = '../data/europe.csv'
 
 
-def plot_error(weights_in_epoch,pca_components):
+def plot_error(weights_in_epoch, pca_components):
     error = []
     for w in weights_in_epoch:
         error.append([(np.linalg.norm(w[0] - pca_components) ** 2) / len(columns), w[1]])
     df = pd.DataFrame(error, columns=['ECM', 'Epoch'])
     print(df)
     fig = px.line(df, x='Epoch', y='ECM', title='Error between the output of Oja and the Value calculated through the '
-                                           'eigenvector')
-    fig.update_yaxes(range=[0, 2]).show()
+                                                'eigenvector', markers='lines+markers')
+    fig.update_layout(yaxis_type="log")  # Set y-axis to logarithmic scale
+    fig.show()
 
 
 def plot_pca(pca_from_countries, data_names):

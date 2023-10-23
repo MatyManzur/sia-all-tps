@@ -4,10 +4,11 @@ from src.standardization import z_score
 import pandas as pd
 import random
 import plotly.express as px
-from functions import *
+from numpy._typing import NDArray
+from .functions import Activation_Function, identity
 from typing import List
 
-CSV_FILE = 'data/europe.csv'
+CSV_FILE = '../data/europe.csv'
 LOWER_BOUND = 0
 UPPER_BOUND = 1
 
