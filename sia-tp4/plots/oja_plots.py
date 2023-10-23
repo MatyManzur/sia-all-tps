@@ -48,21 +48,25 @@ def plot_oja(final_weights, data, countries, learning_rate, epochs):
     fig.show()
 
 
-def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[float]):
+def plot_ecm_different_eta(data, columns, components, repetitions, etas: List[float], max_epoch):
     random.seed()
     np.random.seed()
     output_data = []
     for eta in etas:
         error = []
         for i in range(0, repetitions):
-            weights = oja(data, len(columns), eta, 150)[-1][0]
+            weights = oja(data, len(columns), eta, max_epoch)[-1][0]
             error.append((min(np.linalg.norm(weights - components), np.linalg.norm(weights + components)) ** 2) / len(columns))
         output_data.append([str(eta), np.mean(error), np.std(error)])
     df = pd.DataFrame(output_data, columns=['Eta', 'ECM', 'STD'])
     print(df)
-    fig = px.bar(data_frame=df, y='ECM', x='Eta', error_y='STD', title='Error between the output of Oja and the Value '
-                                                                       'from SciKit with different learning rates')
-    fig.update_layout(showlegend=False, yaxis_type="log")
+
+    title = (f"Error between the output of Oja and the Value from SciKit with different learning rates "
+             f"<br><sup>Repetitions: {repetitions}, Max Epochs: {max_epoch}</sup>")
+
+    fig = px.bar(data_frame=df, y='ECM', x='Eta', error_y='STD', title=title)
+    fig.update_layout(showlegend=False,
+                      yaxis_type="log")
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.show()
 
@@ -85,7 +89,7 @@ if __name__ == '__main__':
         plot_oja(weights_in_epoch[-1][0], data_array, countries, 0.17, 100)
         plot_error(weights_in_epoch, pca.components_)
         plot_ecm_different_eta(data_array, columns, pca.components_, 5,
-                               [0.17, 0.125, 0.1, 0.087, 0.05, 0.01, 0.005, 0.001])
+                               [0.17, 0.125, 0.1, 0.087, 0.05, 0.01, 0.005, 0.001], 150)
     else:
         config = json.load(open(argv[1]))
         if config['random_seed']:
@@ -100,4 +104,5 @@ if __name__ == '__main__':
         plot_pca(pca_features, countries)
         plot_oja(weights_in_epoch[-1][0], data_array, countries, config['learning_rate'], config['max_epochs'])
         plot_error(weights_in_epoch, pca.components_)
-        plot_ecm_different_eta(data_array, columns, pca.components_, config['repetitions'], config['test_rates'])
+        plot_ecm_different_eta(data_array, columns, pca.components_, config['repetitions'],
+                               config['test_rates'], config['max_epochs'])
