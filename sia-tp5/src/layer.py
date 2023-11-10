@@ -13,9 +13,13 @@ class Layer:  # N neuronas, con M inputs
         self.weights = np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND,
                                          size=(num_neurons, num_inputs + 1))  # +1 for bias
         self.activation_function = activation_function
-        self.output = None  # Aca se guarda el resultado despues de salir de la funcion de activacion
-        self.excitement = None  # Aca se guarda el valor de la suma ponderada del ultimo input
+        # Aca se guarda el resultado despues de salir de la funcion de activacion
+        self.output = None
+        # Aca se guarda el valor de la suma ponderada del ultimo input
+        self.excitement = None
+        # Aca se guardan los cambios de los pesos que se aplicarán al llamar a consolidate_weights()
         self.pending_weight = np.zeros_like(self.weights)
+        # Se guarda el cambio de pesos anterior para el calculo con momentum
         self.last_weight_change = np.zeros_like(self.weights)
         if optimization_config['type'] == 'momentum':
             self.optimization = 'momentum'
@@ -36,7 +40,6 @@ class Layer:  # N neuronas, con M inputs
         return self.excitement
 
     def add_pending_weight(self, weight_change: NDArray):
-        #  print(f"{self.weights} : {self.pending_weight} + {weight_change}")
         if self.optimization == 'momentum':
             self.pending_weight = self.pending_weight + weight_change + self.BETA * self.last_weight_change
         self.last_weight_change = weight_change
@@ -52,8 +55,8 @@ class Layer:  # N neuronas, con M inputs
         self.weights = weights
 
 
-def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Activation_Function, optimization_config) -> \
-        List[Layer]:
+def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Activation_Function,
+                    optimization_config) -> List[Layer]:
     prev_value = initial_inputs
     neural_network = []
     for neuron_count in layer_neurons:
@@ -88,14 +91,11 @@ def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Func
         # δ^m = θ'(h) * ((W^m+1)' * δ^m+1)
         delta = np.multiply(derivative_func(layer_neurons[i].excitement),
                             np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta))
-
-        # print(f"Layer {i}: \n{derivative_func(layer_neurons[i].excitement)} * \n{(np.transpose(previous_layer.weights))[1:]} * \n{previous_delta} = \n{delta}")
         curr_input = layer_neurons[i - 1].output if i != 0 else input
         # Nx1.1xM = NxM
         # ΔW^m = η * δ^m * (V^m-1)'
         curr_input = np.append([1], curr_input)
         weight_change = learning_constant * (delta * np.tile(curr_input, (len(delta), 1)))
-        # print(f"Layer {i}: \n{delta} * \n{np.tile(curr_input, (len(delta), 1))} = \n{weight_change}")
         layer_neurons[i].add_pending_weight(weight_change)
         previous_delta = delta
         previous_layer = layer_neurons[i]

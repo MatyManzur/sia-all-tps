@@ -3,6 +3,7 @@ import numpy as np
 from numpy._typing import NDArray
 
 Activation_Function = Callable[[NDArray|float], NDArray]
+Normalization_Function = Callable[[NDArray|float], NDArray | float]
 
 BETA = 1
 
