@@ -5,7 +5,7 @@ from numpy._typing import NDArray
 Activation_Function = Callable[[NDArray|float], NDArray]
 Normalization_Function = Callable[[NDArray|float], NDArray | float]
 
-BETA = 1
+BETA = 0.5
 
 
 ##LAS FUNCIONES DEBERIAN RECIBIR UN VECTOR COLUMNA CON LA SUMA DE LOS Wi*Xi
@@ -40,11 +40,11 @@ def inclusive_sign(x) -> int:
 
 
 def hiperbolic(x: NDArray | float) -> NDArray | float:
-    return BETA * np.tanh(x)
+    return np.tanh(BETA*x)
 
 
 def hiperbolic_derivative(x: NDArray | float) -> NDArray | float:
-    return BETA * (1 - (BETA * np.tanh(x)) ** 2)
+    return BETA * (1 - (hiperbolic(x)) ** 2)
 
 
 def hiperbolic_normalization(x: NDArray | float) -> NDArray | float:

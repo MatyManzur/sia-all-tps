@@ -3,12 +3,10 @@ from src.layer import *
 from src.functions import *
 import random
 import time
-
+from src.optimization import Optimizer
 # TODO: pasar a un config
 ALGORITHM = 'batch'
 MINI_BATCH_SIZE = 5
-LEARNING_CONSTANT = 10 ** -2
-BETA = 0.3
 LIMIT = 100000
 LAYERS = [64]
 # Para cambiar el learning rate
@@ -20,10 +18,10 @@ class Autoencoder:
     def __init__(self, encoder_layers: List[int], latent_space_dim: int, decoder_layers: List[int],
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
-                 normalization_function: Normalization_Function, optimization: Dict):
+                 normalization_function: Normalization_Function, optimization: Optimizer):
         self.latent_layer_index = len(encoder_layers)
         layers_dimensions = encoder_layers + [latent_space_dim] + decoder_layers + [len(data[0][1])]
-        self.network = generate_layers(layers_dimensions, len(data[0][0]), activation_function, optimization)
+        self.network = generate_layers(layers_dimensions, len(data[0][0]), activation_function)
         self.min_err = float('inf')
         self.w_min = None
         self.i = 0
@@ -31,9 +29,10 @@ class Autoencoder:
         unnormalized_results = np.array(list(map(lambda x: x[1], data)))
         normalized_results = normalization_function(unnormalized_results)
         self.normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
-        self.learning_rate = LEARNING_CONSTANT
         self.act_func = activation_function
         self.deriv_func = derivation_function
+
+        self.optimization = optimization
 
         if ALGORITHM == 'online':
             self.sample_size = 1
@@ -47,7 +46,7 @@ class Autoencoder:
     def __train_perceptron(self, neural_net: List[Layer], training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
         forward_propagation(neural_net, inputs)
-        backpropagation(neural_net, self.deriv_func, expected, inputs, self.learning_rate)
+        backpropagation(neural_net, self.deriv_func, expected, inputs, self.i, self.optimization)
         return neural_net
 
     def __train_step(self):
@@ -71,7 +70,7 @@ class Autoencoder:
         
         if self.i % LEARNING_RATE_CHANGE_ITER == 0 and self.i != 0:
             learning_rate_change_func = self.__change_learning_rate(self.last_errors, 0, 0) 
-            self.learning_rate = learning_rate_change_func(self.learning_rate)
+            self.optimization.set_learning_rate(learning_rate_change_func(self.optimization.learning_rate))
 
         if err < self.min_err:
             self.min_err = err

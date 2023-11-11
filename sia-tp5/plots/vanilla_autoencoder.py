@@ -4,8 +4,10 @@ from src.functions import *
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from latent_space import plot_latent_space
+from src.optimization import MomentumOptimizer,AdamOptimizer
 
-
+LEARNING_CONSTANT = 10 ** -2 # -> *
+BETA = 0.3 # -> Todo estos parametros van en la creacion del optimizador
 
 def add_heatmap_trace(fig, original, created):
     input_letter = np.reshape(np.array(original), [7, 5])
@@ -15,20 +17,23 @@ def add_heatmap_trace(fig, original, created):
 
 if __name__ == '__main__':
     data = [(font, font) for font in FONTS_BIT_TUPLES]
+    _encoder_layers = [25,25,25,25]
+    _latent_space_dim = 2
+    _decoder_layers = [25,25,25,25]
+
+    amount_of_layers = len(_encoder_layers) + 1 + len(_decoder_layers) +1
     autoencoder = Autoencoder(
-        encoder_layers=[15],
-        latent_space_dim=2,
-        decoder_layers=[15],
+        encoder_layers=_encoder_layers,
+        latent_space_dim=_latent_space_dim,
+        decoder_layers=_decoder_layers,
         data=data,
-        activation_function=sigmoid,
-        derivation_function=sigmoid_derivative,
-        normalization_function=sigmoid_normalization,
-        optimization={
-            "type": "momentum",
-            "beta": 0.3
-        }
+        activation_function=hiperbolic,
+        derivation_function=hiperbolic_derivative,
+        normalization_function=hiperbolic_normalization,
+        #optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
+        optimization=AdamOptimizer(amount_of_layers)
     )
-    autoencoder.train(10000, 0.3)
+    autoencoder.train(10000, 0.0001)
     fig = make_subplots(rows=8, cols=8)
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(FONTS_BIT_TUPLES):
