@@ -68,9 +68,9 @@ class Autoencoder:
             self.last_errors.append(err)
         else:
             self.last_errors[self.i % LEARNING_RATE_CHANGE_ITER] = err
-
+        
         if self.i % LEARNING_RATE_CHANGE_ITER == 0 and self.i != 0:
-            learning_rate_change_func = self.__change_learning_rate(self.last_errors, 0.009, 0.000001)
+            learning_rate_change_func = self.__change_learning_rate(self.last_errors, 0, 0) 
             self.learning_rate = learning_rate_change_func(self.learning_rate)
 
         if err < self.min_err:
@@ -111,7 +111,7 @@ class Autoencoder:
                 break
 
         if should_change_rate:
-            return lambda x: x  # + a    # Podemos parametrizar esto
+            return lambda x: x + a    # Podemos parametrizar esto
 
         should_change_rate = True
         for j in range(1, LEARNING_RATE_CHANGE_ITER):
@@ -120,7 +120,7 @@ class Autoencoder:
                 break
 
         if should_change_rate:
-            return lambda x: x  # - x*b    # Podemos parametrizar esto
+            return lambda x: x - x*b    # Podemos parametrizar esto
 
         return lambda x: x
 

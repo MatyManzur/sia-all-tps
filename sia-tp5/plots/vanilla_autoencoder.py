@@ -3,6 +3,15 @@ from src.autoencoder import Autoencoder
 from src.functions import *
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from latent_space import plot_latent_space
+
+
+
+def add_heatmap_trace(fig, original, created):
+    input_letter = np.reshape(np.array(original), [7, 5])
+    output_letter = np.reshape(created, [7, 5])
+    fig.add_trace(go.Heatmap(z=np.flipud(input_letter), colorscale=colorscale), row=1 + i // 4, col=1 + 2*(i % 4))
+    fig.add_trace(go.Heatmap(z=np.flipud(output_letter), colorscale=colorscale), row=1 + i // 4, col=2 + 2*(i % 4))
 
 if __name__ == '__main__':
     data = [(font, font) for font in FONTS_BIT_TUPLES]
@@ -24,11 +33,10 @@ if __name__ == '__main__':
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(FONTS_BIT_TUPLES):
         result = autoencoder.run_input(_font)
-        input_letter = np.reshape(np.array(_font), [7, 5])
-        output_letter = np.reshape(result[0], [7, 5])
-        fig.add_trace(go.Heatmap(z=np.flipud(input_letter), colorscale=colorscale), row=1 + i // 4, col=1 + 2*(i % 4))
-        fig.add_trace(go.Heatmap(z=np.flipud(output_letter), colorscale=colorscale), row=1 + i // 4, col=2 + 2*(i % 4))
+        add_heatmap_trace(fig,_font,result[0])
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
     fig.update_coloraxes(showscale=False)
     fig.show()
+
+    plot_latent_space(autoencoder, FONTS_BIT_TUPLES)
