@@ -62,7 +62,8 @@ def sigmoid(x: NDArray) -> NDArray:
 def sigmoid_derivative(x: NDArray | float) -> NDArray | float:
     return (2 * BETA * np.exp(-2 * BETA * x))/(1 + np.exp(-2 * BETA * x)) **2
 
-
+def round(x: NDArray | float) -> NDArray | float:
+    return np.round(x, 0)
 
 def sigmoid_normalization(x: NDArray | float) -> NDArray | float:
     if isinstance(x, float) or isinstance(x, int):

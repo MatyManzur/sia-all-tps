@@ -38,7 +38,7 @@ if __name__ == '__main__':
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(FONTS_BIT_TUPLES):
         result = autoencoder.run_input(_font)
-        add_heatmap_trace(fig,_font,result[0])
+        add_heatmap_trace(fig,_font,round(result[0]))
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
     fig.update_coloraxes(showscale=False)
