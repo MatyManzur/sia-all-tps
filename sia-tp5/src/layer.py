@@ -23,7 +23,6 @@ class Layer:  # N neuronas, con M inputs
         # Se guarda el cambio de pesos anterior para el calculo con momentum
         self.last_weight_change = np.zeros_like(self.weights)
 
-
     #
     def forward(self, inputs):  # inputs[0] must be 1 for bias
         self.output = self.activation_function(self.get_excitement(inputs))
@@ -69,12 +68,17 @@ def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> N
 
 
 def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
-                    expected_output: NDArray, input: NDArray, epoch:int , optimizer:Optimizer) -> List[Layer]:
+                    expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> List[Layer]:
+    error = np.array([expected_output]).T - layer_neurons[-1].output
+    return backpropagation_from_error(layer_neurons, derivative_func, error, input, epoch, optimizer)
+
+
+def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Activation_Function,
+                               error: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> List[Layer]:
     # δ^f = θ'(h) * (ζ- V^f) (Nx1 * Nx1 = Nx1)
-    delta = np.multiply(np.array([expected_output]).T - layer_neurons[-1].output,
+    delta = np.multiply(error,
                         derivative_func(layer_neurons[-1].excitement))
-    # ΔW^m = δ^m * (V^m-1) (Nx1*1xM = NxM) -> el η * ΔW^m se aplica en el optimizador
-    # print(f"Last Layer: \n{delta} * \n{np.array([np.append(1, layer_neurons[-2].output)])}")
+    # ΔW^m = δ^m * (V^m-1) (Nx1*1xM = NxM) -> el -η * ΔW^m se aplica en el optimizador
     weight_change = np.matmul(delta, np.array([np.append(1, layer_neurons[-2].output)]))
 
     # guarda el ΔW para aplicarlo más adelante

@@ -99,6 +99,9 @@ class Autoencoder:
         latent_output = self.network[self.latent_layer_index].output
         return output, latent_output
 
+    def output_from_latent_space(self, latent_space_values: Tuple) -> NDArray:
+        return forward_propagation(self.network[self.latent_layer_index + 1:], np.array(latent_space_values))
+
     def __calculate_error_from_items(self) -> float:
         error_sum = 0
         for inputs, expected in self.normalized_data:

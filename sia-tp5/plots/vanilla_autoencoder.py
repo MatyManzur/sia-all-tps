@@ -9,7 +9,7 @@ from src.optimization import MomentumOptimizer,AdamOptimizer
 LEARNING_CONSTANT = 10 ** -2 # -> *
 BETA = 0.3 # -> Todo estos parametros van en la creacion del optimizador
 
-def add_heatmap_trace(fig, original, created):
+def add_heatmap_trace(fig, original, created, colorscale):
     input_letter = np.reshape(np.array(original), [7, 5])
     output_letter = np.reshape(created, [7, 5])
     fig.add_trace(go.Heatmap(z=np.flipud(input_letter), colorscale=colorscale), row=1 + i // 4, col=1 + 2*(i % 4))
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(FONTS_BIT_TUPLES):
         result = autoencoder.run_input(_font)
-        add_heatmap_trace(fig,_font,round(result[0]))
+        add_heatmap_trace(fig,_font,round(result[0]), colorscale)
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
     fig.update_coloraxes(showscale=False)
