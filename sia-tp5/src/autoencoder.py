@@ -4,6 +4,8 @@ from src.functions import *
 import random
 import time
 from src.optimization import Optimizer
+from datetime import timedelta
+
 # TODO: pasar a un config
 ALGORITHM = 'batch'
 MINI_BATCH_SIZE = 5
@@ -77,16 +79,20 @@ class Autoencoder:
             self.w_min = list(map(lambda layer: np.copy(layer.weights), self.network))
         self.i += 1
 
-    def train(self, step_count: int, min_err_threshold: float):
+    def train(self, step_count: int, min_err_threshold: float, _print: bool = False):
         start_time = time.time()
         while self.i < step_count and self.min_err > min_err_threshold:
+            if _print and self.i > 0:
+                estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
+                print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
             self.__train_step()
         for i in range(len(self.network)):
             self.network[i].set_weights(self.w_min[i])
+        print()
         end_time = time.time()
         print(f"Number of steps: {self.i}")
         print(f"Min error: {self.min_err}")
-        print(f"Time: {end_time - start_time}")
+        print(f"Time: {timedelta(seconds=end_time - start_time)}")
 
     def run_input(self, _input: Tuple) -> Tuple[NDArray, NDArray]:
         output = forward_propagation(self.network, np.array(_input))
