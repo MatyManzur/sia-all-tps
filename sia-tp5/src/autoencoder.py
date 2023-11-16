@@ -1,3 +1,4 @@
+import json
 from typing import List, Tuple, Dict
 from src.layer import *
 from src.functions import *
@@ -21,6 +22,7 @@ class Autoencoder:
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
                  normalization_function: Normalization_Function, optimization: Optimizer):
+
         self.latent_layer_index = len(encoder_layers)
         layers_dimensions = encoder_layers + [latent_space_dim] + decoder_layers + [len(data[0][1])]
         self.network = generate_layers(layers_dimensions, len(data[0][0]), activation_function)
@@ -69,9 +71,9 @@ class Autoencoder:
             self.last_errors.append(err)
         else:
             self.last_errors[self.i % LEARNING_RATE_CHANGE_ITER] = err
-        
+
         if self.i % LEARNING_RATE_CHANGE_ITER == 0 and self.i != 0:
-            learning_rate_change_func = self.__change_learning_rate(self.last_errors, 0, 0) 
+            learning_rate_change_func = self.__change_learning_rate(self.last_errors, 0, 0)
             self.optimization.set_learning_rate(learning_rate_change_func(self.optimization.learning_rate))
 
         if err < self.min_err:
@@ -119,7 +121,7 @@ class Autoencoder:
                 break
 
         if should_change_rate:
-            return lambda x: x + a    # Podemos parametrizar esto
+            return lambda x: x + a  # Podemos parametrizar esto
 
         should_change_rate = True
         for j in range(1, LEARNING_RATE_CHANGE_ITER):
@@ -128,9 +130,31 @@ class Autoencoder:
                 break
 
         if should_change_rate:
-            return lambda x: x - x*b    # Podemos parametrizar esto
+            return lambda x: x - x * b  # Podemos parametrizar esto
 
         return lambda x: x
+
+    def save_weights(self, path: str):
+        save_json = {"encoder": {}, "decoder": {}}
+
+        for i in range(len(self.network)):
+            if i < self.latent_layer_index:
+                save_json["encoder"][f"{i}"] = self.network[i].weights.tolist()
+            else:
+                save_json["decoder"][f"{i}"] = self.network[i].weights.tolist()
+
+        with open(path, 'w') as f:
+            json.dump(save_json, f)
+
+    def load_weights(self, path: str):
+        with open(path, 'r') as f:
+            weights = json.load(f)
+
+        for i in range(len(self.network)):
+            if i < self.latent_layer_index:
+                self.network[i].set_weights(np.array(weights["encoder"][f"{i}"]))
+            else:
+                self.network[i].set_weights(np.array(weights["decoder"][f"{i}"]))
 
 
 class VAE:
