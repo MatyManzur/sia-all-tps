@@ -64,6 +64,7 @@ class VariationalAutoencoder:
         epsilon = np.random.standard_normal()
         # z = μ + ε * σ
         z = mu_vec + epsilon * sigma_vec
+        # z = mu_vec + np.exp(sigma_vec / 2) * epsilon
         decoder_output = forward_propagation(self.decoder, z)
         return decoder_output, z, epsilon, mu_vec, sigma_vec
     """
