@@ -1,6 +1,6 @@
 import numpy as np
 from src.functions import Activation_Function
-from typing import List
+from typing import List, Tuple
 from numpy._typing import NDArray
 from src.optimization import Optimizer
 
@@ -68,13 +68,13 @@ def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> N
 
 
 def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
-                    expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> List[Layer]:
+                    expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[List[Layer], NDArray]:
     error = np.array([expected_output]).T - layer_neurons[-1].output
     return backpropagation_from_error(layer_neurons, derivative_func, error, input, epoch, optimizer)
 
 
 def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Activation_Function,
-                               error: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> List[Layer]:
+                               error: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[List[Layer], NDArray]:
     # δ^f = θ'(h) * (ζ- V^f) (Nx1 * Nx1 = Nx1)
     delta = np.multiply(error,
                         derivative_func(layer_neurons[-1].excitement))
@@ -99,7 +99,7 @@ def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Acti
         layer_neurons[i].add_pending_weight(optimizer.get_weight_change(weight_change, i, epoch))
         previous_delta = delta
         previous_layer = layer_neurons[i]
-    return layer_neurons
+    return layer_neurons, previous_delta
 
 
 def calculate_error(calculated_output: NDArray, expected_out: NDArray) -> float:

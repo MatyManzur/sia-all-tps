@@ -49,18 +49,31 @@ class VariationalAutoencoder: # TODO: xd falta el backpropagation
         else:
             raise Exception('Invalid Algorithm!')
 
-    def __forward_propagation_vae(self, input: NDArray) -> NDArray:
+    def __forward_propagation_vae(self, input: NDArray) -> Tuple[NDArray, NDArray, NDArray]:
         encoder_output = forward_propagation(self.encoder, input)
+        # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2)
         epsilon = np.random.standard_normal(len(mu_vec))
+        # z = μ + ε * σ
         z = mu_vec + epsilon * sigma_vec
         decoder_output = forward_propagation(self.decoder, z)
-        return decoder_output
+        return decoder_output, z, epsilon
 
     def __train_perceptron(self, training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
-        self.__forward_propagation_vae(inputs)
-        backpropagation(neural_net, self.deriv_func, expected, inputs, self.i, self.optimization)
+        output, z, epsilon = self.__forward_propagation_vae(inputs)
+        # Decoder backpropagation
+        _, last_delta_decoder = backpropagation(self.decoder, self.deriv_func, expected, z, self.i, self.optimization)
+
+        # Encoder backpropagation from reconstruction
+        mu_error = 1 * last_delta_decoder
+        sigma_error = epsilon * last_delta_decoder
+        backpropagation_from_error(self.encoder, self.deriv_func, np.concatenate((mu_error, sigma_error)), inputs, self.i, self.optimization)
+
+
+
+
+
         return neural_net
 
     def __train_step(self):
