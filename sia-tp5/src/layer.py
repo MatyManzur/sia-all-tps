@@ -41,7 +41,7 @@ class Layer:  # N neuronas, con M inputs
         self.pending_weight = self.pending_weight + weight_change
 
     def consolidate_weights(self):
-        self.weights += self.pending_weight
+        self.weights -= self.pending_weight
         self.reset_pending_weights()
 
     def reset_pending_weights(self):
