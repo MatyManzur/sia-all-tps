@@ -64,19 +64,8 @@ class VariationalAutoencoder:
         epsilon = np.random.standard_normal()
         # z = μ + ε * σ
         z = mu_vec + epsilon * sigma_vec
-        # z = mu_vec + np.exp(sigma_vec / 2) * epsilon
         decoder_output = forward_propagation(self.decoder, z)
         return decoder_output, z, epsilon, mu_vec, sigma_vec
-    """
-    def sampling(args: tuple):
-    # we grab the variables from the tuple
-    z_mean, z_log_var = args
-    print(z_mean)
-    print(z_log_var)
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim), mean=0.,
-                              stddev=epsilon_std)
-    return z_mean + K.exp(z_log_var / 2) * epsilon  # h(z)
-    """
 
     def __train_perceptron(self, training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
@@ -86,10 +75,8 @@ class VariationalAutoencoder:
                                                 self.optimizer_decoder)
 
         # Encoder backpropagation from reconstruction
-        dz_dmu = np.ones([self._latent_space_dim,len(last_delta_decoder)])
-        dz_dsigma = epsilon * np.ones([self._latent_space_dim,len(last_delta_decoder)])
-        mu_error = np.dot(last_delta_decoder, dz_dmu)
-        sigma_error = np.dot(last_delta_decoder, dz_dsigma)
+        mu_error = last_delta_decoder
+        sigma_error = epsilon * last_delta_decoder
 
         encoder_error = np.concatenate((mu_error, sigma_error), axis=0)
 
@@ -167,11 +154,9 @@ class VariationalAutoencoder:
             sample, expected_output = np.array(inputs), np.array(expected)
             decoder_output, z, epsilon, mu_vec, sigma_vec = self.__forward_propagation_vae(np.array(sample))
             expected_output = np.reshape(expected_output, decoder_output.shape)
-            # error_sum += calculate_error(decoder_output, expected_output) / N
             rec = 0.5 * np.mean((expected_output - decoder_output) ** 2)
             kl = -0.5 * np.sum(1 + sigma_vec - mu_vec ** 2 - np.exp(sigma_vec))
             error_sum += rec + kl
-        #  kl_loss = - 0.5 * K.sum(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis=-1)
         return error_sum
 
     def __change_learning_rate(self, last_errors, a, b):

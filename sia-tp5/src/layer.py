@@ -68,13 +68,15 @@ def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> N
 
 
 def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
-                    expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[List[Layer], NDArray]:
+                    expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[
+    List[Layer], NDArray]:
     error = np.array([expected_output]).T - layer_neurons[-1].output
     return backpropagation_from_error(layer_neurons, derivative_func, error, input, epoch, optimizer)
 
 
 def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Activation_Function,
-                               error: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[List[Layer], NDArray]:
+                               error: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[
+    List[Layer], NDArray]:
     # δ^f = θ'(h) * (ζ- V^f) (Nx1 * Nx1 = Nx1)
     delta = np.multiply(error,
                         derivative_func(layer_neurons[-1].excitement))
@@ -99,8 +101,7 @@ def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Acti
         layer_neurons[i].add_pending_weight(optimizer.get_weight_change(weight_change, i, epoch))
         previous_delta = delta
         previous_layer = layer_neurons[i]
-    last_delta = np.multiply(derivative_func(input),
-                            np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta))
+    last_delta = np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta)
     return layer_neurons, last_delta
 
 

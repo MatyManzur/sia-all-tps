@@ -25,7 +25,7 @@ def add_heatmap_trace(fig, original, created, colorscale):
 
 
 if __name__ == '__main__':
-    data = [(font, font) for font in FONTS_BIT_TUPLES[0:2]]
+    data = [(font, font) for font in FONTS_BIT_TUPLES]
     _encoder_layers = [25, 10]
     _latent_space_dim = 2
     _decoder_layers = [10, 25]
@@ -41,8 +41,8 @@ if __name__ == '__main__':
         derivation_function=hiperbolic_derivative,
         normalization_function=hiperbolic_normalization,
         # optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
-        optimizer_encoder=MomentumOptimizer(amount_of_layers_encoder, LEARNING_CONSTANT, BETA),
-        optimizer_decoder=MomentumOptimizer(amount_of_layers_decoder, LEARNING_CONSTANT, BETA)
+        optimizer_encoder=AdamOptimizer(amount_of_layers_encoder),
+        optimizer_decoder=AdamOptimizer(amount_of_layers_decoder)
     )
     autoencoder.train(3000, 0.1, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
