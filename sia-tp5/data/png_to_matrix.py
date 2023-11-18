@@ -32,6 +32,13 @@ if __name__ == '__main__':
     fig = make_subplots(rows=1+N//3, cols=3)
     for i, image in enumerate(image_paths):
         resized_grayscale_matrix = resize_and_convert_to_grayscale(image)
+        print(image)
+        print("(", end="")
+        for row in resized_grayscale_matrix:
+            for col in row:
+                print(f"{col}, ", end="")
+        print(")")
+        print("-------------")
         fig.add_trace(go.Heatmap(z=np.flipud(resized_grayscale_matrix), colorscale=colorscale),
                       row=1+i//3, col=1+i%3)
     fig.show()

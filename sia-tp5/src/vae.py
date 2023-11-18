@@ -1,5 +1,8 @@
 import json
 from typing import List, Tuple, Dict
+
+import numpy as np
+
 from src.layer import *
 from src.functions import *
 import random
@@ -17,15 +20,14 @@ LEARNING_RATE_CHANGE_ITER = 10
 CONSTANT_RATE_EPS = 0.0001
 
 
-class Autoencoder:
+class VariationalAutoencoder: # TODO: xd falta el backpropagation
     def __init__(self, encoder_layers: List[int], latent_space_dim: int, decoder_layers: List[int],
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
                  normalization_function: Normalization_Function, optimization: Optimizer):
+        self.encoder = generate_layers(encoder_layers + [2*latent_space_dim], len(data[0][0]), activation_function)
+        self.decoder = generate_layers(decoder_layers + [len(data[0][1])], latent_space_dim, activation_function)
 
-        self.latent_layer_index = len(encoder_layers)
-        layers_dimensions = encoder_layers + [latent_space_dim] + decoder_layers + [len(data[0][1])]
-        self.network = generate_layers(layers_dimensions, len(data[0][0]), activation_function)
         self.min_err = float('inf')
         self.w_min = None
         self.i = 0
@@ -47,9 +49,17 @@ class Autoencoder:
         else:
             raise Exception('Invalid Algorithm!')
 
-    def __train_perceptron(self, neural_net: List[Layer], training_item: Tuple[NDArray, NDArray]):
+    def __forward_propagation_vae(self, input: NDArray) -> NDArray:
+        encoder_output = forward_propagation(self.encoder, input)
+        mu_vec, sigma_vec = np.array_split(encoder_output, 2)
+        epsilon = np.random.standard_normal(len(mu_vec))
+        z = mu_vec + epsilon * sigma_vec
+        decoder_output = forward_propagation(self.decoder, z)
+        return decoder_output
+
+    def __train_perceptron(self, training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
-        forward_propagation(neural_net, inputs)
+        self.__forward_propagation_vae(inputs)
         backpropagation(neural_net, self.deriv_func, expected, inputs, self.i, self.optimization)
         return neural_net
 
@@ -88,8 +98,10 @@ class Autoencoder:
                 estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
                 print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
             self.__train_step()
-        for i in range(len(self.network)):
-            self.network[i].set_weights(self.w_min[i])
+        for i in range(len(self.encoder)):
+            self.encoder[i].set_weights(self.w_min[i])
+        for i in range(len(self.decoder)):
+            self.decoder[i].set_weights(self.w_min[i])
         print()
         end_time = time.time()
         print(f"Number of steps: {self.i}")
