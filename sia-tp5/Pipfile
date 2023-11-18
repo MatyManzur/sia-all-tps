@@ -12,6 +12,8 @@ jupyter = "*"
 scikit-learn = "*"
 pycountry = "*"
 ipykernel = "*"
+matplotlib = "*"
+mplcursors = "*"
 
 [dev-packages]
 
