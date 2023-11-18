@@ -136,6 +136,9 @@ class VariationalAutoencoder:
     def train(self, step_count: int, min_err_threshold: float, _print: bool = False):
         start_time = time.time()
         while self.i < step_count and self.min_err > min_err_threshold:
+            if self.i % 10 == 0 and self.i != 1:
+                self.steps.append(self.i)
+                self.errors.append(self.min_err)
             if _print and self.i > 0:
                 estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
                 print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
