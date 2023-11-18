@@ -20,7 +20,7 @@ LEARNING_RATE_CHANGE_ITER = 10
 CONSTANT_RATE_EPS = 0.0001
 
 
-class VariationalAutoencoder: # TODO: xd falta el backpropagation
+class VariationalAutoencoder:
     def __init__(self, encoder_layers: List[int], latent_space_dim: int, decoder_layers: List[int],
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
@@ -31,7 +31,9 @@ class VariationalAutoencoder: # TODO: xd falta el backpropagation
         self.decoder = generate_layers(decoder_layers + [len(data[0][1])], latent_space_dim, activation_function)
 
         self.min_err = float('inf')
-        self.w_min = None
+        self.w_min_encoder = None
+        self.w_min_decoder = None
+
         self.i = 0
         self.last_errors = []
         unnormalized_results = np.array(list(map(lambda x: x[1], data)))
@@ -125,7 +127,7 @@ class VariationalAutoencoder: # TODO: xd falta el backpropagation
             self.optimizer_encoder.set_learning_rate(learning_rate_change_func(self.optimizer_encoder.learning_rate))
             self.optimizer_decoder.set_learning_rate(learning_rate_change_func(self.optimizer_decoder.learning_rate))
 
-        if err < self.min_err:
+        if True or (err < self.min_err):
             self.min_err = err
             self.w_min_encoder = list(map(lambda layer: np.copy(layer.weights), self.encoder))
             self.w_min_decoder = list(map(lambda layer: np.copy(layer.weights), self.decoder))
