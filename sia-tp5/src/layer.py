@@ -41,7 +41,7 @@ class Layer:  # N neuronas, con M inputs
         self.pending_weight = self.pending_weight + weight_change
 
     def consolidate_weights(self):
-        self.weights -= self.pending_weight
+        self.weights += self.pending_weight
         self.reset_pending_weights()
 
     def reset_pending_weights(self):
@@ -101,7 +101,8 @@ def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Acti
         layer_neurons[i].add_pending_weight(optimizer.get_weight_change(weight_change, i, epoch))
         previous_delta = delta
         previous_layer = layer_neurons[i]
-    last_delta = np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta)
+    last_delta = np.multiply(derivative_func(input),
+                             np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta))
     return layer_neurons, last_delta
 
 

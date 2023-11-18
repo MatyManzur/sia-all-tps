@@ -37,6 +37,7 @@ class VariationalAutoencoder:
         self.i = 0
         self.last_errors = []
         unnormalized_results = np.array(list(map(lambda x: x[1], data)))
+        self.normalization_function = normalization_function
         normalized_results = normalization_function(unnormalized_results)
         self.normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
         self.act_func = activation_function
@@ -61,9 +62,11 @@ class VariationalAutoencoder:
         encoder_output = forward_propagation(self.encoder, input)
         # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2)
-        epsilon = np.random.standard_normal()
+        epsilon = np.reshape(np.random.standard_normal(self._latent_space_dim),[self._latent_space_dim,1] )
         # z = μ + ε * σ
-        z = mu_vec + epsilon * sigma_vec
+        z = mu_vec + np.multiply(epsilon,sigma_vec)
+        # normalized_z = self.normalization_function(z)
+        # decoder_output = forward_propagation(self.decoder, normalized_z)
         decoder_output = forward_propagation(self.decoder, z)
         return decoder_output, z, epsilon, mu_vec, sigma_vec
 
@@ -76,7 +79,7 @@ class VariationalAutoencoder:
 
         # Encoder backpropagation from reconstruction
         mu_error = last_delta_decoder
-        sigma_error = epsilon * last_delta_decoder
+        sigma_error = np.multiply(epsilon,last_delta_decoder)
 
         encoder_error = np.concatenate((mu_error, sigma_error), axis=0)
 
