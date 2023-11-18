@@ -7,6 +7,11 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+
+import matplotlib.pyplot as plt
+import numpy as np
+import mplcursors
+
 LETTERS = ['`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
            'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'DEL']
 
@@ -44,3 +49,35 @@ def plot_latent_space(autoencoder: Autoencoder, font, font_names=LETTERS, chosen
 
     fig.show()
     fig2.show()
+    
+    plot_interactive_latent_space(autoencoder, x_coord, y_coord, letters, should_round, font_shape)
+
+
+
+
+def plot_interactive_latent_space(autoencoder, x, y, letters, should_round, font_shape):
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+    plt.scatter(x,y)
+    for index in range(len(x)):
+        plt.text(x[index], y[index] * (1 + 0.03) , letters[index], fontsize=12)
+
+    # Define the update function
+    def add_heatmap(event):
+        # Get the x and y coordinates of the click
+        x_click, y_click = event.xdata, event.ydata
+        if x_click is not None and y_click is not None:
+            
+            weird_letter = autoencoder.output_from_latent_space((x_click, y_click))
+            weird_letter = np.reshape(round(weird_letter) if should_round else weird_letter, font_shape)
+            
+
+            ptfig = go.Figure(data=go.Heatmap(
+                    z=np.flipud(weird_letter), colorscale=[[0, 'white'], [1, 'black']]))
+            ptfig.show()
+
+    # Connect the click event to the update function
+    fig.canvas.mpl_connect('button_press_event', add_heatmap)
+
+    # Show the plot
+    plt.show()

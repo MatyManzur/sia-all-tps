@@ -10,7 +10,7 @@ from datetime import timedelta
 # TODO: pasar a un config
 ALGORITHM = 'batch'
 MINI_BATCH_SIZE = 5
-LIMIT = 100000
+LIMIT = 1000
 LAYERS = [64]
 # Para cambiar el learning rate
 LEARNING_RATE_CHANGE_ITER = 10
@@ -35,6 +35,8 @@ class Autoencoder:
         self.normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
         self.act_func = activation_function
         self.deriv_func = derivation_function
+        self.steps = []
+        self.errors = []
 
         self.optimization = optimization
 
@@ -84,6 +86,9 @@ class Autoencoder:
     def train(self, step_count: int, min_err_threshold: float, _print: bool = False):
         start_time = time.time()
         while self.i < step_count and self.min_err > min_err_threshold:
+            if self.i%10 ==0 and self.i!=0:
+                self.steps.append(self.i)
+                self.errors.append(self.min_err)
             if _print and self.i > 0:
                 estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
                 print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')

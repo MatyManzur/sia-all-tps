@@ -2,6 +2,7 @@ from data.fonts import FONTS_BIT_TUPLES
 from src.autoencoder import Autoencoder
 from src.functions import *
 import plotly.graph_objects as go
+from plots.various_plots import plot_error
 from plotly.subplots import make_subplots
 from latent_space import plot_latent_space
 from src.optimization import MomentumOptimizer, AdamOptimizer
@@ -9,7 +10,7 @@ from src.optimization import MomentumOptimizer, AdamOptimizer
 LEARNING_CONSTANT = 10 ** -3  # -> *
 BETA = 0.3  # -> Todo estos parametros van en la creacion del optimizador
 SAVE_WEIGHTS = True
-
+ERROR_PLOT_TITLE = "Error by Steps. Adam"
 
 def add_heatmap_trace(fig, original, created, colorscale):
     input_letter = np.reshape(np.array(original), [7, 5])
@@ -54,6 +55,9 @@ if __name__ == '__main__':
     fig.update_layout(title_text=f"Autoencoder Results<br><sup>Epochs: {autoencoder.i} - "
                                  f"Layers: {_encoder_layers + [_latent_space_dim] + _decoder_layers}</sup>")
     fig.show()
+
+
+    plot_error(autoencoder.steps,autoencoder.errors,ERROR_PLOT_TITLE)
 
     plot_latent_space(autoencoder, FONTS_BIT_TUPLES)
 
