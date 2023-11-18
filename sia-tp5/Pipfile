@@ -12,6 +12,7 @@ jupyter = "*"
 scikit-learn = "*"
 pycountry = "*"
 ipykernel = "*"
+matplotlib = "*"
 
 [dev-packages]
 
