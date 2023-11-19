@@ -10,13 +10,16 @@ from plotly.subplots import make_subplots
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+from src.vae import VariationalAutoencoder
+
 # import mplcursors
 
 LETTERS = ['`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
            'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'DEL']
 
 
-def plot_latent_space(autoencoder: Autoencoder, font, font_names=LETTERS, chosen_font=LETTERS[1], font_shape=[7,5], should_round=True):
+def plot_latent_space(autoencoder: Autoencoder | VariationalAutoencoder, font, font_names=LETTERS, chosen_font=LETTERS[1], font_shape=[7,5], should_round=True):
     x_coord = []
     y_coord = []
     letters = []

@@ -51,8 +51,8 @@ class Autoencoder:
 
     def __train_perceptron(self, neural_net: List[Layer], training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
-        forward_propagation(neural_net, inputs)
-        backpropagation(neural_net, self.deriv_func, expected, inputs, self.i, self.optimization)
+        forward_propagation(neural_net, np.array([inputs]))
+        backpropagation(neural_net, self.deriv_func, np.array([expected]), np.array([inputs]), self.i, self.optimization)
         return neural_net
 
     def __train_step(self):
@@ -102,18 +102,18 @@ class Autoencoder:
         print(f"Time: {timedelta(seconds=end_time - start_time)}")
 
     def run_input(self, _input: Tuple) -> Tuple[NDArray, NDArray]:
-        output = forward_propagation(self.network, np.array(_input))
+        output = forward_propagation(self.network, np.array([_input]))
         latent_output = self.network[self.latent_layer_index].output
         return output, latent_output
 
     def output_from_latent_space(self, latent_space_values: Tuple) -> NDArray:
-        return forward_propagation(self.network[self.latent_layer_index + 1:], np.array(latent_space_values))
+        return forward_propagation(self.network[self.latent_layer_index + 1:], np.array([latent_space_values]))
 
     def __calculate_error_from_items(self) -> float:
         error_sum = 0
         for inputs, expected in self.normalized_data:
             sample, expected_output = np.array(inputs), np.array(expected)
-            outputs = np.array(forward_propagation(self.network, sample))
+            outputs = np.array(forward_propagation(self.network, np.array([sample])))
             expected_output = np.reshape(expected_output, outputs.shape)
             error_sum += calculate_error(outputs, expected_output)
         return error_sum / len(self.normalized_data)

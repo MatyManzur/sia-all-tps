@@ -58,10 +58,10 @@ class VariationalAutoencoder:
         else:
             raise Exception('Invalid Algorithm!')
 
-    def __forward_propagation_vae(self, input: NDArray) -> Tuple[NDArray, NDArray, NDArray, NDArray, NDArray]:
-        encoder_output = forward_propagation(self.encoder, input)
+    def __forward_propagation_vae(self, inputs: NDArray) -> Tuple[NDArray, NDArray, NDArray, NDArray, NDArray]:
+        encoder_output = forward_propagation(self.encoder, inputs)
         # Reparametrization trick
-        mu_vec, sigma_vec = np.array_split(encoder_output, 2)
+        mu_vec, sigma_vec = np.array_split(encoder_output, 2, axis=1)
         epsilon = np.random.standard_normal() # TODO: es un escalar o un vector?
         # epsilon = np.reshape(np.random.standard_normal(self._latent_space_dim),[self._latent_space_dim,1] )
         # z = μ + ε * σ
@@ -71,8 +71,8 @@ class VariationalAutoencoder:
         decoder_output = forward_propagation(self.decoder, z)
         return decoder_output, z, epsilon, mu_vec, sigma_vec
 
-    def __train_perceptron(self, training_item: Tuple[NDArray, NDArray]):
-        inputs, expected = training_item
+    def __train_perceptron(self, training_items: Tuple[NDArray, NDArray]):
+        inputs, expected = training_items
         output, z, epsilon, mu, sigma = self.__forward_propagation_vae(inputs)
         # Decoder backpropagation
         _, last_delta_decoder = backpropagation(self.decoder, self.deriv_func, expected, z, self.i,
@@ -92,25 +92,28 @@ class VariationalAutoencoder:
 
         # Encoder backpropagation from regularization
         dL_dmu = mu
-        dL_dv = 0.5 * (np.exp(sigma) - 1)
-        encoder_loss_error = np.concatenate((dL_dmu, dL_dv), axis=0)
+        dL_dsigma = 0.5 * (np.exp(sigma) - 1)
+        encoder_loss_error = np.concatenate((dL_dmu, dL_dsigma), axis=1).T
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_loss_error, inputs, self.i,
                                         self.optimizer_encoder)
 
+        rec = 0.5 * np.mean((expected - output) ** 2)
+        kl = -0.5 * np.sum(1 + sigma - mu ** 2 - np.exp(sigma))
+        loss = rec + kl
+
+        return loss
+
     def __train_step(self):
         # Agarramos un conjunto de samples según el algoritmo usado
-        samples = random.choices(self.normalized_data, k=self.sample_size)
-        # Entrena el autoencoder con cada sample, y luego actualiza los pesos
-        for sample in samples:
-            _sample = (np.array(sample[0]), np.array(sample[1]))
-            self.__train_perceptron(_sample)
+
+        samples_0 = [list(letter[0]) for letter in self.normalized_data]
+        samples_1 = [list(letter[1]) for letter in self.normalized_data]
+        samples = (np.array(samples_0), np.array(samples_1))
+
+        err = self.__train_perceptron(samples)
 
         consolidate_weights(self.encoder)
         consolidate_weights(self.decoder)
-
-
-        # Calcula el error
-        err = self.__calculate_error_from_items()
 
         # Eta adaptativo
         if self.i < LEARNING_RATE_CHANGE_ITER:
@@ -149,23 +152,12 @@ class VariationalAutoencoder:
         print(f"Min error: {self.min_err}")
         print(f"Time: {timedelta(seconds=end_time - start_time)}")
 
-    def run_input(self, _input: Tuple) -> Tuple[NDArray, NDArray, NDArray]:
-        decoder_output, z, epsilon, mu_vec, sigma_vec = self.__forward_propagation_vae(np.array(_input))
-        return decoder_output, mu_vec, sigma_vec
+    def run_input(self, _input: Tuple) -> Tuple[NDArray, NDArray]:
+        decoder_output, z, epsilon, mu_vec, sigma_vec = self.__forward_propagation_vae(np.array([_input]))
+        return decoder_output, z.T
 
     def output_from_latent_space(self, latent_space_values: Tuple) -> NDArray:
-        return forward_propagation(self.decoder, np.array(latent_space_values))
-
-    def __calculate_error_from_items(self) -> float:
-        error_sum = 0
-        for inputs, expected in self.normalized_data:
-            sample, expected_output = np.array(inputs), np.array(expected)
-            decoder_output, z, epsilon, mu_vec, sigma_vec = self.__forward_propagation_vae(np.array(sample))
-            expected_output = np.reshape(expected_output, decoder_output.shape)
-            rec = 0.5 * np.mean((expected_output - decoder_output) ** 2)
-            kl = -0.5 * np.sum(1 + sigma_vec - mu_vec ** 2 - np.exp(sigma_vec))
-            error_sum += rec + kl
-        return error_sum
+        return forward_propagation(self.decoder, np.array([latent_space_values]))
 
     def __change_learning_rate(self, last_errors, a, b):
         should_change_rate = True

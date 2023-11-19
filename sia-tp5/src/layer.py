@@ -34,7 +34,7 @@ class Layer:  # N neuronas, con M inputs
     # NxM * Mx1 = Nx1
     def get_excitement(self, inputs=None):
         if inputs is not None:
-            self.excitement = np.matmul(self.weights, np.array([inputs]).T)
+            self.excitement = np.matmul(self.weights, inputs.T)
         return self.excitement
 
     def add_pending_weight(self, weight_change: NDArray, ):
@@ -63,14 +63,14 @@ def generate_layers(layer_neurons: List[int], initial_inputs: int, act_func: Act
 def forward_propagation(layer_neurons: List[Layer], training_data: NDArray) -> NDArray:
     input_values = training_data
     for layer in layer_neurons:
-        input_values = layer.forward(np.append([1], input_values))  # append bias
+        input_values = layer.forward(np.insert(input_values, 0, 1, axis=1)).T  # append bias
     return input_values
 
 
 def backpropagation(layer_neurons: List[Layer], derivative_func: Activation_Function,
                     expected_output: NDArray, input: NDArray, epoch: int, optimizer: Optimizer) -> Tuple[
     List[Layer], NDArray]:
-    error = np.array([expected_output]).T - layer_neurons[-1].output
+    error = expected_output.T - layer_neurons[-1].output
     return backpropagation_from_error(layer_neurons, derivative_func, error, input, epoch, optimizer)
 
 
@@ -81,7 +81,7 @@ def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Acti
     delta = np.multiply(error,
                         derivative_func(layer_neurons[-1].excitement))
     # ΔW^m = δ^m * (V^m-1) (Nx1*1xM = NxM) -> el -η * ΔW^m se aplica en el optimizador
-    weight_change = np.matmul(delta, np.array([np.append(1, layer_neurons[-2].output)]))
+    weight_change = np.matmul(delta, np.insert(layer_neurons[-2].output, 0, 1, axis=0).T)
 
     # guarda el ΔW para aplicarlo más adelante
     layer_neurons[-1].add_pending_weight(optimizer.get_weight_change(weight_change, len(layer_neurons) - 1, epoch))
@@ -93,11 +93,11 @@ def backpropagation_from_error(layer_neurons: List[Layer], derivative_func: Acti
         # δ^m = θ'(h) * ((W^m+1)' * δ^m+1)
         delta = np.multiply(derivative_func(layer_neurons[i].excitement),
                             np.matmul((np.transpose(previous_layer.weights))[1:], previous_delta))
-        curr_input = layer_neurons[i - 1].output if i != 0 else input
+        curr_input = layer_neurons[i - 1].output if i != 0 else input.T
         # Nx1.1xM = NxM
         # ΔW^m = δ^m * (V^m-1)' -> el η * ΔW^m se aplica en el optimizador
-        curr_input = np.append([1], curr_input)
-        weight_change = (delta * np.tile(curr_input, (len(delta), 1)))
+        curr_input = np.insert(curr_input, 0, 1, axis=0).T
+        weight_change = np.dot(delta, curr_input)
         layer_neurons[i].add_pending_weight(optimizer.get_weight_change(weight_change, i, epoch))
         previous_delta = delta
         previous_layer = layer_neurons[i]

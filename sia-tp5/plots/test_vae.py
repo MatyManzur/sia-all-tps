@@ -26,9 +26,9 @@ def add_heatmap_trace(fig, original, created, colorscale):
 
 if __name__ == '__main__':
     data = [(font, font) for font in FONTS_BIT_TUPLES]
-    _encoder_layers = [64,64,64,35,25]
+    _encoder_layers = [64,64,64,64,15]
     _latent_space_dim = 2
-    _decoder_layers = [25,35,64,64,64]
+    _decoder_layers = [15,64,64,64,64]
 
     amount_of_layers_encoder = len(_encoder_layers) + 1
     amount_of_layers_decoder = len(_decoder_layers) + 1
@@ -44,13 +44,13 @@ if __name__ == '__main__':
         optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=0.0001),
         optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=0.0001)
     )
-    autoencoder.train(1000, 0.1, _print=True)
+    autoencoder.train(10000, 0.1, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
     fig = make_subplots(rows=8, cols=8)
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(FONTS_BIT_TUPLES):
-        result = autoencoder.run_input(_font)
-        add_heatmap_trace(fig, _font, (round(result[0]) + 1) / 2, colorscale)
+        result = autoencoder.run_input(_font)[0]
+        add_heatmap_trace(fig, _font, (round(result) + 1) / 2, colorscale)
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
     fig.update_coloraxes(showscale=False)

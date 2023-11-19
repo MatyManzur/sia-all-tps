@@ -41,7 +41,7 @@ if __name__ == '__main__':
         # optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
         optimization=AdamOptimizer(amount_of_layers)
     )
-    autoencoder.train(10000, 0.0001, _print=True)
+    autoencoder.train(3000, 0.0001, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
     fig = make_subplots(rows=8, cols=8)
     colorscale = [[0, 'white'], [1, 'black']]
