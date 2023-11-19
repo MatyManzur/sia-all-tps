@@ -11,8 +11,8 @@ from src.optimization import Optimizer
 from datetime import timedelta
 
 # TODO: pasar a un config
-ALGORITHM = 'batch'
-MINI_BATCH_SIZE = 5
+ALGORITHM = 'mini-batch'
+MINI_BATCH_SIZE = 100
 LIMIT = 100000
 LAYERS = [64]
 # Para cambiar el learning rate
@@ -62,7 +62,8 @@ class VariationalAutoencoder:
         encoder_output = forward_propagation(self.encoder, input)
         # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2)
-        epsilon = np.reshape(np.random.standard_normal(self._latent_space_dim),[self._latent_space_dim,1] )
+        epsilon = np.random.standard_normal() # TODO: es un escalar o un vector?
+        # epsilon = np.reshape(np.random.standard_normal(self._latent_space_dim),[self._latent_space_dim,1] )
         # z = μ + ε * σ
         z = mu_vec + np.multiply(epsilon,sigma_vec)
         # normalized_z = self.normalization_function(z)
@@ -76,12 +77,16 @@ class VariationalAutoencoder:
         # Decoder backpropagation
         _, last_delta_decoder = backpropagation(self.decoder, self.deriv_func, expected, z, self.i,
                                                 self.optimizer_decoder)
+        last_delta_decoder = last_delta_decoder.T
+        last_delta_size = len(last_delta_decoder[0])
 
         # Encoder backpropagation from reconstruction
-        mu_error = last_delta_decoder
-        sigma_error = np.multiply(epsilon,last_delta_decoder)
+        dz_dmu = np.ones([last_delta_size, self._latent_space_dim])
+        dz_dsigma = epsilon * np.ones([last_delta_size, self._latent_space_dim])
+        dE_dmu = np.dot(last_delta_decoder, dz_dmu)
+        dE_dsigma = np.dot(last_delta_decoder, dz_dsigma)
 
-        encoder_error = np.concatenate((mu_error, sigma_error), axis=0)
+        encoder_error = np.concatenate((dE_dmu, dE_dsigma), axis=1).T
 
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_error, inputs, self.i, self.optimizer_encoder)
 
@@ -90,11 +95,11 @@ class VariationalAutoencoder:
         dL_dv = 0.5 * (np.exp(sigma) - 1)
         encoder_loss_error = np.concatenate((dL_dmu, dL_dv), axis=0)
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_loss_error, inputs, self.i,
-                                   self.optimizer_encoder)
+                                        self.optimizer_encoder)
 
     def __train_step(self):
         # Agarramos un conjunto de samples según el algoritmo usado
-        samples = random.sample(self.normalized_data, self.sample_size)
+        samples = random.choices(self.normalized_data, k=self.sample_size)
         # Entrena el autoencoder con cada sample, y luego actualiza los pesos
         for sample in samples:
             _sample = (np.array(sample[0]), np.array(sample[1]))
