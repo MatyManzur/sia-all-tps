@@ -62,10 +62,10 @@ class VariationalAutoencoder:
         encoder_output = forward_propagation(self.encoder, inputs)
         # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2, axis=1)
-        epsilon = np.random.standard_normal() # TODO: es un escalar o un vector?
-        # epsilon = np.reshape(np.random.standard_normal(self._latent_space_dim),[self._latent_space_dim,1] )
+        # epsilon = np.random.standard_normal() # TODO: es un escalar o un vector?
+        epsilon = np.random.standard_normal(self._latent_space_dim)
         # z = μ + ε * σ
-        z = mu_vec + np.multiply(epsilon,sigma_vec)
+        z = mu_vec + np.multiply(epsilon, sigma_vec)
         # normalized_z = self.normalization_function(z)
         # decoder_output = forward_propagation(self.decoder, normalized_z)
         decoder_output = forward_propagation(self.decoder, z)
@@ -82,7 +82,7 @@ class VariationalAutoencoder:
 
         # Encoder backpropagation from reconstruction
         dz_dmu = np.ones([last_delta_size, self._latent_space_dim])
-        dz_dsigma = epsilon * np.ones([last_delta_size, self._latent_space_dim])
+        dz_dsigma = np.multiply(epsilon, np.ones([last_delta_size, self._latent_space_dim]))
         dE_dmu = np.dot(last_delta_decoder, dz_dmu)
         dE_dsigma = np.dot(last_delta_decoder, dz_dsigma)
 
@@ -95,7 +95,7 @@ class VariationalAutoencoder:
         dL_dsigma = 0.5 * (np.exp(sigma) - 1)
         encoder_loss_error = np.concatenate((dL_dmu, dL_dsigma), axis=1).T
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_loss_error, inputs, self.i,
-                                        self.optimizer_encoder)
+                                   self.optimizer_encoder)
 
         rec = 0.5 * np.mean((expected - output) ** 2)
         kl = -0.5 * np.sum(1 + sigma - mu ** 2 - np.exp(sigma))

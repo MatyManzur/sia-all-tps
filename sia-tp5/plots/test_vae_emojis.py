@@ -1,4 +1,4 @@
-from data.fonts import FONTS_BIT_TUPLES
+from data.emojis import EMOJI_TUPLES, EMOJI_SIZE
 from src.vae import VariationalAutoencoder
 from src.functions import *
 import plotly.graph_objects as go
@@ -13,22 +13,23 @@ SAVE_WEIGHTS = True
 ERROR_PLOT_TITLE = "Error by Steps. Adam"
 
 
+
 def add_heatmap_trace(fig, original, created, colorscale):
-    input_letter = np.reshape(np.array(original), [7, 5])
-    output_letter = np.reshape(created, [7, 5])
+    input_letter = np.reshape(np.array(original), EMOJI_SIZE)
+    output_letter = np.reshape(created, EMOJI_SIZE)
     fig.add_trace(go.Heatmap(z=np.flipud(input_letter),
                              coloraxis="coloraxis"),
-                  row=1 + i // 4, col=1 + 2 * (i % 4))
+                  row=1 + i // 2, col=1 + 2 * (i % 2))
     fig.add_trace(go.Heatmap(z=np.flipud(output_letter),
                              coloraxis="coloraxis"),
-                  row=1 + i // 4, col=2 + 2 * (i % 4))
+                  row=1 + i // 2, col=2 + 2 * (i % 2))
 
 
 if __name__ == '__main__':
-    data = [(font, font) for font in FONTS_BIT_TUPLES]
-    _encoder_layers = [64,64,64,64,15]
+    data = [(font, font) for font in EMOJI_TUPLES]
+    _encoder_layers = [120,60,20]
     _latent_space_dim = 2
-    _decoder_layers = [15,64,64,64,64]
+    _decoder_layers = [20,60,120]
 
     amount_of_layers_encoder = len(_encoder_layers) + 1
     amount_of_layers_decoder = len(_decoder_layers) + 1
@@ -44,13 +45,13 @@ if __name__ == '__main__':
         optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=0.0001),
         optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=0.0001)
     )
-    autoencoder.train(50000, 0.1, _print=True)
+    autoencoder.train(10000, 0.1, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
-    fig = make_subplots(rows=8, cols=8)
+    fig = make_subplots(rows=6, cols=4)
     colorscale = [[0, 'white'], [1, 'black']]
-    for i, _font in enumerate(FONTS_BIT_TUPLES):
+    for i, _font in enumerate(EMOJI_TUPLES):
         result = autoencoder.run_input(_font)[0]
-        add_heatmap_trace(fig, _font, (round(result) + 1) / 2, colorscale)
+        add_heatmap_trace(fig, _font, (result + 1) / 2, colorscale)
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
     fig.update_coloraxes(showscale=False)
@@ -61,7 +62,7 @@ if __name__ == '__main__':
 
     plot_error(autoencoder.steps, autoencoder.errors, ERROR_PLOT_TITLE)
 
-    plot_latent_space(autoencoder, FONTS_BIT_TUPLES)
-
-    if SAVE_WEIGHTS:
-        autoencoder.save_weights("./weights.json")
+    plot_latent_space(autoencoder, EMOJI_TUPLES,
+                      ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise',
+                       'sweat_smile', 'very_big_smile', 'wink'],
+                      'poop', EMOJI_SIZE, False)
