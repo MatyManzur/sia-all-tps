@@ -99,9 +99,9 @@ class VariationalAutoencoder:
 
         rec = 0.5 * np.mean((expected - output) ** 2)
         kl = -0.5 * np.sum(1 + sigma - mu ** 2 - np.exp(sigma))
-        loss = rec + kl
 
-        return loss
+
+        return rec, rec+kl
 
     def __train_step(self):
         # Agarramos un conjunto de samples según el algoritmo usado
@@ -110,7 +110,7 @@ class VariationalAutoencoder:
         samples_1 = [list(letter[1]) for letter in self.normalized_data]
         samples = (np.array(samples_0), np.array(samples_1))
 
-        err = self.__train_perceptron(samples)
+        err, _ = self.__train_perceptron(samples)
 
         consolidate_weights(self.encoder)
         consolidate_weights(self.decoder)
@@ -126,7 +126,7 @@ class VariationalAutoencoder:
             self.optimizer_encoder.set_learning_rate(learning_rate_change_func(self.optimizer_encoder.learning_rate))
             self.optimizer_decoder.set_learning_rate(learning_rate_change_func(self.optimizer_decoder.learning_rate))
 
-        if True or (err < self.min_err):
+        if err < self.min_err:
             self.min_err = err
             self.w_min_encoder = list(map(lambda layer: np.copy(layer.weights), self.encoder))
             self.w_min_decoder = list(map(lambda layer: np.copy(layer.weights), self.decoder))

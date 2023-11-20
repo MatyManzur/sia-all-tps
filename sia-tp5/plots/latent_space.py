@@ -7,7 +7,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -19,31 +18,47 @@ LETTERS = ['`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
            'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'DEL']
 
 
-def plot_latent_space(autoencoder: Autoencoder | VariationalAutoencoder, font, font_names=LETTERS, chosen_font=LETTERS[1], font_shape=[7,5], should_round=True):
+def plot_latent_space(autoencoder: Autoencoder | VariationalAutoencoder, font, font_names=LETTERS, font_shape=[7, 5],
+                      should_round=True, colorscale=None, grid_size=20):
+    if colorscale is None:
+        colorscale = [[0, 'black'], [1, 'white']]
     x_coord = []
     y_coord = []
     letters = []
-    fig2 = make_subplots(rows=4, cols=8)
-    chosen_letter_to_compare = chosen_font
-    letter_index = font_names.index(chosen_letter_to_compare)
-    other_ls_xy = autoencoder.run_input(font[letter_index])[1]
+    min_x, max_x, min_y, max_y = (0, 0, 0, 0)
+
     for i, letter in enumerate(font):
         latent_space_xy = autoencoder.run_input(letter)[1]
+        x = latent_space_xy[0][0]
+        y = latent_space_xy[1][0]
+        min_x = x if x < min_x else min_x
+        max_x = x if x > max_x else max_x
+        min_y = y if y < min_y else min_y
+        max_y = y if y > max_y else max_y
+
         x_coord.append(latent_space_xy[0][0])
         y_coord.append(latent_space_xy[1][0])
         letters.append(font_names[i])
-        # Generamos la letra a la mitad entre esta y la letra elegida
-        weird_letter_ls_xy = (other_ls_xy + latent_space_xy) / 2
-        weird_letter = autoencoder.output_from_latent_space(
-            (weird_letter_ls_xy[0], weird_letter_ls_xy[1])
-        )
-        weird_letter = np.reshape(round(weird_letter) if should_round else weird_letter, font_shape)
-        fig2.add_trace(go.Heatmap(
-            z=np.flipud(weird_letter), colorscale=[[0, 'white'], [1, 'black']]),
-            row=1 + i // 8,
-            col=1 + i % 8)
+    rows = []
+    step_y = (max_y - min_y)/grid_size
+    step_x = (max_x - min_x)/grid_size
+    for y in np.arange(min_y, max_y, step_y):
+        row = []
+        for x in np.arange(min_x, max_x, step_x):
+            letter_at_xy = autoencoder.output_from_latent_space((x, y))
+            if should_round:
+                letter_at_xy = round(letter_at_xy)
+            letter_at_xy = np.flipud(letter_at_xy.reshape(font_shape))
+            letter_at_xy = np.insert(letter_at_xy, 0, -1, 0)
+            letter_at_xy = np.insert(letter_at_xy, 0, -1, 1)
+            row.append(letter_at_xy)
+        rows.append(np.concatenate(row, axis=1))
+    grid = np.concatenate(rows, axis=0)
 
-    fig = go.Figure()
+    fig2 = go.Figure(go.Heatmap(
+        z=grid,
+        colorscale=colorscale,
+    ))
 
     fig = px.scatter(x=x_coord, y=y_coord, text=letters)
     fig.update_traces(textposition='top center')
@@ -52,31 +67,27 @@ def plot_latent_space(autoencoder: Autoencoder | VariationalAutoencoder, font, f
 
     fig.show()
     fig2.show()
-    
+
     plot_interactive_latent_space(autoencoder, x_coord, y_coord, letters, should_round, font_shape)
-
-
 
 
 def plot_interactive_latent_space(autoencoder, x, y, letters, should_round, font_shape):
     # Create a figure and axis
     fig, ax = plt.subplots()
-    plt.scatter(x,y)
+    plt.scatter(x, y)
     for index in range(len(x)):
-        plt.text(x[index], y[index] * (1 + 0.03) , letters[index], fontsize=12)
+        plt.text(x[index], y[index] * (1 + 0.03), letters[index], fontsize=12)
 
     # Define the update function
     def add_heatmap(event):
         # Get the x and y coordinates of the click
         x_click, y_click = event.xdata, event.ydata
         if x_click is not None and y_click is not None:
-            
             weird_letter = autoencoder.output_from_latent_space((x_click, y_click))
             weird_letter = np.reshape(round(weird_letter) if should_round else weird_letter, font_shape)
-            
 
             ptfig = go.Figure(data=go.Heatmap(
-                    z=np.flipud(weird_letter), colorscale=[[0, 'white'], [1, 'black']]))
+                z=np.flipud(weird_letter), colorscale=[[0, 'white'], [1, 'black']]))
             ptfig.show()
 
     # Connect the click event to the update function

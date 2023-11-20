@@ -27,9 +27,9 @@ def add_heatmap_trace(fig, original, created, colorscale):
 
 if __name__ == '__main__':
     data = [(font, font) for font in EMOJI_TUPLES]
-    _encoder_layers = [120,60,20]
+    _encoder_layers = [120,60,20,10]
     _latent_space_dim = 2
-    _decoder_layers = [20,60,120]
+    _decoder_layers = [10,20,60,120]
 
     amount_of_layers_encoder = len(_encoder_layers) + 1
     amount_of_layers_decoder = len(_decoder_layers) + 1
@@ -42,10 +42,10 @@ if __name__ == '__main__':
         derivation_function=hiperbolic_derivative,
         normalization_function=hiperbolic_normalization,
         # optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
-        optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=0.0001),
-        optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=0.0001)
+        optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=0.00005),
+        optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=0.00005)
     )
-    autoencoder.train(10000, 0.1, _print=True)
+    autoencoder.train(50000, 0.01, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
     fig = make_subplots(rows=6, cols=4)
     colorscale = [[0, 'white'], [1, 'black']]
@@ -65,4 +65,4 @@ if __name__ == '__main__':
     plot_latent_space(autoencoder, EMOJI_TUPLES,
                       ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise',
                        'sweat_smile', 'very_big_smile', 'wink'],
-                      'poop', EMOJI_SIZE, False)
+                      EMOJI_SIZE, False, [[0, 'white'], [1, 'black']], 20)
