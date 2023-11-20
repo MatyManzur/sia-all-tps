@@ -1,0 +1,24 @@
+[{
+  "label": "Results with Gaussian mean=0.1",
+  "results": [{"correct": 29, "total": 32, "accuracy": 0.90625}
+  ,{"correct": 28, "total": 32, "accuracy": 0.875},
+  {"correct": 28, "total": 32, "accuracy": 0.875}]
+},
+{
+  "label": "Results with S&P=0.10",
+  "results": [{"correct": 23, "total": 32, "accuracy": 0.71875}
+  ,{"correct": 23, "total": 32, "accuracy": 0.71875},
+  {"correct": 24, "total": 32, "accuracy": 0.75}]
+},
+{
+  "label": "Results with S&P=0.15",
+  "results": [{"correct": 17, "total": 32, "accuracy": 0.53125}
+  ,{"correct": 15, "total": 32, "accuracy": 0.46875},
+  {"correct": 20, "total": 32, "accuracy": 0.625}]
+},
+{
+  "label": "Results with S&P=0.2",
+  "results": [{"correct": 9, "total": 32, "accuracy": 0.28125}
+  ,{"correct": 10, "total": 32, "accuracy": 0.3125},
+  {"correct": 12, "total": 32, "accuracy": 0.375}]
+}]

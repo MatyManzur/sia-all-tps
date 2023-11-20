@@ -1,0 +1,153 @@
+{
+  "output": "results.json",
+  "evaluation": {
+    "repetitions": 3
+  },
+  "temp": [
+    {
+    "name": "test_s&p_simple",
+    "learning_constant": 0.001,
+    "beta": 0.3,
+    "noise_type": {
+      "type": "salt_and_pepper", 
+      "prob": 0.08
+    },
+    "architecture": {
+      "encoder": [64],
+      "decoder": [64],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 2000,
+      "error_cutoff": 0.001    
+    }
+  },
+  {
+    "name": "test_s&p_triple",
+    "learning_constant": 0.001,
+    "beta": 0.3,
+    "noise_type": {
+      "type": "salt_and_pepper", 
+      "prob": 0.08
+    },
+    "architecture": {
+      "encoder": [64, 64, 64],
+      "decoder": [64, 64, 64],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 2000,
+      "error_cutoff": 0.001    
+    }
+  },
+  {
+    "name": "test_s&p_multiple^2",
+    "learning_constant": 0.001,
+    "beta": 0.3,
+    "noise_type": {
+      "type": "salt_and_pepper", 
+      "prob": 0.08
+    },
+    "architecture": {
+      "encoder": [64, 64, 64, 64, 64, 64],
+      "decoder": [64, 64, 64, 64, 64, 64],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 2000,
+      "error_cutoff": 0.001    
+    }
+  }],
+  "tests": [
+    {
+      "name": "Results with Gaussian std=0.1",
+      "learning_constant": 0.001,
+      "beta": 0.3,
+      "noise_type": {
+        "type": "gaussian", 
+        "mean": 0,
+        "std": 0.1
+      },
+      "architecture": {
+        "encoder": [64, 64, 64],
+        "decoder": [64, 64, 64],
+        "latent_space": 2,
+        "activation_function": "hiperbolic",
+        "optimizer": "adam"
+      },
+      "training": {
+        "epochs": 2000,
+        "error_cutoff": 0.001    
+      }
+    },
+    {
+      "name": "Results with Gaussian std=0.15",
+      "learning_constant": 0.001,
+      "beta": 0.3,
+      "noise_type": {
+        "type": "gaussian", 
+        "mean": 0,
+        "std": 0.15
+      },
+      "architecture": {
+        "encoder": [64, 64, 64],
+        "decoder": [64, 64, 64],
+        "latent_space": 2,
+        "activation_function": "hiperbolic",
+        "optimizer": "adam"
+      },
+      "training": {
+        "epochs": 2000,
+        "error_cutoff": 0.001    
+      }
+    },
+    {
+      "name": "Results with Gaussian std=0.2",
+      "learning_constant": 0.001,
+      "beta": 0.3,
+      "noise_type": {
+        "type": "gaussian", 
+        "mean": 0,
+        "std": 0.2
+      },
+      "architecture": {
+        "encoder": [64, 64, 64],
+        "decoder": [64, 64, 64],
+        "latent_space": 2,
+        "activation_function": "hiperbolic",
+        "optimizer": "adam"
+      },
+      "training": {
+        "epochs": 2000,
+        "error_cutoff": 0.001    
+      }
+    },
+    {
+      "name": "Results with Gaussian std=0.25",
+      "learning_constant": 0.001,
+      "beta": 0.3,
+      "noise_type": {
+        "type": "gaussian", 
+        "mean": 1,
+        "std": 0.25
+      },
+      "architecture": {
+        "encoder": [64, 64, 64],
+        "decoder": [64, 64, 64],
+        "latent_space": 2,
+        "activation_function": "hiperbolic",
+        "optimizer": "adam"
+      },
+      "training": {
+        "epochs": 2000,
+        "error_cutoff": 0.001    
+      }
+    }
+  ]
+}

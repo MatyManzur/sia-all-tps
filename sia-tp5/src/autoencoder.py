@@ -49,7 +49,7 @@ class Autoencoder:
         else:
             raise Exception('Invalid Algorithm!')
 
-    def __train_perceptron(self, neural_net: List[Layer], training_item: Tuple[NDArray, NDArray]):
+    def train_perceptron(self, neural_net: List[Layer], training_item: Tuple[NDArray, NDArray]):
         inputs, expected = training_item
         forward_propagation(neural_net, np.array([inputs]))
         backpropagation(neural_net, self.deriv_func, np.array([expected]), np.array([inputs]), self.i, self.optimization)
@@ -61,7 +61,7 @@ class Autoencoder:
         # Entrena el autoencoder con cada sample, y luego actualiza los pesos
         for sample in samples:
             _sample = (np.array(sample[0]), np.array(sample[1]))
-            self.__train_perceptron(self.network, _sample)
+            self.train_perceptron(self.network, _sample)
         consolidate_weights(self.network)
         reset_pending_weights(self.network)
 
