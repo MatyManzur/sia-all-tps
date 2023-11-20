@@ -4,7 +4,7 @@ from src.functions import *
 import plotly.graph_objects as go
 from plots.various_plots import plot_error
 from plotly.subplots import make_subplots
-from latent_space import plot_latent_space
+from latent_space import plot_latent_space, plot_transformation
 from src.optimization import MomentumOptimizer, AdamOptimizer
 
 LEARNING_CONSTANT = 10 ** -3  # -> *
@@ -62,7 +62,9 @@ if __name__ == '__main__':
 
     plot_error(autoencoder.steps, autoencoder.errors, ERROR_PLOT_TITLE)
 
-    plot_latent_space(autoencoder, EMOJI_TUPLES,
-                      ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise',
-                       'sweat_smile', 'very_big_smile', 'wink'],
-                      EMOJI_SIZE, False, [[0, 'white'], [1, 'black']], 20)
+    if _latent_space_dim == 2:
+        plot_latent_space(autoencoder, EMOJI_TUPLES,
+                          ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise',
+                           'sweat_smile', 'very_big_smile', 'wink'],
+                          EMOJI_SIZE, False, [[0, 'white'], [1, 'black']], 20)
+    plot_transformation(autoencoder, 5, EMOJI_TUPLES[10], EMOJI_TUPLES[7], False, EMOJI_SIZE)

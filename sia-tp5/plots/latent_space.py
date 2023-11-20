@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 from data.fonts import FONTS_BIT_TUPLES
@@ -95,3 +97,30 @@ def plot_interactive_latent_space(autoencoder, x, y, letters, should_round, font
 
     # Show the plot
     plt.show()
+
+
+def plot_transformation(autoencoder, steps, origin, destination, should_round, font_shape=None):
+    colorscale = [[0, 'white'], [1, 'black']]
+    if font_shape is None:
+        font_shape = [7, 5]
+
+    fig = make_subplots(rows=math.ceil(steps / 3), cols=3)
+    origin_latent_space = autoencoder.run_input(origin)[1]
+    destination_latent_space = autoencoder.run_input(destination)[1]
+
+    for i in range(steps+1):
+        latent_space = origin_latent_space + (destination_latent_space - origin_latent_space) * i / steps
+        letter_at_step = autoencoder.output_from_latent_space(latent_space)
+        if should_round:
+            letter_at_step = round(letter_at_step)
+        letter_at_step = np.flipud(letter_at_step.reshape(font_shape))
+        letter_at_step = np.insert(letter_at_step, 0, -1, 0)
+        letter_at_step = np.insert(letter_at_step, 0, -1, 1)
+        fig.add_trace(go.Heatmap(z=letter_at_step, colorscale=colorscale, coloraxis="coloraxis"),
+                      row=1 + i // 3, col=1 + i % 3)
+
+    fig.update_xaxes(showticklabels=False)
+    fig.update_yaxes(showticklabels=False)
+    fig.update_coloraxes(showscale=False)
+    fig.update_layout(coloraxis=dict(colorscale=colorscale))
+    fig.show()
