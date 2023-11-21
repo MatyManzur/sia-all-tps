@@ -67,4 +67,6 @@ if __name__ == '__main__':
                           ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise',
                            'sweat_smile', 'very_big_smile', 'wink'],
                           EMOJI_SIZE, False, [[0, 'white'], [1, 'black']], 20)
-    plot_transformation(autoencoder, 5, EMOJI_TUPLES[10], EMOJI_TUPLES[7], False, EMOJI_SIZE)
+
+    plot_transformation(autoencoder, 5, EMOJI_TUPLES[0], EMOJI_TUPLES[2], False, EMOJI_SIZE)
+    plot_all_transformations(autoencoder, 5, EMOJI_TUPLES, False, EMOJI_SIZE)

@@ -1,3 +1,4 @@
+import itertools
 import math
 
 import numpy as np
@@ -124,3 +125,51 @@ def plot_transformation(autoencoder, steps, origin, destination, should_round, f
     fig.update_coloraxes(showscale=False)
     fig.update_layout(coloraxis=dict(colorscale=colorscale))
     fig.show()
+
+def process_font(autoencoder_result, should_round, shape):
+    if should_round:
+        autoencoder_result = round(autoencoder_result)
+    autoencoder_result = np.flipud(autoencoder_result.reshape(shape))
+    autoencoder_result = np.insert(autoencoder_result, 0, -1, 0)
+    autoencoder_result = np.insert(autoencoder_result, 0, -1, 1)
+    return autoencoder_result
+
+def plot_all_transformations(autoencoder, steps, font_array, should_round, font_shape=None):
+    colorscale = [[0, 'white'], [1, 'black']]
+    if font_shape is None:
+        font_shape = [7, 5]
+
+    combinations = list(itertools.combinations(font_array, 2))
+
+    rows = []
+
+    for combination in combinations:
+        origin = combination[0]
+        destination = combination[1]
+        row = []
+
+        origin_latent_space = autoencoder.run_input(origin)[1]
+        destination_latent_space = autoencoder.run_input(destination)[1]
+
+        for i in range(steps + 1):
+            latent_space = origin_latent_space + (destination_latent_space - origin_latent_space) * i / steps
+            letter_at_step = process_font(autoencoder.output_from_latent_space(latent_space), should_round, font_shape)
+            row.append(letter_at_step)
+
+        rows.append(np.concatenate(row, axis=1))
+
+    grid = np.concatenate(rows, axis=0)
+
+    fig2 = go.Figure(go.Heatmap(
+        z=grid,
+        colorscale=colorscale,
+        showscale=False
+    ))
+
+    fig2.update_coloraxes(showscale=False)
+    fig2.update_xaxes(showticklabels=False)
+    fig2.update_yaxes(showticklabels=False)
+
+    fig2.update_layout(coloraxis=dict(colorscale=colorscale), title_text="All Possible Combinations Between Two Characters")
+
+    fig2.show()
