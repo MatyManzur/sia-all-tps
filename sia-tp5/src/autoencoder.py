@@ -82,17 +82,19 @@ class Autoencoder:
             self.min_err = err
             self.w_min = list(map(lambda layer: np.copy(layer.weights), self.network))
         self.i += 1
+        return err
 
     def train(self, step_count: int, min_err_threshold: float, _print: bool = False):
         start_time = time.time()
+        errors = []
         while self.i < step_count and self.min_err > min_err_threshold:
-            if self.i%10 ==0 and self.i!=0:
+            if self.i % 10 ==0 and self.i!= 0:
                 self.steps.append(self.i)
                 self.errors.append(self.min_err)
             if _print and self.i > 0:
                 estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
                 print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
-            self.__train_step()
+            errors.append(self.__train_step())
         for i in range(len(self.network)):
             self.network[i].set_weights(self.w_min[i])
         print()
@@ -100,6 +102,7 @@ class Autoencoder:
         print(f"Number of steps: {self.i}")
         print(f"Min error: {self.min_err}")
         print(f"Time: {timedelta(seconds=end_time - start_time)}")
+        return errors
 
     def run_input(self, _input: Tuple) -> Tuple[NDArray, NDArray]:
         output = forward_propagation(self.network, np.array([_input]))
