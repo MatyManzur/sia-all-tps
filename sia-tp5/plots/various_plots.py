@@ -9,7 +9,7 @@ def plot_error(steps, errors, plot_title):
     
     fig.update_layout(title=plot_title,
                    xaxis_title='Steps',
-                   yaxis_title='Min Error')
+                   yaxis_title='Error')
 
     fig.show()
 

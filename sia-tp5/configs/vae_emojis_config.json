@@ -1,7 +1,7 @@
 {
-  "encoder_layers": [64,64,64,64,64],
+  "encoder_layers": [120,60,20,10],
   "latent_space_dim": 2,
-  "decoder_layers": [64,64,64,64,64],
+  "decoder_layers": [10,20,60,120],
   "max_epochs": 50000,
   "min_error_threshold": 0.1,
   "adam_alpha": 0.001,

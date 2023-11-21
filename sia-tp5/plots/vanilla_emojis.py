@@ -24,9 +24,9 @@ def add_heatmap_trace(fig, original, created, colorscale):
 
 if __name__ == '__main__':
     data = [(font, font) for font in EMOJI_TUPLES]
-    _encoder_layers = [64, 64, 64, 64, 64]
+    _encoder_layers = [120,60,20,10]
     _latent_space_dim = 2
-    _decoder_layers = [64, 64, 64, 64, 64]
+    _decoder_layers = [10,20,60,120]
 
     amount_of_layers = len(_encoder_layers) + 1 + len(_decoder_layers) + 1
     autoencoder = Autoencoder(
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         normalization_function=hiperbolic_normalization,
         optimization=AdamOptimizer(amount_of_layers)
     )
-    autoencoder.train(1000, 0.8, _print=True)
+    autoencoder.train(10000, 0.1, _print=True)
     fig = make_subplots(rows=6, cols=4)
     colorscale = [[0, 'white'], [1, 'black']]
     for i, _font in enumerate(EMOJI_TUPLES):
@@ -55,5 +55,5 @@ if __name__ == '__main__':
 
     plot_latent_space(autoencoder, EMOJI_TUPLES,
                       ['big_smile', 'heart_eyes', 'joy', 'kiss', 'poop', 'sad', 'smile', 'sunglasses', 'surprise', 'sweat_smile', 'very_big_smile', 'wink'],
-                      'poop', [24,24], False)
+                      [24,24], False, [[0, 'white'], [1, 'black']])
 

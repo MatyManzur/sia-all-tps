@@ -25,7 +25,7 @@ class VariationalAutoencoder:
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
                  normalization_function: Normalization_Function, optimizer_encoder: Optimizer,
-                 optimizer_decoder: Optimizer, epsilon_is_scalar: bool = False):
+                 optimizer_decoder: Optimizer):
         self._latent_space_dim = latent_space_dim
         self.encoder = generate_layers(encoder_layers + [2 * latent_space_dim], len(data[0][0]), activation_function)
         self.decoder = generate_layers(decoder_layers + [len(data[0][1])], latent_space_dim, activation_function)
@@ -43,7 +43,6 @@ class VariationalAutoencoder:
         self.normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
         self.act_func = activation_function
         self.deriv_func = derivation_function
-        self.epsilon_is_scalar = epsilon_is_scalar
         self.optimizer_encoder = optimizer_encoder
         self.optimizer_decoder = optimizer_decoder
 
@@ -63,10 +62,7 @@ class VariationalAutoencoder:
         encoder_output = forward_propagation(self.encoder, inputs)
         # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2, axis=1)
-        if self.epsilon_is_scalar:
-            epsilon = np.random.standard_normal()
-        else:
-            epsilon = np.random.standard_normal(self._latent_space_dim)
+        epsilon = np.random.standard_normal()
         # z = μ + ε * σ
         z = mu_vec + np.multiply(epsilon, sigma_vec)
         # normalized_z = self.normalization_function(z)

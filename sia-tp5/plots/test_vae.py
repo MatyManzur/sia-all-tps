@@ -43,8 +43,7 @@ if __name__ == '__main__':
             derivation_function=hiperbolic_derivative,
             normalization_function=hiperbolic_normalization,
             optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=config['adam_alpha']),
-            optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=config['adam_alpha']),
-            epsilon_is_scalar=config['epsilon_is_scalar']
+            optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=config['adam_alpha'])
         )
         autoencoder.train(config['max_epochs'], config['min_error_threshold'], _print=True)
         if config['load_weights']:

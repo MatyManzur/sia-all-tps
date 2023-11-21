@@ -41,7 +41,7 @@ if __name__ == '__main__':
         # optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
         optimization=AdamOptimizer(amount_of_layers)
     )
-    autoencoder.train(1000, 0.0001, _print=True)
+    autoencoder.train(10000, 0.1, _print=True)
     # autoencoder.load_weights("./weights/weights.json")
     fig = make_subplots(rows=8, cols=8)
     colorscale = [[0, 'white'], [1, 'black']]
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     plot_error(autoencoder.steps,autoencoder.errors,ERROR_PLOT_TITLE)
 
-    plot_latent_space(autoencoder, FONTS_BIT_TUPLES)
+    plot_latent_space(autoencoder, FONTS_BIT_TUPLES, should_round=False)
 
     if SAVE_WEIGHTS:
         autoencoder.save_weights("./weights.json")
