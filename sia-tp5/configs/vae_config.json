@@ -1,0 +1,12 @@
+{
+  "encoder_layers": [64,64,64,64,64],
+  "latent_space_dim": 2,
+  "decoder_layers": [64,64,64,64,64],
+  "max_epochs": 100000,
+  "min_error_threshold": 0.1,
+  "adam_alpha": 0.001,
+  "epsilon_is_scalar": true,
+  "save_weights": true,
+  "load_weights": false,
+  "load_weights_file": "./weights.json"
+}

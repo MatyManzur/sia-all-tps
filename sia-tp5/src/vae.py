@@ -25,12 +25,13 @@ class VariationalAutoencoder:
                  data: List[Tuple[Tuple, Tuple]], activation_function: Activation_Function,
                  derivation_function: Activation_Function,
                  normalization_function: Normalization_Function, optimizer_encoder: Optimizer,
-                 optimizer_decoder: Optimizer):
+                 optimizer_decoder: Optimizer, epsilon_is_scalar: bool = False):
         self._latent_space_dim = latent_space_dim
         self.encoder = generate_layers(encoder_layers + [2 * latent_space_dim], len(data[0][0]), activation_function)
         self.decoder = generate_layers(decoder_layers + [len(data[0][1])], latent_space_dim, activation_function)
 
         self.min_err = float('inf')
+        self.curr_err = float('inf')
         self.w_min_encoder = None
         self.w_min_decoder = None
 
@@ -42,7 +43,7 @@ class VariationalAutoencoder:
         self.normalized_data = list(map(lambda x: (x[1][0], normalized_results[x[0]]), enumerate(data)))
         self.act_func = activation_function
         self.deriv_func = derivation_function
-
+        self.epsilon_is_scalar = epsilon_is_scalar
         self.optimizer_encoder = optimizer_encoder
         self.optimizer_decoder = optimizer_decoder
 
@@ -62,8 +63,10 @@ class VariationalAutoencoder:
         encoder_output = forward_propagation(self.encoder, inputs)
         # Reparametrization trick
         mu_vec, sigma_vec = np.array_split(encoder_output, 2, axis=1)
-        # epsilon = np.random.standard_normal() # TODO: es un escalar o un vector?
-        epsilon = np.random.standard_normal(self._latent_space_dim)
+        if self.epsilon_is_scalar:
+            epsilon = np.random.standard_normal()
+        else:
+            epsilon = np.random.standard_normal(self._latent_space_dim)
         # z = μ + ε * σ
         z = mu_vec + np.multiply(epsilon, sigma_vec)
         # normalized_z = self.normalization_function(z)
@@ -78,21 +81,18 @@ class VariationalAutoencoder:
         _, last_delta_decoder = backpropagation(self.decoder, self.deriv_func, expected, z, self.i,
                                                 self.optimizer_decoder)
         last_delta_decoder = last_delta_decoder.T
-        last_delta_size = len(last_delta_decoder[0])
 
         # Encoder backpropagation from reconstruction
-        dz_dmu = np.ones([last_delta_size, self._latent_space_dim])
-        dz_dsigma = np.multiply(epsilon, np.ones([last_delta_size, self._latent_space_dim]))
-        dE_dmu = np.dot(last_delta_decoder, dz_dmu)
-        dE_dsigma = np.dot(last_delta_decoder, dz_dsigma)
+        dE_dmu = last_delta_decoder
+        dE_dsigma = epsilon * last_delta_decoder
 
         encoder_error = np.concatenate((dE_dmu, dE_dsigma), axis=1).T
 
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_error, inputs, self.i, self.optimizer_encoder)
 
         # Encoder backpropagation from regularization
-        dL_dmu = mu
-        dL_dsigma = 0.5 * (np.exp(sigma) - 1)
+        dL_dmu = - mu
+        dL_dsigma = - 0.5 * (np.exp(sigma) - 1)
         encoder_loss_error = np.concatenate((dL_dmu, dL_dsigma), axis=1).T
         backpropagation_from_error(self.encoder, self.deriv_func, encoder_loss_error, inputs, self.i,
                                    self.optimizer_encoder)
@@ -100,8 +100,7 @@ class VariationalAutoencoder:
         rec = 0.5 * np.mean((expected - output) ** 2)
         kl = -0.5 * np.sum(1 + sigma - mu ** 2 - np.exp(sigma))
 
-
-        return rec, rec+kl
+        return rec+kl
 
     def __train_step(self):
         # Agarramos un conjunto de samples según el algoritmo usado
@@ -110,7 +109,7 @@ class VariationalAutoencoder:
         samples_1 = [list(letter[1]) for letter in self.normalized_data]
         samples = (np.array(samples_0), np.array(samples_1))
 
-        err, _ = self.__train_perceptron(samples)
+        err = self.__train_perceptron(samples)
 
         consolidate_weights(self.encoder)
         consolidate_weights(self.decoder)
@@ -126,6 +125,7 @@ class VariationalAutoencoder:
             self.optimizer_encoder.set_learning_rate(learning_rate_change_func(self.optimizer_encoder.learning_rate))
             self.optimizer_decoder.set_learning_rate(learning_rate_change_func(self.optimizer_decoder.learning_rate))
 
+        self.curr_err = err
         if err < self.min_err:
             self.min_err = err
             self.w_min_encoder = list(map(lambda layer: np.copy(layer.weights), self.encoder))
@@ -137,10 +137,10 @@ class VariationalAutoencoder:
         while self.i < step_count and self.min_err > min_err_threshold:
             if self.i % 10 == 0 and self.i != 1:
                 self.steps.append(self.i)
-                self.errors.append(self.min_err)
+                self.errors.append(self.curr_err)
             if _print and self.i > 0:
                 estimated_time = (time.time() - start_time) * (step_count - self.i) / self.i
-                print(f"\rStep: {self.i} - Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
+                print(f"\rStep: {self.i} - Current Error: {self.curr_err} - Min Error: {self.min_err} - ETA: {timedelta(seconds=estimated_time)}", end='')
             self.__train_step()
         for i in range(len(self.encoder)):
             self.encoder[i].set_weights(self.w_min_encoder[i])

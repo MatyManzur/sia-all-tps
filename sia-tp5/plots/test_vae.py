@@ -1,3 +1,5 @@
+import json
+
 from data.fonts import FONTS_BIT_TUPLES
 from src.vae import VariationalAutoencoder
 from src.functions import *
@@ -5,11 +7,8 @@ import plotly.graph_objects as go
 from plots.various_plots import plot_error
 from plotly.subplots import make_subplots
 from latent_space import plot_latent_space
-from src.optimization import MomentumOptimizer, AdamOptimizer
+from src.optimization import AdamOptimizer
 
-LEARNING_CONSTANT = 10 ** -3  # -> *
-BETA = 0.3  # -> Todo estos parametros van en la creacion del optimizador
-SAVE_WEIGHTS = True
 ERROR_PLOT_TITLE = "Error by Steps. Adam"
 
 
@@ -25,43 +24,47 @@ def add_heatmap_trace(fig, original, created, colorscale):
 
 
 if __name__ == '__main__':
-    data = [(font, font) for font in FONTS_BIT_TUPLES]
-    _encoder_layers = [20,15]
-    _latent_space_dim = 2
-    _decoder_layers = [15,20]
+    with open("../configs/vae_config.json", "r") as f:
+        config = json.load(f)
 
-    amount_of_layers_encoder = len(_encoder_layers) + 1
-    amount_of_layers_decoder = len(_decoder_layers) + 1
-    autoencoder = VariationalAutoencoder(
-        encoder_layers=_encoder_layers,
-        latent_space_dim=_latent_space_dim,
-        decoder_layers=_decoder_layers,
-        data=data,
-        activation_function=hiperbolic,
-        derivation_function=hiperbolic_derivative,
-        normalization_function=hiperbolic_normalization,
-        # optimization=MomentumOptimizer(amount_of_layers, LEARNING_CONSTANT, BETA)
-        optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=0.001),
-        optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=0.001)
-    )
-    autoencoder.train(30000, 0.1, _print=True)
-    # autoencoder.load_weights("./weights/weights.json")
-    fig = make_subplots(rows=8, cols=8)
-    colorscale = [[0, 'white'], [1, 'black']]
-    for i, _font in enumerate(FONTS_BIT_TUPLES):
-        result = autoencoder.run_input(_font)[0]
-        add_heatmap_trace(fig, _font, (round(result) + 1) / 2, colorscale)
-    fig.update_xaxes(showticklabels=False)
-    fig.update_yaxes(showticklabels=False)
-    fig.update_coloraxes(showscale=False)
-    fig.update_layout(coloraxis=dict(colorscale=colorscale))
-    fig.update_layout(title_text=f"Autoencoder Results<br><sup>Epochs: {autoencoder.i} - "
-                                 f"Layers: {_encoder_layers + [_latent_space_dim] + _decoder_layers}</sup>")
-    fig.show()
+        data = [(font, font) for font in FONTS_BIT_TUPLES]
+        _encoder_layers = config['encoder_layers']
+        _latent_space_dim = config['latent_space_dim']
+        _decoder_layers = config['decoder_layers']
 
-    plot_error(autoencoder.steps, autoencoder.errors, ERROR_PLOT_TITLE)
+        amount_of_layers_encoder = len(_encoder_layers) + 1
+        amount_of_layers_decoder = len(_decoder_layers) + 1
+        autoencoder = VariationalAutoencoder(
+            encoder_layers=_encoder_layers,
+            latent_space_dim=_latent_space_dim,
+            decoder_layers=_decoder_layers,
+            data=data,
+            activation_function=hiperbolic,
+            derivation_function=hiperbolic_derivative,
+            normalization_function=hiperbolic_normalization,
+            optimizer_encoder=AdamOptimizer(amount_of_layers_encoder, alpha=config['adam_alpha']),
+            optimizer_decoder=AdamOptimizer(amount_of_layers_decoder, alpha=config['adam_alpha']),
+            epsilon_is_scalar=config['epsilon_is_scalar']
+        )
+        autoencoder.train(config['max_epochs'], config['min_error_threshold'], _print=True)
+        if config['load_weights']:
+            autoencoder.load_weights(config['load_weights_file'])
+        fig = make_subplots(rows=8, cols=8)
+        colorscale = [[0, 'white'], [1, 'black']]
+        for i, _font in enumerate(FONTS_BIT_TUPLES):
+            result = autoencoder.run_input(_font)[0]
+            add_heatmap_trace(fig, _font, (round(result) + 1) / 2, colorscale)
+        fig.update_xaxes(showticklabels=False)
+        fig.update_yaxes(showticklabels=False)
+        fig.update_coloraxes(showscale=False)
+        fig.update_layout(coloraxis=dict(colorscale=colorscale))
+        fig.update_layout(title_text=f"Autoencoder Results<br><sup>Epochs: {autoencoder.i} - "
+                                     f"Layers: {_encoder_layers + [_latent_space_dim] + _decoder_layers}</sup>")
+        fig.show()
 
-    plot_latent_space(autoencoder, FONTS_BIT_TUPLES)
+        plot_error(autoencoder.steps, autoencoder.errors, ERROR_PLOT_TITLE)
 
-    if SAVE_WEIGHTS:
-        autoencoder.save_weights("./weights.json")
+        plot_latent_space(autoencoder, FONTS_BIT_TUPLES, should_round=False)
+
+        if config['save_weights']:
+            autoencoder.save_weights("./weights.json")
