@@ -7,7 +7,6 @@ import time
 from src.optimization import Optimizer
 from datetime import timedelta
 
-# TODO: pasar a un config
 ALGORITHM = 'batch'
 MINI_BATCH_SIZE = 5
 LIMIT = 1000

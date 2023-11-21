@@ -10,7 +10,7 @@ from latent_space import plot_latent_space, plot_transformation
 from src.optimization import MomentumOptimizer, AdamOptimizer
 
 LEARNING_CONSTANT = 10 ** -3  # -> *
-BETA = 0.3  # -> Todo estos parametros van en la creacion del optimizador
+BETA = 0.3
 SAVE_WEIGHTS = True
 ERROR_PLOT_TITLE = "Error by Steps. Adam"
 

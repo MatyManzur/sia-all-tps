@@ -13,7 +13,7 @@ from concurrent.futures import ProcessPoolExecutor as Pool
 from multiprocessing import Pool as MPool
 
 LEARNING_CONSTANT = 10 ** -3  # -> *
-BETA = 0.3  # -> Todo estos parametros van en la creacion del optimizador
+BETA = 0.3
 SAVE_WEIGHTS = True
 ERROR_PLOT_TITLE = "Error by Steps. Adam"
 

@@ -1,0 +1,45 @@
+{
+  "output": "results_vaetests.json",
+  "evaluation": {
+    "repetitions": 3
+  },
+  "tests": [
+    {
+    "architecture": {
+      "encoder": [120,60,20,10],
+      "decoder": [10,20,60,120],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 10000,
+      "error_cutoff": 0.001}
+    },
+    {
+    "architecture": {
+      "encoder": [64,64,64,64],
+      "decoder": [64,64,64,64],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 10000,
+      "error_cutoff": 0.001}
+    },
+    {
+    "architecture": {
+      "encoder": [100,50],
+      "decoder": [50,100],
+      "latent_space": 2,
+      "activation_function": "hiperbolic",
+      "optimizer": "adam"
+    },
+    "training": {
+      "epochs": 10000,
+      "error_cutoff": 0.001}
+    }
+
+  ]
+}
